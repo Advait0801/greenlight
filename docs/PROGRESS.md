@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | — | 0 | — | open |
-| 2 | Event packet | done (branch `phase-2/event-packet`) | 1 | yes (iteration 1: 0 blockers, 0 high) | open |
+| 2 | Event packet | done (branch `phase-2/event-packet`) | 2 | no (iteration 2: 3 blockers, 2 high, all fixed) | open |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
@@ -53,6 +53,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 2, iteration 2 — break
+Date/time: 2026-11-15, about 01:10-01:30 PT
+Agent and model: breaker (fresh), Opus 5.5, medium effort, on commit 62bc37d
+Report: docs/reviews/phase-2-iter-2-break.md (23 failing tests in backend/tests/adversarial/test_phase2_iter2_{engine,intake_api}_break.py)
+Findings: 3/2/3/3
+Fixed (all, each covered by the breaker's tests): B1 the first-three-weeks rule is no longer green outside spring 2027 (calendar coverage checked; the first three weeks of other terms are "check with Trojan Event Services"); B2/B3 tabling hours and the alcohol weekday rule are checked only in part (time of day unknown), so they are never green; H1 a ban comes in from its breaking fact alone (for example "alcohol is the main focus" without "alcohol"); H2 a USG academic-week deadline that has certainly passed (6 academic weeks are at least 42 days) is past due, a hard block, with the other-funding option; M abbreviated weekdays that contradict the date are asked; M an end more than a year after the start becomes a question, not a 500; M dates outside 2000-2100 are refused (422); L impossible headcounts are asked; L control characters dropped from .ics text; L the parse error no longer shows server paths.
+Left open: the breaker's questions (should a due date on a holiday or weekend move earlier; does the first-three-weeks rule cover classrooms and off campus; should the packet mention USG's ineligible line items) are for a person.
+Full test suite: pass (412, adversarial included); run_eval.py events 30/456/0/0
+Gate: iteration 3 (audit) next
 
 ### Phase 2, iteration 1 — verify
 Date/time: 2026-11-15, about 00:50-01:05 PT
