@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://greenlight.local/schemas/constitutions.schema.json",
+  "title": "Constitution test set",
+  "description": "Constitutions written on the 2026-27 RSO Constitution Template with seeded faults. Every clause rule in rules/recognition.json not listed in `expected.findings` or `expected.not_applicable` is expected to be present. `seeded_faults` is the denominator for the catch rate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["set", "version", "count", "method", "cases"],
+  "properties": {
+    "set": {"const": "constitutions"},
+    "version": {"type": "integer", "minimum": 1},
+    "count": {"const": 10},
+    "method": {"type": "string", "minLength": 20},
+    "cases": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/case"}}
+  },
+  "$defs": {
+    "ruleId": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "file", "purpose", "club", "expected"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^co-\\d{2}$"},
+        "file": {"type": "string", "pattern": "^texts/co-\\d{2}\\.txt$"},
+        "purpose": {"type": "string", "minLength": 5},
+        "club": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "has_parent_organization", "has_school_affiliation", "has_additional_officers", "has_appointed_positions"],
+          "properties": {
+            "name": {"type": "string"},
+            "has_parent_organization": {"type": "boolean"},
+            "has_school_affiliation": {"type": "boolean"},
+            "has_additional_officers": {"type": "boolean"},
+            "has_appointed_positions": {"type": "boolean"}
+          }
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["readable", "findings", "not_applicable", "seeded_faults"],
+          "properties": {
+            "readable": {"type": "boolean"},
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["rule_id", "state"],
+                "properties": {
+                  "rule_id": {"$ref": "#/$defs/ruleId"},
+                  "state": {"enum": ["missing", "weak", "contradicts"]},
+                  "contradicted_by": {"$ref": "#/$defs/ruleId"},
+                  "note": {"type": "string"}
+                }
+              }
+            },
+            "not_applicable": {"type": "array", "items": {"$ref": "#/$defs/ruleId"}, "uniqueItems": true},
+            "seeded_faults": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    }
+  }
+}

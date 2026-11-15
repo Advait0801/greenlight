@@ -38,3 +38,8 @@ Thumbs.db
 # Replit
 .cache/
 .upm/
+
+# Raw source downloads that are not committed (their text snapshots are):
+# the 6.7 MB Student Handbook PDF and the raw HTML pages.
+rules/sources/raw/*.html
+rules/sources/raw/student-handbook.pdf

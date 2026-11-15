@@ -1,0 +1,436 @@
+{
+  "domain": "outside_money",
+  "description": "Money from outside USG: sponsorship, co-hosting, donations, fundraising, tickets, dues, drawings and raffles (Student Handbook 2026-27, Campus Activities, USG web page).",
+  "rules": [
+    {
+      "id": "sponsorship-in-kind",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "In-kind corporate sponsorship",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Corporate Sponsorships can only be in-kind donations and must add value to the RSO or event and may not include monetary donations.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "info",
+      "message": "A company may sponsor an event in kind (food, products, a venue), if it adds value and the club stays the primary contact, payer and first name on all advertising.",
+      "fix_template": null,
+      "applies_to": "A company offering goods or services for an event",
+      "triggers": [
+        "sponsorship"
+      ],
+      "params": {
+        "condition_rules": [
+          "cosponsor-club-primary"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "sponsorship-cash-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "No cash from corporate sponsors",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Corporate Sponsorships can only be in-kind donations and must add value to the RSO or event and may not include monetary donations.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Corporate sponsorship can only be in kind. A company cannot give the club money.",
+      "fix_template": "Ask the sponsor for goods or services (for example the food) instead of money.",
+      "applies_to": "A company offering money for an event",
+      "triggers": [
+        "sponsorship"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "cosponsor-club-primary",
+      "domain": "outside_money",
+      "kind": "requirement",
+      "title": "The club stays primary contact, payer and first name",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "The RSO must be the primary contact for Campus Activities, and other campus departments involved in the planning or approval of the event. • The main contact from the RSO must be a current, full-time student and member of the RSO. • The money must be paid by the RSO and not the outside agency for any fees owed to the university. • The RSO must be the primary name listed on all advertisements and promotional materials.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "With any co-sponsor or sponsor, the club must be the primary contact, its main contact must be a current full-time student member, the club pays all university fees, and the club's name comes first on all advertising.",
+      "fix_template": "Make the club the payer and the first name on every flyer.",
+      "applies_to": "An event with a co-host or sponsor",
+      "triggers": [
+        "co_hosts",
+        "sponsorship"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "cohost-recognized-club",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Co-hosting with another recognized club",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "As many RSOs co-sponsor events with other student organizations, departments, and/or outside agencies, it is important to be aware of what constitutes a co-sponsorship.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "info",
+      "message": "Co-hosting with another recognized student organization is allowed. All co-hosts must be named in the permit application.",
+      "fix_template": null,
+      "applies_to": "Sharing an event and its costs with another club",
+      "triggers": [
+        "co_hosts"
+      ],
+      "params": {
+        "condition_rules": [
+          "cohost-unrecognized-banned",
+          "cosponsor-club-primary",
+          "cosponsors-named-in-uepa"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "cohost-unrecognized-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "No co-hosting with unrecognized groups",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Co-sponsorships with Unrecognized Student Organizations are strictly prohibited.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Co-hosting with a group that is not a recognized student organization is strictly prohibited.",
+      "fix_template": "Co-host only with a recognized student organization.",
+      "applies_to": "A co-hosted event",
+      "triggers": [
+        "co_hosts"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "no-business-vendors",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "Clubs may not bring a business to campus as a vendor",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "RSOs may not bring a business to campus as a vendor. Businesses can only come to campus if a pre-existing event is occurring (i.e., the business’s participation in the event cannot be the primary purpose of the event).",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "A club cannot bring a business to campus as a vendor; a business may take part only in an event that exists for its own sake.",
+      "fix_template": "Remove the vendor sales, or make the business a small part of a real club event.",
+      "applies_to": "An event with an outside business selling or promoting",
+      "triggers": [
+        "outside_vendors"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "donations-through-university",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Donations only through the university",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Recognition Requirements, item 14",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "As student organizations recognized by the university, RSOs may solicit and receive tax-deductible contributions through the university (which is exempt from income tax under I.R.C. Section 501(c)(3)). RSOs are required to work with Campus Activities before engaging in any fundraising activities using the university’s tax exempt status (see Sales and Fundraising by RSOs, below).",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "info",
+      "message": "Clubs may receive tax-deductible donations only through the university (a gift account through University Advancement), arranged with Campus Activities first.",
+      "fix_template": null,
+      "applies_to": "Asking people or organizations for donations",
+      "triggers": [
+        "fundraising"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "own-tax-exempt-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "Filing for the club's own tax-exempt status loses recognition",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Recognition Requirements, item 14",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "RSOs that file their own application with the IRS or another government agency seeking tax exempt status without the prior approval of Campus Activities will no longer be recognized by the university as a student organization.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "A club that files for its own tax-exempt status without Campus Activities' approval loses recognition.",
+      "fix_template": "Do not file with the IRS; ask Campus Activities about a university gift account.",
+      "applies_to": "A plan to register the club as a non-profit",
+      "conflicts_with": null
+    },
+    {
+      "id": "fundraising-allowed",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Fundraisers and sales, with approval",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Sales and Fundraising by RSOs",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Although all RSOs are permitted to fundraise on their own behalf, RSOs may only pursue fundraising activities to benefit their student organization, another RSO, or an outside philanthropic agency or relief effort.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "info",
+      "message": "Clubs may fundraise for themselves, another club, or a charity or relief effort, after meeting Campus Activities at least 2 weeks before. Item sales need Bookstore approval; cash at the event needs Trojan Event Services and Department of Public Safety approval.",
+      "fix_template": null,
+      "applies_to": "A fundraiser, sale or money collection",
+      "triggers": [
+        "fundraising",
+        "item_sales",
+        "ticket_sales",
+        "cash_collection",
+        "charity_collection"
+      ],
+      "params": {
+        "lead_time_rules": [
+          "fundraising-meeting",
+          "fundraising-form-tes",
+          "item-sales-bookstore",
+          "cash-collection-approval"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "no-individual-benefit",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "No member may profit from fundraising",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Sales and Fundraising by RSOs",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "No individual student or person(s) may receive any type of benefit or payment in connection with any of these activities, either in the form of money, trade, discounts, and/or any other goods or services.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "No member or other person may receive money, trade, discounts or goods from the club's fundraising.",
+      "fix_template": "Remove any payment or benefit to individuals.",
+      "applies_to": "A fundraiser or sale",
+      "triggers": [
+        "fundraising",
+        "item_sales",
+        "ticket_sales"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "ticket-sales-cover-costs",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Ticket sales only to cover the event's costs",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Event Tickets/Payment for Services",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Event tickets or payment for services (performances, activities, etc.) are permissible if approved proceeds from sales will help the RSOs cover expenses for that specific event or activity.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "info",
+      "message": "Tickets may be sold only to cover that event's own costs. A ticketed event cannot get USG funding.",
+      "fix_template": null,
+      "applies_to": "Selling tickets",
+      "triggers": [
+        "ticket_sales"
+      ],
+      "params": {
+        "see_also_rules": [
+          "usg-ineligible-ticketed-events",
+          "cash-collection-approval"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "raffle-purchase-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "No raffles that require a purchase or donation",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Raffles or Lotteries",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "In the State of California, raffles and lotteries are illegal if a person is required to purchase a ticket or make a donation in order to be eligible to win the contest.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "A raffle that requires buying a ticket or donating is illegal in California.",
+      "fix_template": "Run a free drawing instead, with the required ticket wording.",
+      "applies_to": "A prize drawing that requires a purchase or donation",
+      "triggers": [
+        "prize_drawing"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "free-drawing-wording",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Free drawings, with the required wording",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Free Drawings",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Free drawings are legal when rules conforming to the California State Law are followed exactly. These rules are: • The drawing must be in connection with an event or an RSO. • The ticket must have the following information displayed on it: – Date, time, and location of drawing. – Name of sponsors and beneficiary of fundraising. – Donation or purchase of ticket is not required to be eligible to win. – Winner need not be present at drawing (not required but advised). • Free tickets (a minimum of one per person) must be available. • Each solicitor must know that free tickets can be obtained and how to obtain them. • The word “drawing” or “free drawing” is required; the word “raffle” on the ticket or in advertisements should not be used.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "info",
+      "message": "A free drawing is allowed if free tickets are available, the ticket shows the date, time, place, sponsors and that no purchase is needed, and the word 'raffle' is not used.",
+      "fix_template": null,
+      "applies_to": "A prize drawing",
+      "triggers": [
+        "prize_drawing"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "silent-auction-advancement",
+      "domain": "outside_money",
+      "kind": "requirement",
+      "title": "Silent auctions go through University Advancement",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Silent Auction",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "The same rules apply for coordinating a silent auction as would apply for a free drawing. All silent auctions must work with University Advancement.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "A silent auction follows the free-drawing rules and must be run with University Advancement.",
+      "fix_template": "Contact Campus Activities to arrange the auction with University Advancement.",
+      "applies_to": "A silent auction",
+      "triggers": [
+        "silent_auction"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "sponsorship-activation-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "No sponsorship activations",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Sponsorship Activation",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "An activation is any event that brings a non-university affiliated company or business onto campus solely to market its products or services. Often, sponsoring companies will approach RSOs about booking their event on campus, or promoting their brand, in exchange for money or products. The university does not permit RSOs to engage in sponsorship activations.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Clubs cannot host sponsorship activations (a company coming to campus to market itself, for money or products). Only USG and GSG may, through Campus Activities.",
+      "fix_template": "Decline the activation, or ask the company for an in-kind sponsorship of a club event instead.",
+      "applies_to": "A company booth, promotion or brand event on campus",
+      "triggers": [
+        "sponsorship",
+        "outside_vendors"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "brand-ambassadors-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "No brand ambassadors or third-party promoters",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Appendix IX: Advertising, Promotion/Publicity, and Literature Distribution",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "The use of third-party promoters, including student brand ambassadors, is strictly prohibited.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Third-party promoters, including student brand ambassadors, are strictly prohibited.",
+      "fix_template": "Remove the brand ambassador or promoter from the plan.",
+      "applies_to": "Promoting through a brand ambassador or outside promoter",
+      "triggers": [
+        "sponsorship"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "dues-voluntary",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Voluntary dues",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Accountability",
+      "source_section": "RSO Accountability for Open Membership",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-accountability/",
+      "source_text": "Dues may not be required as criteria for any level of membership. While groups may choose to collect dues, dues must not be a requirement for becoming a member or to be associated with specific level of membership (e.g., voting membership or officer).",
+      "effective_date": "2025-09-19",
+      "verified": "read",
+      "severity": "info",
+      "message": "A club may collect dues, but paying them can never be required for any level of membership.",
+      "fix_template": null,
+      "applies_to": "Collecting member dues",
+      "conflicts_with": null
+    },
+    {
+      "id": "dues-required-banned",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "Dues may not be required",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Accountability",
+      "source_section": "RSO Accountability for Open Membership",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-accountability/",
+      "source_text": "Dues may not be required as criteria for any level of membership. While groups may choose to collect dues, dues must not be a requirement for becoming a member or to be associated with specific level of membership (e.g., voting membership or officer).",
+      "effective_date": "2025-09-19",
+      "verified": "read",
+      "severity": "red",
+      "message": "Dues cannot be a requirement for joining, for voting membership, or for holding office.",
+      "fix_template": "Make dues voluntary.",
+      "applies_to": "Membership that requires paying dues",
+      "conflicts_with": null
+    },
+    {
+      "id": "other-usc-funds-ask-usg",
+      "domain": "outside_money",
+      "kind": "allowed",
+      "title": "Other USC funds: ask USG first",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding Department web page",
+      "source_section": "Frequently Asked Questions: What are other sources of funding besides USG?",
+      "source_url": "https://usg.usc.edu/branches/funding/",
+      "source_text": "Students have several options for funding, including fundraising, crowdfunding through IgniteSC, membership fees, USC Academic Departments, USC Grants, fellowships or scholarships, programming assemblies and committees, partnering with other RSOs, and receiving donations from donors or USC alumni.",
+      "effective_date": "2026-10-30",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "Other USC money (academic departments, school councils, programming assemblies, grants) can help, but USG lists funding from another University source as a possible reason to deny a USG application. Ask USG before combining them.",
+      "fix_template": "Ask USG (usgfunds@usc.edu) before using another USC source for an event USG also funds.",
+      "applies_to": "Using other USC money for an event",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "see_also_rules": [
+          "usg-denial-other-university-funding"
+        ]
+      },
+      "conflicts_with": null,
+      "notes": "The USG web page recommends other USC sources; the USG guidelines list another University source as a possible denial reason. Shown yellow, never green."
+    }
+  ]
+}

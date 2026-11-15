@@ -1,0 +1,16 @@
+SNAPSHOT OF: Trojan Event Services (TES): Forms and Permits
+URL: https://trojanevents.usc.edu/forms-and-permits/
+FETCHED FROM: https://trojanevents.usc.edu/forms-and-permits/
+FETCHED AT: 2026-11-15T05:19:48Z
+RAW SHA-256: b16324e4532afbcf48b304a0bf6898938d207476841ac8d17b1ecf1572a5b596
+FORMAT: html
+==== END OF SNAPSHOT HEADER ====
+Forms and Permits
+Early Booking Application
+Certificate of Liability Insurance
+Change of Use: Temporary Event Permit Request
+Facilities Planning & Management (FPM) Checklist
+Click Step #2 to go to the FPM Checklist.
+Fundraising Approval Request Form
+LAFD Division 5 Permit
+USC Event Permit Application

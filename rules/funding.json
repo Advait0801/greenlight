@@ -1,0 +1,1679 @@
+{
+  "domain": "funding",
+  "description": "USG Funding Department rules: deadlines, caps, eligible and ineligible expenses, required documents and the four funds.",
+  "rules": [
+    {
+      "id": "usg-academic-week-definition",
+      "domain": "funding",
+      "kind": "info",
+      "title": "How academic weeks are counted",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Review the Funding Application Deadlines to see the event dates that are eligible for funding and the submission deadline for the application.",
+      "effective_date": "2026-10-21",
+      "verified": "unverified",
+      "verification_note": "The guidelines do not define an academic week (PROJECT_CONTEXT section 8, open question). The Funding Application Deadlines table they link needs a USC sign-in; a hand transcription made in a signed-in browser on 2026-11-14 is in rules/sources/usg-funding-deadlines.txt. Code cannot check that transcription against the sheet, so every academic-week deadline is shown yellow until a person confirms it.",
+      "severity": "yellow",
+      "message": "USG deadlines are counted in academic weeks, but the guidelines do not define an academic week. They point to USG's Funding Application Deadlines table.",
+      "fix_template": "Check the date in USG's Funding Application Deadlines table or ask USG (usgfunds@usc.edu).",
+      "applies_to": "Every USG deadline counted in academic weeks",
+      "params": {
+        "deadline_table_url": "https://docs.google.com/spreadsheets/d/1M8FHvuw6f7ErnHnrQIR_ijjVmaKVXZp5-5fxrrJ7e68/edit",
+        "deadline_table_snapshot": "usg-funding-deadlines.txt"
+      },
+      "conflicts_with": null,
+      "notes": "The transcribed table is keyed by event week and gives a 6-week and a 9-week deadline (always a Wednesday). It does not follow a simple count of weeks, so deadlines should be looked up in it, not computed. Weeks with no deadline (winter recess, study days, finals, spring recess) have no USG funding."
+    },
+    {
+      "id": "usg-deadline-vendor",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG application deadline for approved-vendor purchases",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Applications must be submitted at least six academic weeks six academic weeks before the initial payment due date, for approved USC Vendors.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Apply to USG at least 6 academic weeks before the first payment to the vendor is due. A late application is denied automatically.",
+      "fix_template": "Apply by {due_date}, or move the payment due date (and the event) later.",
+      "applies_to": "Any USG application that pays an approved USC vendor",
+      "check": "application_date <= initial_payment_due_date - 6 academic weeks",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "initial_payment_due_date",
+      "offset": 6,
+      "unit": "academic_weeks",
+      "direction": "before",
+      "conflicts_with": [
+        "usg-page-deadline-event-date"
+      ],
+      "depends_on": [
+        "usg-academic-week-definition"
+      ],
+      "notes": "The sentence in the guidelines repeats the words 'six academic weeks'; it is quoted exactly as written."
+    },
+    {
+      "id": "usg-page-deadline-event-date",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG application deadline as stated on the USG web page",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding Department web page",
+      "source_section": "Frequently Asked Questions: When should I submit my application?",
+      "source_url": "https://usg.usc.edu/branches/funding/",
+      "source_text": "Applications must be submitted on Wednesdays by 11:59 PM six academic weeks before the event date when using an approved vendor, and or nine academic weeks before the initial payment due date (whichever comes first) for approved USC Vendors.",
+      "effective_date": "2026-10-30",
+      "verified": "read",
+      "severity": "red",
+      "message": "The USG web page counts the 6 academic weeks back from the event date; the guidelines count them back from the first payment due date. Greenlight uses whichever deadline comes first and shows both sources.",
+      "fix_template": "Apply by {due_date}, the earlier of the two deadlines.",
+      "applies_to": "Any USG application that pays an approved USC vendor",
+      "check": "application_date <= event_date - 6 academic weeks",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "event_date",
+      "offset": 6,
+      "unit": "academic_weeks",
+      "direction": "before",
+      "conflicts_with": [
+        "usg-deadline-vendor"
+      ],
+      "depends_on": [
+        "usg-academic-week-definition"
+      ]
+    },
+    {
+      "id": "usg-deadline-travel",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG application deadline for travel",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Travel expenses must be made at least 9 academic weeks prior to the date of initial payment due date. Travel expenses that require this 9 academic week deadline include transportation (airfare or ground) and hotels for an overnight stay.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Travel (airfare, ground transport, overnight hotels) must be applied for at least 9 academic weeks before the first payment is due.",
+      "fix_template": "Apply by {due_date}, or plan travel for a later date.",
+      "applies_to": "A USG application with airfare, ground transport or an overnight hotel",
+      "check": "application_date <= initial_payment_due_date - 9 academic weeks",
+      "triggers": [
+        "travel",
+        "lodging",
+        "airfare",
+        "ground_transport"
+      ],
+      "anchor": "initial_payment_due_date",
+      "offset": 9,
+      "unit": "academic_weeks",
+      "direction": "before",
+      "conflicts_with": null,
+      "depends_on": [
+        "usg-academic-week-definition"
+      ]
+    },
+    {
+      "id": "usg-missed-deadline-denial",
+      "domain": "funding",
+      "kind": "info",
+      "title": "A missed USG deadline means automatic denial",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Applications received within this six to nine-academic-week deadline will be reviewed by the respective Funding Director. If this deadline is not met the application will be automatically denied.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "If the USG deadline is missed, the application is denied automatically. There is no written appeal process.",
+      "fix_template": null,
+      "applies_to": "Every USG application",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-application-window",
+      "domain": "funding",
+      "kind": "info",
+      "title": "USG applications open on Wednesdays, first come first served",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Funding applications will be open once a week on Wednesdays and close at 11:59 PM. They will be reviewed on a first come first serve basis until all funds are exhausted. Apply as early as possible to avoid delays caused by school breaks and other technical issues.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "USG applications open once a week, on Wednesdays, and close at 11:59 PM. Money is given first come, first served until it runs out, so apply early.",
+      "fix_template": null,
+      "applies_to": "Every USG application",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "weekday": "Wednesday",
+        "closes_at": "23:59"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-no-funding-breaks",
+      "domain": "funding",
+      "kind": "blocked_period",
+      "title": "No USG funding for events in holidays, breaks, study days or finals",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Please be advised that USG Funding does not process applications or provide funding for events during University holidays, breaks, study days, or finals.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund events held during university holidays, breaks, study days or final exams.",
+      "fix_template": "Move the event out of {blocked_period_name} ({blocked_start} to {blocked_end}).",
+      "applies_to": "A USG-funded event whose date falls in a university holiday, break, study days or finals",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "blocked": [
+          "university_holidays",
+          "breaks",
+          "study_days",
+          "final_exams"
+        ]
+      },
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-academic-calendar-2026-27"
+      ]
+    },
+    {
+      "id": "usg-post-event-evaluation",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "Post Event Evaluation form within 3 business days",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "All applicants must submit the Post Event Evaluation form found on the USG EngageSC page within three business days of the final day of the event.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Submit USG's Post Event Evaluation form within 3 business days after the last day of the event.",
+      "fix_template": "Submit the Post Event Evaluation by {due_date}.",
+      "applies_to": "Every USG-funded event",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "event_end_date",
+      "offset": 3,
+      "unit": "business_days",
+      "direction": "after",
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-academic-calendar-2026-27"
+      ]
+    },
+    {
+      "id": "usg-post-event-photos",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Post Event Evaluation needs event photos",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "This Post Event Evaluation form must include pictures of the event with members in attendance.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "The Post Event Evaluation must include photos of the event showing members attending.",
+      "fix_template": "Take photos during the event that show members attending.",
+      "applies_to": "Every USG-funded event",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-final-invoices",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "Final invoices within 3 business days",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Final invoices must be submitted no later than three business days after the final day of the event.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Submit final invoices to USG no later than 3 business days after the last day of the event. Late invoices can lead to disciplinary action and loss of future funding.",
+      "fix_template": "Submit final invoices by {due_date}.",
+      "applies_to": "Every USG-funded event",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "event_end_date",
+      "offset": 3,
+      "unit": "business_days",
+      "direction": "after",
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-academic-calendar-2026-27"
+      ]
+    },
+    {
+      "id": "usg-funding-modules",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Complete the USG Funding Department modules",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Before applying for funding, make sure to complete the USG Funding Department modules during RSO Recognition.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "Complete the USG Funding Department modules (done during recognition) before applying.",
+      "fix_template": null,
+      "applies_to": "Every USG application",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-quote-required",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "A quote for every expense",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The full budget proposal for the event, including quotes for each individual expense",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Every expense needs its own quote in the budget proposal.",
+      "fix_template": "Get a written quote from {vendor} for {item}.",
+      "applies_to": "Every line of a USG budget",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-cart-screenshot",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Cart screenshot for online purchases",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "For online purchases, include a screenshot of the cart showing prices, quantities, and total price including all fees.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "For an online purchase, include a screenshot of the cart showing prices, quantities and the total with all fees.",
+      "fix_template": "Add a cart screenshot for {item} that shows every fee.",
+      "applies_to": "A budget line bought online",
+      "triggers": [
+        "online_purchase"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-amazon-wishlist",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Amazon purchases need a Wish List link",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "For Amazon purchases, create an Amazon Wish List and provide the link in the budget proposal.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "For an Amazon purchase, make an Amazon Wish List and put its link in the budget proposal.",
+      "fix_template": "Add the Amazon Wish List link for {item}.",
+      "applies_to": "A budget line bought on Amazon",
+      "triggers": [
+        "amazon"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-traveler-information",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Traveler details in the application",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Including name, DOB, phone number, USC email, USC ID #, and class level of all travelers",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "A travel application must list each traveler's name, date of birth, phone, USC email, USC ID number and class level. Greenlight only checks that these fields are present and does not store them.",
+      "fix_template": "Add the missing traveler details to the application in EngageSC: {missing_fields}.",
+      "applies_to": "A USG application with travel",
+      "triggers": [
+        "travel"
+      ],
+      "params": {
+        "required_fields": [
+          "name",
+          "date_of_birth",
+          "phone",
+          "usc_email",
+          "usc_id",
+          "class_level"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-hotel-point-of-contact",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Hotel point of contact",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Point of contact for hotel reservations including an address that matches a photo ID",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "A hotel request needs a point of contact for the reservation, with an address that matches a photo ID.",
+      "fix_template": "Name the hotel point of contact in the application.",
+      "applies_to": "A USG application with a hotel stay",
+      "triggers": [
+        "lodging"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-travel-statement-of-purpose",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Statement of purpose for travel",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Applications requesting funding for travel expenses must include a clear statement of purpose that outlines the reasoning for the travel, including how the trip aligns with the goals/mission of the RSO or individual.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "A travel application needs a clear statement of purpose saying why the trip is needed and how it fits the club's mission.",
+      "fix_template": "Write a statement of purpose for the trip.",
+      "applies_to": "A USG application with travel",
+      "triggers": [
+        "travel"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-conference-logins",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Registration log-in details",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Log in information for event registrations if applicable",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "If the request pays for a registration with a log-in (for example a conference portal), include the log-in details.",
+      "fix_template": "Add the registration log-in details.",
+      "applies_to": "A USG application paying for a registration with a log-in",
+      "triggers": [
+        "conference_registration"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-esr-on-campus",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Event Status Report for on-campus events",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "ESRs for on campus events",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "An on-campus event needs its Event Status Report (ESR) from Trojan Event Services attached.",
+      "fix_template": "Attach the Event Status Report (ESR).",
+      "applies_to": "A USG application for an on-campus event",
+      "triggers": [
+        "venue_tes_meeting_room",
+        "venue_tes_large",
+        "venue_outdoor"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-hospitality-food-form",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Hospitality food and beverage form",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "If serving food at event, please request and attach the food and beverage form from Hospitality",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "If food is served, request the food and beverage form from USC Hospitality and attach it.",
+      "fix_template": "Request the food and beverage form from USC Hospitality and attach it.",
+      "applies_to": "A USG application for an event with food",
+      "triggers": [
+        "food"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-uepa-event-id",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "University Event Permit Application number",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "UEPA Event ID #, if applicable",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "If the event has a University Event Permit Application (UEPA), include its event ID number.",
+      "fix_template": "Add the UEPA event ID.",
+      "applies_to": "A USG application for an event that has a UEPA",
+      "triggers": [
+        "venue_tes_meeting_room",
+        "venue_tes_large",
+        "venue_outdoor",
+        "venue_classroom"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-incomplete-two-business-days",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "Fix an incomplete application within 2 business days",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Incomplete applications will be returned to the applicant who must provide the necessary information within 2 business days .",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "If USG returns the application as incomplete, the missing information must be provided within 2 business days or it is denied.",
+      "fix_template": "Send the missing information by {due_date}.",
+      "applies_to": "A USG application returned as incomplete",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "notification_date",
+      "offset": 2,
+      "unit": "business_days",
+      "direction": "after",
+      "conflicts_with": [
+        "usg-incomplete-48-hours"
+      ],
+      "depends_on": [
+        "usc-academic-calendar-2026-27"
+      ]
+    },
+    {
+      "id": "usg-incomplete-48-hours",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "Fix an incomplete application within 48 hours",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 2: Funding Application Overview",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "2 business days is equivalent to 48 hours from the notification of an incomplete application",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "The same guidelines also say 2 business days means 48 hours from the notice. Across a weekend these differ; Greenlight uses the earlier time, 48 hours.",
+      "fix_template": "Send the missing information within 48 hours of the notice, by {due_date}.",
+      "applies_to": "A USG application returned as incomplete",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "notification_date",
+      "offset": 48,
+      "unit": "hours",
+      "direction": "after",
+      "conflicts_with": [
+        "usg-incomplete-two-business-days"
+      ]
+    },
+    {
+      "id": "usg-yearly-cap",
+      "domain": "funding",
+      "kind": "cap",
+      "title": "$8,000 per club per year",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 3: Maximum Funding per Academic Year",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Individual organizations may receive a maximum of $8,000 from the USG Funding Department per year.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "A club can receive at most $8,000 from USG in one year.",
+      "fix_template": "This request would bring the year's USG total to ${year_total}. Cut ${over} or fund it another way.",
+      "applies_to": "All USG funding to one club in one academic year",
+      "check": "sum(usg_funding_this_year) <= 8000",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "max_usd_per_year": 8000,
+        "per": "club"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-venue-personnel-cap",
+      "domain": "funding",
+      "kind": "cap",
+      "title": "Up to $4,000 for on-campus venue and personnel",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 3: Maximum Funding per Academic Year",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The USG Funding Department will provide funding for up to $4,000 of the total cost associated with on-campus venue rentals and personnel.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG pays at most $4,000 toward on-campus venue rental and personnel for an event.",
+      "fix_template": "Venue and personnel come to ${venue_personnel_total}. USG covers up to $4,000; cut ${over} or cover it another way.",
+      "applies_to": "On-campus venue rental and personnel lines of one event",
+      "check": "sum(venue_rental + personnel) <= 4000",
+      "triggers": [
+        "venue_rental",
+        "personnel"
+      ],
+      "params": {
+        "max_usd": 4000,
+        "categories": [
+          "venue_rental",
+          "personnel"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-over-4000-case-by-case",
+      "domain": "funding",
+      "kind": "cap",
+      "title": "Events over $4,000 are reviewed case by case",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 3: Maximum Funding per Academic Year",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Events with expenses over $4,000 will be reviewed on a case-by-case basis to ensure effective use of funding.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "An event with expenses over $4,000 is reviewed case by case by USG. Greenlight cannot tell how USG will decide.",
+      "fix_template": "Contact USG (usgfunds@usc.edu) before applying.",
+      "applies_to": "A USG-funded event whose expenses total more than $4,000",
+      "check": "event_expenses_total > 4000",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "threshold_usd": 4000
+      },
+      "conflicts_with": null,
+      "notes": "The sentence sits under the venue and personnel cap; it is read here as the event's total expenses."
+    },
+    {
+      "id": "usg-multi-day-case-by-case",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Multi-day events are reviewed case by case",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 3: Maximum Funding per Academic Year",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Multi-day events will be reviewed on a case-by-case basis.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "Multi-day events are reviewed case by case by USG.",
+      "fix_template": "Contact USG (usgfunds@usc.edu) before applying.",
+      "applies_to": "A USG-funded event that runs over more than one day",
+      "triggers": [
+        "multi_day"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-fund-closure",
+      "domain": "funding",
+      "kind": "info",
+      "title": "A fund may close early in fall",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 3: Maximum Funding per Academic Year",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "If a funding board attains a utilization rate of 50% or higher before the conclusion of the Fall semester, the Chief Financial Officer reserves the authority to withdraw said funding board from the application process and order its immediate closure until the beginning of the Spring semester application review process.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "If a fund has used 50% or more of its money before fall ends, USG may close it until spring. Apply early.",
+      "fix_template": null,
+      "applies_to": "Every USG application",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "utilization_threshold": 0.5
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-events-per-semester-cap",
+      "domain": "funding",
+      "kind": "cap",
+      "title": "Up to 4 funded events per semester",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding Department web page",
+      "source_section": "Frequently Asked Questions: How much funding is available per organization?",
+      "source_url": "https://usg.usc.edu/branches/funding/",
+      "source_text": "Each RSO can have up to 4 events funded per semester as long as it remains under $8,000 from the USG Funding Department per year.",
+      "effective_date": "2026-10-30",
+      "verified": "unverified",
+      "verification_note": "Stated in the USG web page FAQ but not in the Funding Department Guidelines (PROJECT_CONTEXT section 8, open question: 'Is the cap four funded events per semester?'). Confirm with a USG funding officer.",
+      "severity": "red",
+      "message": "The USG web page says a club can have up to 4 events funded per semester. This is not in the Funding Department Guidelines, so Greenlight shows it as needing confirmation.",
+      "fix_template": "Plan at most 4 USG-funded events this semester, or confirm the limit with USG.",
+      "applies_to": "USG-funded events of one club in one semester",
+      "check": "count(usg_funded_events_in_semester) <= 4",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "max_funded_events_per_semester": 4
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-fund-professional-academic",
+      "domain": "funding",
+      "kind": "fund",
+      "title": "Professional/Academic Research Fund",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The Professional/Academic Research Fund shall provide funding for events programmed by recognized student organizations that help educate and advance students’ future professional careers and academic research projects conducted by either a USC undergraduate student or a group of USC students, the majority of which are undergraduate students.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "Professional/Academic Research Fund: events that build students' careers or research, such as conferences, workshops, retreats and seminars.",
+      "fix_template": null,
+      "applies_to": "Fund matching",
+      "params": {
+        "fund": "Professional/Academic Research Fund",
+        "examples": [
+          "conferences",
+          "workshops",
+          "seminars",
+          "retreats",
+          "development activities",
+          "research events"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-professional-free-open",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Professional fund events must be free and open",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Events can be on or off campus if the potential career development can be conveyed to the Professional Fund and must be free and open to all students.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Events funded by the Professional/Academic Research Fund must be free and open to all students.",
+      "fix_template": "Make the event free and open to all students, or apply to a different fund.",
+      "applies_to": "An event sent to the Professional/Academic Research Fund",
+      "params": {
+        "fund_rules": [
+          "usg-fund-professional-academic"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-fund-philanthropy",
+      "domain": "funding",
+      "kind": "fund",
+      "title": "Philanthropy Fund",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The Philanthropy Fund shall provide funding for community service projects sponsored by recognized student organizations.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "Philanthropy Fund: hands-on community service projects.",
+      "fix_template": null,
+      "applies_to": "Fund matching",
+      "params": {
+        "fund": "Philanthropy Fund",
+        "examples": [
+          "hands-on community service"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-philanthropy-no-service-payments",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "No payments for services on behalf of a non-profit",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "No payments can be made for any type of service on behalf of a non-profit for a project.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "The Philanthropy Fund cannot pay for any service on behalf of a non-profit.",
+      "fix_template": "Remove {item}, or have the non-profit pay for it.",
+      "applies_to": "A Philanthropy Fund request that pays for a service on behalf of a non-profit",
+      "params": {
+        "fund_rules": [
+          "usg-fund-philanthropy"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-fund-social-recreation-startup",
+      "domain": "funding",
+      "kind": "fund",
+      "title": "Social and Recreation/Startup Fund",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The Social and Recreation/Startup Fund shall provide funding for events programmed by recognized student organizations to celebrate, highlight, or foster a sense of community for the student group and student organizations first registered with the Office of Campus Activities within the last two academic semesters (fall or spring) for the use of promotion and membership recruitment",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "Social and Recreation/Startup Fund: community-building events, and promotion and recruitment for clubs first registered within the last two academic semesters.",
+      "fix_template": null,
+      "applies_to": "Fund matching",
+      "params": {
+        "fund": "Social and Recreation/Startup Fund",
+        "examples": [
+          "social events",
+          "conventions",
+          "retreats",
+          "team building",
+          "promotional materials for new clubs"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-tshirts-licensed-vendor",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "USG-funded T-shirts need a USC Trademarks vendor",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "T-Shirts funded by USG may only be produced by a vendor who is authorized to work with USC Trademarks.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "T-shirts paid for by USG must be made by a vendor authorized by USC Trademarks and Licensing.",
+      "fix_template": "Choose a vendor from the USC Trademarks authorized list.",
+      "applies_to": "A T-shirt line in a USG budget",
+      "triggers": [
+        "t_shirts"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-fund-performing-visual-arts",
+      "domain": "funding",
+      "kind": "fund",
+      "title": "Performing and Visual Arts Fund",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The Performing and Visual Arts Fund shall provide funding for events geared towards the arts programmed by recognized student organizations to celebrate, highlight, or foster a sense of community.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "Performing and Visual Arts Fund: arts events, including production, staging, lighting, venue, staffing and printing.",
+      "fix_template": null,
+      "applies_to": "Fund matching",
+      "params": {
+        "fund": "Performing and Visual Arts Fund",
+        "examples": [
+          "performances",
+          "productions",
+          "exhibitions",
+          "staging",
+          "lighting"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-pva-po-vendor",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Arts production costs need a PO vendor",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 4: Specific Funding Board Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Expenses related to production, staging, lighting, decoration (rentals only), venue, staffing, and security can only be funded if they are obtained from a PO Vendor.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "For the Performing and Visual Arts Fund, production, staging, lighting, decoration rentals, venue, staffing and security can be funded only from a vendor USC can pay by purchase order (PO vendor).",
+      "fix_template": "Use a PO vendor for {item}.",
+      "applies_to": "A Performing and Visual Arts Fund request with production, staging, lighting, decoration, venue, staffing or security lines",
+      "params": {
+        "fund_rules": [
+          "usg-fund-performing-visual-arts"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-food-case-by-case",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Food requests are reviewed case by case",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Food Requests will be reviewed on a case-by-case basis and will be assigned to one of the four funds based on the purpose of the event.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "USG reviews every food request case by case and assigns it to a fund based on the event's purpose.",
+      "fix_template": null,
+      "applies_to": "A USG budget with food",
+      "triggers": [
+        "food"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-food-justification",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Explain why food is needed",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Additional information detailing why food is necessary and how it aligns with the event's purpose is required for review and approval.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Explain why food is necessary and how it fits the event's purpose.",
+      "fix_template": "Add a short explanation of why the event needs food.",
+      "applies_to": "A USG budget with food",
+      "triggers": [
+        "food"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-food-health-permit-insurance",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Food vendor health permit and insurance certificate",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "RSOs must provide a Health Permit and Certificate of Insurance from the Food Vendor.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Provide the food vendor's health permit and certificate of insurance.",
+      "fix_template": "Ask {vendor} for its health permit and certificate of insurance.",
+      "applies_to": "A USG budget with food",
+      "triggers": [
+        "food"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-food-cap",
+      "domain": "funding",
+      "kind": "cap",
+      "title": "Food: $35 per person",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Food requests should not exceed a $35 per person maximum based on expected attendance, and raw food items requiring refrigeration or preparation are not eligible.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Food is capped at $35 per person, based on expected attendance.",
+      "fix_template": "Food is ${per_person} per person; the cap is $35. Cut ${over}, or plan for at least {min_headcount} people.",
+      "applies_to": "The food lines of a USG budget, divided by expected attendance",
+      "check": "food_total / expected_attendance <= 35",
+      "triggers": [
+        "food"
+      ],
+      "params": {
+        "max_usd_per_person": 35,
+        "basis": "expected_attendance"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-lodging-case-by-case",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Lodging requests are reviewed case by case",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Lodging Requests will be reviewed on a case-by-case basis and will be assigned to one of the four funds based on the purpose of the event.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "USG reviews every lodging request case by case.",
+      "fix_template": null,
+      "applies_to": "A USG budget with hotel rooms",
+      "triggers": [
+        "lodging"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-hotel-price-comparison",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Hotel price comparison",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Proof of price comparison with other hotels is required for hotel expenses.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Hotel expenses need proof that prices were compared with other hotels.",
+      "fix_template": "Add screenshots of prices from at least one other hotel.",
+      "applies_to": "A USG budget with hotel rooms",
+      "triggers": [
+        "lodging"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-hotel-cap",
+      "domain": "funding",
+      "kind": "cap",
+      "title": "Hotel rooms: $400 per night",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Rooms cannot exceed $400 per night.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "A hotel room cannot cost more than $400 per night.",
+      "fix_template": "The room is ${per_night} per night; the cap is $400. Choose a room at or under $400.",
+      "applies_to": "Each hotel room line, per night",
+      "check": "room_cost_per_night <= 400",
+      "triggers": [
+        "lodging"
+      ],
+      "params": {
+        "max_usd_per_night": 400
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-lodging-justification",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Explain why lodging is needed",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Additional information detailing why lodging is necessary and how it aligns with the event's purpose is required for review and approval.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "Explain why lodging is necessary and how it fits the event's purpose.",
+      "fix_template": "Add a short explanation of why the trip needs a hotel.",
+      "applies_to": "A USG budget with hotel rooms",
+      "triggers": [
+        "lodging"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-approved-vendor",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Vendor must be on USG's vendor list",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 1: Funding Application Timeline",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The Vendor List serves as a guide of previous vendors the University worked with. Applicants must verify vendor status before submitting their application. Please note, vendor status may change at any time and the list is not exhaustive. We will not accept a vendor not on the list.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not accept a vendor that is not on its vendor list. Check the vendor's status before applying; the list can change.",
+      "fix_template": "Confirm {vendor} is on the USG vendor list, or choose a listed vendor.",
+      "applies_to": "Every vendor in a USG budget",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "vendor_list_rules": [
+          "usg-vendor-list"
+        ]
+      },
+      "conflicts_with": null,
+      "notes": "PROJECT_CONTEXT section 7: which deadline applies to vendors not on the list is not stated, so a vendor not on the list is red."
+    },
+    {
+      "id": "usg-vendor-list",
+      "domain": "funding",
+      "kind": "info",
+      "title": "USG vendor list (snapshot)",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Vendor List, Food Vendors tab (linked from the Funding Department Guidelines, Section 1)",
+      "source_section": null,
+      "source_url": "https://docs.google.com/spreadsheets/d/1OVOVukQGP5PsG-MO5IvbC-iYMKWNyNNjQjPbCEgjxtw/edit",
+      "source_text": "Note: These vendors need to be checked if a PO is accepted & if we can create a PO on our system as their registration has not been completed.",
+      "effective_date": "2026-11-14",
+      "verified": "unverified",
+      "verification_note": "The approved vendor and caterer lists are an open question (PROJECT_CONTEXT section 8). The guidelines say the list 'is not exhaustive' and statuses 'may change at any time'; approved caterers are confirmed by phone with Purchasing Services.",
+      "severity": "yellow",
+      "message": "Greenlight has a copy of USG's vendor list from November 14, 2026. The list changes and is not complete, so a match or a miss needs a human check with USG or Purchasing Services.",
+      "fix_template": "Confirm the vendor's status with USG (usgfunds@usc.edu) or Purchasing Services (213-740-2281).",
+      "applies_to": "Matching a vendor name against the list",
+      "params": {
+        "snapshots": [
+          "usg-vendor-list.txt",
+          "usg-vendor-list-other.txt"
+        ]
+      },
+      "conflicts_with": null,
+      "notes": "Two tabs: Food Vendors and Other Vendors. Being on the list does not make an expense eligible (the Other Vendors tab includes talent agencies, buses and balloon vendors, which the guidelines list as ineligible)."
+    },
+    {
+      "id": "usg-ineligible-reimbursements",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Reimbursements",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund reimbursements. USG pays vendors directly. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Have USG pay {vendor} directly instead of reimbursing a member.",
+      "applies_to": "A budget line or event that is: Any reimbursements",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "reimbursement"
+      ],
+      "params": {
+        "item_quote": "Any reimbursements"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-charity",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Payments or donations to charity",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund payments or donations to charity. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Payments or donations to charity",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "charity_donation"
+      ],
+      "params": {
+        "item_quote": "Payments or donations to charity"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-alcohol",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Alcohol",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund alcoholic drinks. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Alcoholic beverages",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "alcohol"
+      ],
+      "params": {
+        "item_quote": "Alcoholic beverages"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-gifts",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Gifts and gift cards",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund gifts or gift cards. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Gifts and gift cards",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "gift"
+      ],
+      "params": {
+        "item_quote": "Gifts and gift cards"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-durable-goods",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Durable goods",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund items that are not for one-time use, such as electronics or uniforms. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item}, or rent it instead of buying it.",
+      "applies_to": "A budget line or event that is: Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.)",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "durable_goods"
+      ],
+      "params": {
+        "item_quote": "Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.)"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-raw-food",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Raw food",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund raw food that needs refrigeration or preparation. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Order prepared food from an approved caterer instead of {item}.",
+      "applies_to": "A budget line or event that is: Raw food items requiring refrigeration and/or preparation",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "raw_food"
+      ],
+      "params": {
+        "item_quote": "Raw food items requiring refrigeration and/or preparation"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-restaurant",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Restaurant meals",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund restaurant meals (the guidelines say 'Restaurant diners'). The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Order catering from an approved vendor instead of a restaurant meal.",
+      "applies_to": "A budget line or event that is: Restaurant diners",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "restaurant"
+      ],
+      "params": {
+        "item_quote": "Restaurant diners"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-rideshare",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Rideshare, buses, vans, car rentals",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund rideshare, buses, vans, Amtrak cabins or car rentals. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.)",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "rideshare"
+      ],
+      "params": {
+        "item_quote": "Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.)"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-deposits-fees",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Refundable deposits, cleaning and damage fees",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund refundable deposits or cleaning and damage fees. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Pay {item} from club funds.",
+      "applies_to": "A budget line or event that is: Any refundable deposits and fees pertaining to cleaning/damage",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "refundable_deposit",
+        "cleaning_damage_fee"
+      ],
+      "params": {
+        "item_quote": "Any refundable deposits and fees pertaining to cleaning/damage"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-peer-to-peer",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Peer-to-peer payments",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund payments through Airbnb, VRBO, PayPal, Zelle, CashApp or similar. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Use a vendor that can be paid directly by USC.",
+      "applies_to": "A budget line or event that is: Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.)",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "peer_to_peer"
+      ],
+      "params": {
+        "item_quote": "Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.)"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-performers",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Payments to talent or performers",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund payments to talent or performers, such as a DJ's or band's fee. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Pay {item} from club funds or another allowed source.",
+      "applies_to": "A budget line or event that is: Payments to talent or performers",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "performer_fee"
+      ],
+      "params": {
+        "item_quote": "Payments to talent or performers"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-subscriptions",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Monthly subscriptions",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund monthly subscriptions or payments. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Monthly Subscriptions/Payments",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "subscription"
+      ],
+      "params": {
+        "item_quote": "Monthly Subscriptions/Payments"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-ticketed-events",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Events with ticket sales",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund events that sell tickets. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Make the event free, or do not ask USG to fund it.",
+      "applies_to": "A budget line or event that is: Events that include ticket sales",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "ticket_sales"
+      ],
+      "params": {
+        "item_quote": "Events that include ticket sales"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-closed-on-campus-events",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "On-campus events not open to all students",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund on-campus events that are not open to all students. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Open the event to all students.",
+      "applies_to": "A budget line or event that is: On-campus events that are not open to all students",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "not_open_to_all_students"
+      ],
+      "params": {
+        "item_quote": "On-campus events that are not open to all students"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-private-residences",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Events in private residences",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund events held in private residences. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Move the event to a campus or public venue.",
+      "applies_to": "A budget line or event that is: Events occurring in private residences",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "private_residence"
+      ],
+      "params": {
+        "item_quote": "Events occurring in private residences"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-international-travel",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "International travel",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund international travel. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove the international travel from the USG request.",
+      "applies_to": "A budget line or event that is: International travel",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "international_travel"
+      ],
+      "params": {
+        "item_quote": "International travel"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-jewelry",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Jewelry",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund jewelry. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Jewelry",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "jewelry"
+      ],
+      "params": {
+        "item_quote": "Jewelry"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-ineligible-balloons",
+      "domain": "funding",
+      "kind": "ineligible",
+      "title": "Balloons",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG does not fund balloons. The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request.",
+      "applies_to": "A budget line or event that is: Balloons",
+      "check": "A line in this category is not fundable by USG.",
+      "triggers": [
+        "balloons"
+      ],
+      "params": {
+        "item_quote": "Balloons"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-denial-reasons",
+      "domain": "funding",
+      "kind": "info",
+      "title": "Reasons USG may deny an application",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 6: University Policy and Application Denials",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The Funding department may deny applications for a multitude of reasons, this may include, but is not limited to: * Past instances of misuse of funds within the academic year * Inappropriate contact with funding department members and/or Professional Staff within the academic year * Conflicting events requested on the same day * RSO receiving funding from another University income source * Low remaining funds due to high utilization",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "info",
+      "message": "USG may deny an application for reasons including misuse of funds, inappropriate contact with funding staff, conflicting events on the same day, funding from another University source, or low remaining funds. Greenlight never predicts a decision.",
+      "fix_template": null,
+      "applies_to": "Every USG application",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-denial-same-day-events",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Two funding requests on the same day",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 6: University Policy and Application Denials",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "Conflicting events requested on the same day",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "USG lists conflicting events requested on the same day as a possible reason to deny. Two of the club's funded events fall on the same day.",
+      "fix_template": "Move one of the events on {date} to another day, or fund only one with USG.",
+      "applies_to": "Two USG-funded events of one club on the same date",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-denial-other-university-funding",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Funding from another University source",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 6: University Policy and Application Denials",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "RSO receiving funding from another University income source",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "USG lists funding from another University source as a possible reason to deny. Ask USG before combining USG money with other USC money for the same event.",
+      "fix_template": "Ask USG (usgfunds@usc.edu) before using {other_source} for this event.",
+      "applies_to": "An event funded by USG and by another USC source",
+      "triggers": [
+        "usg_funding"
+      ],
+      "conflicts_with": null
+    }
+  ]
+}

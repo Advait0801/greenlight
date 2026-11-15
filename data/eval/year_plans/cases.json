@@ -1,0 +1,1461 @@
+{
+  "set": "year_plans",
+  "version": 1,
+  "count": 2,
+  "method": "Two plans written by hand. The calendar lists each event's obligations with the same scope and method as the event test set. Budget totals are plain sums of whole-cent amounts. Problems were identified by reading the USG guidelines and web page, the Student Handbook and the Trojan Event Services pages against each plan.",
+  "cases": [
+    {
+      "id": "yp-01",
+      "purpose": "Undergraduate cultural club planning Spring 2027: the demo story.",
+      "as_of": "2026-11-15",
+      "club": {
+        "name": "Lantern Cultural Society",
+        "mission": "Share East and Southeast Asian lantern traditions with the USC community.",
+        "level": "undergraduate",
+        "first_registered": "2021-09-07"
+      },
+      "plan": {
+        "period": "spring-2027",
+        "money_on_hand_cents": 120000,
+        "expected_income_cents": 30000,
+        "usg_received_this_year_cents": 0,
+        "unavailable_dates": [
+          "2027-03-12"
+        ]
+      },
+      "events": [
+        {
+          "key": "welcome-mixer",
+          "name": "Welcome mixer",
+          "event_date": "2027-02-05",
+          "end_date": null,
+          "venue": "venue_tes_meeting_room",
+          "headcount": 40,
+          "attributes": [
+            "food",
+            "social_event"
+          ],
+          "estimated_cost_cents": 40000,
+          "usg_request_cents": 40000
+        },
+        {
+          "key": "workshop",
+          "name": "Lantern-making workshop",
+          "event_date": "2027-02-24",
+          "end_date": null,
+          "venue": "venue_classroom",
+          "headcount": 30,
+          "attributes": [
+            "food"
+          ],
+          "estimated_cost_cents": 20000,
+          "usg_request_cents": 20000
+        },
+        {
+          "key": "retreat",
+          "name": "Spring retreat in Big Bear",
+          "event_date": "2027-03-26",
+          "end_date": "2027-03-28",
+          "venue": "venue_off_campus",
+          "headcount": 20,
+          "attributes": [
+            "travel",
+            "lodging",
+            "multi_day"
+          ],
+          "estimated_cost_cents": 300000,
+          "usg_request_cents": 240000
+        },
+        {
+          "key": "culture-night",
+          "name": "Culture night",
+          "event_date": "2027-04-09",
+          "end_date": null,
+          "venue": "venue_outdoor",
+          "headcount": 150,
+          "attributes": [
+            "food",
+            "amplified_sound",
+            "performers",
+            "social_event"
+          ],
+          "estimated_cost_cents": 707000,
+          "usg_request_cents": 525000
+        },
+        {
+          "key": "spring-banquet",
+          "name": "Spring banquet",
+          "event_date": "2027-04-24",
+          "end_date": null,
+          "venue": "venue_tes_large",
+          "headcount": 120,
+          "attributes": [
+            "ticket_sales",
+            "food",
+            "social_event"
+          ],
+          "estimated_cost_cents": 360000,
+          "usg_request_cents": 300000
+        }
+      ],
+      "expected": {
+        "calendar": [
+          {
+            "event": "welcome-mixer",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2026-12-25"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-01-22"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-01-22"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "tes-room-configuration",
+            "status": "check_with_office",
+            "due": "2027-01-22"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "tes-cancellation-meeting-rooms",
+            "status": "check_with_office",
+            "due": "2027-01-22"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "social-events-not-study-days-finals",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "social-event-hours",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-02-10"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-02-10"
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "classroom-requests-week-4",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-03-01"
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-03-01"
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-03-31"
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-03-31"
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-deadline-travel",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2027-02-26"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-03-26"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-03-26"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "tes-final-payment",
+            "status": "to_do",
+            "due": "2027-03-19"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "tes-cancellation-large-terms",
+            "status": "check_with_office",
+            "due": "2027-03-19"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "tes-cancellation-large-faq",
+            "status": "check_with_office",
+            "due": "2027-03-12"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "fpm-outdoor-electrical",
+            "status": "office_decides",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "amplified-sound-register",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "amplified-sound-90-dba",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "special-event-insurance",
+            "status": "office_decides",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "social-events-not-study-days-finals",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "social-event-hours",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "amplified-sound-outdoor",
+            "status": "office_decides",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-04-14"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-04-14"
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2027-03-13"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-04-10"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-04-10"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "tes-final-payment",
+            "status": "to_do",
+            "due": "2027-04-03"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "tes-room-configuration",
+            "status": "check_with_office",
+            "due": "2027-04-10"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "tes-cancellation-large-terms",
+            "status": "check_with_office",
+            "due": "2027-04-03"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "tes-cancellation-large-faq",
+            "status": "check_with_office",
+            "due": "2027-03-27"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "fundraising-meeting",
+            "status": "to_do",
+            "due": "2027-04-10"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "fundraising-form-tes",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "no-individual-benefit",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "cash-collection-approval",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "social-events-not-study-days-finals",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "social-event-hours",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-04-28"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-04-28"
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-ineligible-ticketed-events",
+            "status": "blocked",
+            "due": null
+          }
+        ],
+        "budget": {
+          "total_cost_cents": 1427000,
+          "funds_available_cents": 150000,
+          "gap_before_usg_cents": 1277000,
+          "usg_requested_cents": 1125000,
+          "usg_requested_over_yearly_cap_cents": 325000
+        },
+        "problems": [
+          {
+            "type": "funded_events_over_semester_cap",
+            "rule_id": "usg-events-per-semester-cap",
+            "severity": "yellow",
+            "events": [
+              "welcome-mixer",
+              "workshop",
+              "retreat",
+              "culture-night",
+              "spring-banquet"
+            ],
+            "note": "Five events ask USG for money; the web page says 4 per semester (not in the guidelines)."
+          },
+          {
+            "type": "not_fundable_as_described",
+            "rule_id": "usg-ineligible-ticketed-events",
+            "severity": "red",
+            "events": [
+              "spring-banquet"
+            ],
+            "note": "The banquet sells tickets."
+          },
+          {
+            "type": "over_yearly_cap",
+            "rule_id": "usg-yearly-cap",
+            "severity": "red",
+            "events": [
+              "welcome-mixer",
+              "workshop",
+              "retreat",
+              "culture-night",
+              "spring-banquet"
+            ],
+            "note": "USG requests total $11,250.00, over the $8,000.00 yearly cap by $3,250.00."
+          },
+          {
+            "type": "deadline_in_previous_semester_or_break",
+            "rule_id": "usg-page-deadline-event-date",
+            "severity": "yellow",
+            "events": [
+              "welcome-mixer"
+            ],
+            "note": "Counted back six calendar weeks from February 5, 2027 the deadline is December 25, 2026 (winter recess); the transcribed USG deadline table (unverified) gives Wednesday, November 18, 2026. Either way it falls before the spring semester."
+          }
+        ]
+      }
+    },
+    {
+      "id": "yp-02",
+      "purpose": "Undergraduate professional club: same-day requests, alcohol on a Wednesday, cash sponsor, finals week, yearly cap.",
+      "as_of": "2026-11-15",
+      "club": {
+        "name": "Quant Careers Circle",
+        "mission": "Help undergraduates prepare for careers in data science and quantitative finance.",
+        "level": "undergraduate",
+        "first_registered": "2018-09-04"
+      },
+      "plan": {
+        "period": "spring-2027",
+        "money_on_hand_cents": 250000,
+        "expected_income_cents": 0,
+        "usg_received_this_year_cents": 500000,
+        "unavailable_dates": []
+      },
+      "events": [
+        {
+          "key": "speaker-series-1",
+          "name": "Speaker series: data careers",
+          "event_date": "2027-02-03",
+          "end_date": null,
+          "venue": "venue_tes_meeting_room",
+          "headcount": 50,
+          "attributes": [
+            "food"
+          ],
+          "estimated_cost_cents": 50000,
+          "usg_request_cents": 50000
+        },
+        {
+          "key": "resume-workshop",
+          "name": "Resume workshop",
+          "event_date": "2027-02-03",
+          "end_date": null,
+          "venue": "venue_classroom",
+          "headcount": 40,
+          "attributes": [
+            "food"
+          ],
+          "estimated_cost_cents": 30000,
+          "usg_request_cents": 30000
+        },
+        {
+          "key": "case-competition",
+          "name": "Case competition",
+          "event_date": "2027-03-06",
+          "end_date": null,
+          "venue": "venue_tes_large",
+          "headcount": 250,
+          "attributes": [
+            "av_equipment",
+            "food",
+            "amplified_sound"
+          ],
+          "estimated_cost_cents": 480000,
+          "usg_request_cents": 300000
+        },
+        {
+          "key": "networking-night",
+          "name": "Networking night with a sponsor",
+          "event_date": "2027-04-07",
+          "end_date": null,
+          "venue": "venue_tes_large",
+          "headcount": 100,
+          "attributes": [
+            "alcohol",
+            "food",
+            "sponsorship",
+            "social_event"
+          ],
+          "estimated_cost_cents": 200000,
+          "usg_request_cents": 100000
+        },
+        {
+          "key": "conference-trip",
+          "name": "Conference trip to Chicago",
+          "event_date": "2027-04-15",
+          "end_date": "2027-04-18",
+          "venue": "venue_off_campus",
+          "headcount": 6,
+          "attributes": [
+            "travel",
+            "lodging",
+            "multi_day"
+          ],
+          "estimated_cost_cents": 600000,
+          "usg_request_cents": 0
+        },
+        {
+          "key": "speaker-series-2",
+          "name": "Speaker series: finance careers",
+          "event_date": "2027-05-05",
+          "end_date": null,
+          "venue": "venue_tes_meeting_room",
+          "headcount": 50,
+          "attributes": [
+            "food"
+          ],
+          "estimated_cost_cents": 50000,
+          "usg_request_cents": 50000
+        }
+      ],
+      "expected": {
+        "calendar": [
+          {
+            "event": "speaker-series-1",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2026-12-23"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-01-20"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-01-20"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "tes-room-configuration",
+            "status": "check_with_office",
+            "due": "2027-01-20"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "tes-cancellation-meeting-rooms",
+            "status": "check_with_office",
+            "due": "2027-01-20"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-02-08"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-02-08"
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "classroom-requests-week-4",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-02-08"
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-02-08"
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2027-01-23"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-02-20"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-02-20"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-final-payment",
+            "status": "to_do",
+            "due": "2027-02-13"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-room-configuration",
+            "status": "check_with_office",
+            "due": "2027-02-20"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-cancellation-large-terms",
+            "status": "check_with_office",
+            "due": "2027-02-13"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-cancellation-large-faq",
+            "status": "check_with_office",
+            "due": "2027-02-06"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "tes-av-equipment",
+            "status": "to_do",
+            "due": "2027-02-13"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "amplified-sound-register",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "amplified-sound-90-dba",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-03-10"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-03-10"
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2027-02-24"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-03-24"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-03-24"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "tes-final-payment",
+            "status": "to_do",
+            "due": "2027-03-17"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "tes-room-configuration",
+            "status": "check_with_office",
+            "due": "2027-03-24"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "tes-cancellation-large-terms",
+            "status": "check_with_office",
+            "due": "2027-03-17"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "tes-cancellation-large-faq",
+            "status": "check_with_office",
+            "due": "2027-03-10"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "alcohol-register-campus-activities",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "alcohol-thursday-saturday",
+            "status": "blocked",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "alcohol-requirements",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "alcohol-uepa-two-weeks",
+            "status": "to_do",
+            "due": "2027-03-24"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "sponsorship-cash-banned",
+            "status": "blocked",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "cosponsor-club-primary",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "sponsorship-activation-banned",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "brand-ambassadors-banned",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "social-events-not-study-days-finals",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "social-event-hours",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-04-12"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-04-12"
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "tes-space-request",
+            "status": "check_with_office",
+            "due": "2027-03-24"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "tes-no-events-first-three-weeks",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "uepa-required",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "approvals-two-weeks",
+            "status": "to_do",
+            "due": "2027-04-21"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "dps-security",
+            "status": "office_decides",
+            "due": "2027-04-21"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "advertising-after-confirmation",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "advertising-no-outstanding-approvals",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "tes-room-configuration",
+            "status": "check_with_office",
+            "due": "2027-04-21"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "tes-cancellation-meeting-rooms",
+            "status": "check_with_office",
+            "due": "2027-04-21"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "food-approved-provider",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-05-10"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-05-10"
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-incomplete-48-hours",
+            "status": "check_with_office",
+            "due": null
+          }
+        ],
+        "budget": {
+          "total_cost_cents": 1410000,
+          "funds_available_cents": 250000,
+          "gap_before_usg_cents": 1160000,
+          "usg_requested_cents": 530000,
+          "usg_requested_over_yearly_cap_cents": 230000
+        },
+        "problems": [
+          {
+            "type": "funded_events_over_semester_cap",
+            "rule_id": "usg-events-per-semester-cap",
+            "severity": "yellow",
+            "events": [
+              "speaker-series-1",
+              "resume-workshop",
+              "case-competition",
+              "networking-night",
+              "speaker-series-2"
+            ],
+            "note": "Five events ask USG for money; the web page says 4 per semester (not in the guidelines)."
+          },
+          {
+            "type": "same_day_funding_requests",
+            "rule_id": "usg-denial-same-day-events",
+            "severity": "yellow",
+            "events": [
+              "speaker-series-1",
+              "resume-workshop"
+            ],
+            "note": "Two funded events on February 3, 2027."
+          },
+          {
+            "type": "event_in_blocked_period",
+            "rule_id": "alcohol-thursday-saturday",
+            "severity": "red",
+            "events": [
+              "networking-night"
+            ],
+            "note": "Alcohol on a Wednesday."
+          },
+          {
+            "type": "banned_money_source",
+            "rule_id": "sponsorship-cash-banned",
+            "severity": "red",
+            "events": [
+              "networking-night"
+            ],
+            "note": "Corporate sponsorship may only be in kind."
+          },
+          {
+            "type": "event_in_blocked_period",
+            "rule_id": "usg-no-funding-breaks",
+            "severity": "yellow",
+            "events": [
+              "speaker-series-2"
+            ],
+            "note": "May 5, 2027 is during final exams (calendar not yet confirmed)."
+          },
+          {
+            "type": "over_yearly_cap",
+            "rule_id": "usg-yearly-cap",
+            "severity": "red",
+            "events": [
+              "speaker-series-1",
+              "resume-workshop",
+              "case-competition",
+              "networking-night",
+              "speaker-series-2"
+            ],
+            "note": "Already received $5,000.00; requests of $5,300.00 make $10,300.00, over by $2,300.00."
+          },
+          {
+            "type": "deadline_in_previous_semester_or_break",
+            "rule_id": "usg-page-deadline-event-date",
+            "severity": "yellow",
+            "events": [
+              "speaker-series-1",
+              "resume-workshop"
+            ],
+            "note": "Counted back six calendar weeks the deadline is December 23, 2026 (winter recess); the transcribed USG deadline table (unverified) gives Wednesday, November 18, 2026. Either way it falls before the spring semester."
+          }
+        ]
+      }
+    }
+  ]
+}

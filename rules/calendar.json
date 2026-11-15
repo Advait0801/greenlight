@@ -1,0 +1,136 @@
+{
+  "id": "usc-academic-calendar-2026-27",
+  "title": "USC Academic Calendar 2026-2027",
+  "source": "USC Academic Calendar (Office of Academic Records and Registrar)",
+  "source_url": "https://academics.usc.edu/calendar/",
+  "effective_date": "2026-11-05",
+  "verified": "unverified",
+  "verification_note": "Read from the Registrar's public calendar page on 2026-11-14. PLAN.md Phase 0 requires a person to confirm the Spring 2027 calendar before it is treated as certain, so every date computed from it is shown yellow until then (rule usc-academic-calendar-2026-27).",
+  "timezone": "America/Los_Angeles",
+  "terms": [
+    {
+      "id": "fall-2026",
+      "name": "Fall 2026",
+      "source_text": "Fall Semester 2026 68 instructional days Open Registration Mon-Fri August 17-21 Move-In Wed August 19 Classes Begin Mon August 24 Labor Day Holiday Mon September 7 Fall Recess Thu-Fri October 8-9 Veterans Day Holiday Wed November 11 Thanksgiving Holiday Wed-Sun November 25-29 Classes End Fri December 4 Study Days Sat-Tue December 5-8 Exams Wed-Wed December 9-16 Winter Recess Thu-Sun December 17-January 10",
+      "classes_begin": "2026-08-24",
+      "classes_end": "2026-12-04",
+      "study_days": {
+        "name": "Study Days",
+        "start": "2026-12-05",
+        "end": "2026-12-08"
+      },
+      "final_exams": {
+        "name": "Exams",
+        "start": "2026-12-09",
+        "end": "2026-12-16"
+      },
+      "holidays": [
+        {
+          "name": "Labor Day Holiday",
+          "start": "2026-09-07",
+          "end": "2026-09-07"
+        },
+        {
+          "name": "Veterans Day Holiday",
+          "start": "2026-11-11",
+          "end": "2026-11-11"
+        },
+        {
+          "name": "Thanksgiving Holiday",
+          "start": "2026-11-25",
+          "end": "2026-11-29"
+        }
+      ],
+      "breaks": [
+        {
+          "name": "Fall Recess",
+          "start": "2026-10-08",
+          "end": "2026-10-09"
+        }
+      ]
+    },
+    {
+      "id": "spring-2027",
+      "name": "Spring 2027",
+      "source_text": "Spring Semester 2027 73 instructional days Open Registration Thu-Fri January 7-8 Classes Begin Mon January 11 Martin Luther King Jr. Day Holiday Mon January 18 President’s Day Holiday Mon February 15 Spring Recess Sun-Sun March 14-21 Classes End Fri April 30 Study Days Sat-Tue May 1-4 Exams Wed-Wed May 5-12 Commencement Wed-Sat May 12-15",
+      "classes_begin": "2027-01-11",
+      "classes_end": "2027-04-30",
+      "study_days": {
+        "name": "Study Days",
+        "start": "2027-05-01",
+        "end": "2027-05-04"
+      },
+      "final_exams": {
+        "name": "Exams",
+        "start": "2027-05-05",
+        "end": "2027-05-12"
+      },
+      "commencement": {
+        "name": "Commencement",
+        "start": "2027-05-12",
+        "end": "2027-05-15"
+      },
+      "holidays": [
+        {
+          "name": "Martin Luther King Jr. Day Holiday",
+          "start": "2027-01-18",
+          "end": "2027-01-18"
+        },
+        {
+          "name": "President’s Day Holiday",
+          "start": "2027-02-15",
+          "end": "2027-02-15"
+        }
+      ],
+      "breaks": [
+        {
+          "name": "Spring Recess",
+          "start": "2027-03-14",
+          "end": "2027-03-21"
+        }
+      ]
+    },
+    {
+      "id": "summer-2027",
+      "name": "Summer Session 2027",
+      "source_text": "Summer Session 2027 57 instructional days Registration Mon-Tue May 17-18 Classes Begin Wed May 19 Memorial Day Holiday Mon May 31 Juneteenth Fri June 18 Independence Day Holiday Mon July 4-5 Classes End Tue August 10",
+      "classes_begin": "2027-05-19",
+      "classes_end": "2027-08-10",
+      "holidays": [
+        {
+          "name": "Memorial Day Holiday",
+          "start": "2027-05-31",
+          "end": "2027-05-31"
+        },
+        {
+          "name": "Juneteenth",
+          "start": "2027-06-18",
+          "end": "2027-06-18"
+        },
+        {
+          "name": "Independence Day Holiday",
+          "start": "2027-07-04",
+          "end": "2027-07-05"
+        }
+      ],
+      "breaks": []
+    }
+  ],
+  "recesses": [
+    {
+      "name": "Winter Recess",
+      "start": "2026-12-17",
+      "end": "2027-01-10"
+    }
+  ],
+  "business_days": {
+    "definition": "Monday to Friday, excluding the university holidays listed in this file",
+    "verified": "unverified",
+    "note": "No source defines 'business days' for USG or Campus Activities deadlines. Greenlight assumes Monday to Friday minus the university holidays listed here, and counts recess days (winter and spring recess) as business days because offices stay open. Both assumptions need confirming; dates counted in business days are shown yellow until then."
+  },
+  "academic_weeks": {
+    "definition": null,
+    "verified": "unverified",
+    "note": "USG counts its deadlines in academic weeks but does not define them; the Funding Application Deadlines table that does needs a USC sign-in (rule usg-academic-week-definition). Greenlight does not compute academic-week dates as certain."
+  }
+}

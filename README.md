@@ -34,29 +34,43 @@ Running a USC club means passing checks owned by different offices: yearly recog
 
 ## Quick start
 
-Requires Python 3.12, Node 20 and a Claude API key.
+Requires Python 3.12 and Node 20.19 or later. A Claude API key is needed only for live AI reading; without one, the app and the tests run on recorded responses (`AI_MODE=recorded`, the default).
 
 ```bash
-cp .env.example .env    # then add your API key
+cp .env.example .env    # then add your API key if you have one, and set AI_MODE=live
+```
+
+Backend, in a virtual environment:
+
+```bash
+cd backend && python3.12 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
 ```bash
-cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}
 ```
+
+Frontend, in a second terminal:
 
 ```bash
 cd frontend && npm install && npm run dev
 ```
 
-Open http://localhost:5173.
+Open http://localhost:5173. The start page shows whether the rule table and calendar loaded.
 
-Run the tests:
+To run a second copy at the same time, set `BACKEND_PORT` and `FRONTEND_PORT` (for example `8001` and `5174`) in both terminals; the frontend's proxy follows `BACKEND_PORT`. See [CLAUDE.md](CLAUDE.md#ports-and-addresses).
+
+Run the tests (from `backend/`, virtual environment active):
 
 ```bash
-cd backend && pytest
+pytest
 ```
 
-Measure accuracy on the test sets:
+Check the rule table against its sources, and the test sets against their schemas (from the repository root, same virtual environment):
+
+```bash
+python scripts/validate_rules.py
+```
 
 ```bash
 python scripts/run_eval.py

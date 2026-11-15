@@ -26,27 +26,52 @@ Greenlight helps USC club officers plan a year of events and pass USC's paperwor
 These must work from Phase 0 onward. If you change one, change it here.
 
 ```bash
-# backend (from backend/)
+# backend (from backend/), inside a virtual environment:
+#   python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}
 pytest
 pytest tests/adversarial
 
 # frontend (from frontend/)
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://localhost:${FRONTEND_PORT:-5173}
 npm run build
 
-# accuracy on the test sets (from repo root)
-python scripts/run_eval.py
+# from repo root, with the backend's virtual environment active
+python scripts/validate_rules.py   # every rule has its fields and matches its snapshot
+python scripts/run_eval.py         # accuracy on the test sets
+python scripts/seed_demo.py        # load the demo club
+python scripts/fetch_sources.py    # re-snapshot the official documents (maintenance only)
 ```
+
+### Ports and addresses
+
+Two copies of the app can run at once (for example two worktrees) by setting these, in the shell or in `.env`:
+
+| Variable | Default | Used by |
+|---|---|---|
+| `BACKEND_PORT` | `8000` | the `uvicorn` command above; the dev proxy's default target |
+| `FRONTEND_PORT` | `5173` | `npm run dev` and `npm run preview` (fails if the port is taken) |
+| `API_PROXY_TARGET` | `http://localhost:$BACKEND_PORT` | where the Vite dev server forwards `/api` |
+| `VITE_API_BASE_URL` | `/api` | base URL the browser uses for API calls |
+
+The frontend calls `/api/...`; the dev server strips `/api` and forwards to the backend, so no CORS setup is needed locally. Backend routes have no `/api` prefix.
+
+### Adding a feature without touching shared files
+
+- Routes: add a module in `backend/app/api/` that defines `router`; `app/main.py` includes it automatically.
+- Evaluators: add `scripts/evaluators/<set>.py`; `scripts/run_eval.py` finds it.
+- Pages: add one entry to `frontend/src/routes.tsx`.
+- Shared types: verdicts, citations and findings are in `backend/app/schemas/common.py`; the badge and citation components are in `frontend/src/components/`.
 
 ## Stack
 
 - Backend: Python 3.12, FastAPI, Pydantic v2, SQLAlchemy. `DATABASE_URL` selects the database: SQLite for local work and tests, Postgres when deployed.
 - Frontend: React, Vite, TypeScript, Tailwind CSS.
 - AI: Claude API with structured output. `claude-sonnet-5-5` for extraction and drafting, `claude-haiku-5-5` for cheap classification. Model names come from environment variables.
-- Tests: pytest. AI calls in tests use recorded responses, not the live API.
+- Tests: pytest. AI calls in tests use recorded responses, not the live API (`AI_MODE=recorded`; `tests/conftest.py` forces it and blanks the API key).
+- AI client: `backend/app/ai/` is the only code that talks to Claude. Untrusted text goes in `UntrustedDocument`s; instructions and requests are written by code.
 - Hosting: Replit.
 
 ## Layout

@@ -1,0 +1,361 @@
+{
+  "set": "constitutions",
+  "version": 1,
+  "count": 10,
+  "method": "Each constitution starts from the 2026-27 RSO Constitution Template: fixed clauses are copied exactly from the template text and blanks are filled by hand for a fictional club. Faults are then planted by hand. Expected findings follow the template clause list (rules/recognition.json) and the open-membership rules on the Campus Activities RSO Accountability page.",
+  "cases": [
+    {
+      "id": "co-01",
+      "file": "texts/co-01.txt",
+      "purpose": "Complete and correct: every required clause present.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 0
+      }
+    },
+    {
+      "id": "co-02",
+      "file": "texts/co-02.txt",
+      "purpose": "Non-Hazing Statement and the 'not part of USC' clause removed.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-ii-b-2",
+            "state": "missing",
+            "note": "The Non-Hazing Statement is gone."
+          },
+          {
+            "rule_id": "clause-vi-a-1",
+            "state": "missing",
+            "note": "The statement that the club is not part of the University is gone."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-03",
+      "file": "texts/co-03.txt",
+      "purpose": "Three words missing from the eligibility statement, and the one-month rule altered.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-ii-b-1",
+            "state": "weak",
+            "note": "The words 'consistent with the' are missing from the fixed statement."
+          },
+          {
+            "rule_id": "clause-iii-d-2",
+            "state": "weak",
+            "note": "'within one month' was changed to 'within one semester'."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-04",
+      "file": "texts/co-04.txt",
+      "purpose": "Voting membership by interview and application; general membership requires dues.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-ii-a-1",
+            "state": "contradicts",
+            "note": "Interviews and applications are barriers to membership.",
+            "contradicted_by": "open-membership-no-barriers"
+          },
+          {
+            "rule_id": "clause-ii-a-2",
+            "state": "contradicts",
+            "note": "Dues cannot be required for any level of membership.",
+            "contradicted_by": "dues-required-banned"
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-05",
+      "file": "texts/co-05.txt",
+      "purpose": "GPA and major requirement for voting members; officer transition procedure left blank.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-ii-a-1",
+            "state": "contradicts",
+            "note": "Membership cannot be limited by GPA or major.",
+            "contradicted_by": "open-membership-no-academic-limits"
+          },
+          {
+            "rule_id": "clause-iii-g-1",
+            "state": "missing",
+            "note": "The officer transition procedure is blank."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-06",
+      "file": "texts/co-06.txt",
+      "purpose": "Only four required officers: the Programming Chair is left out.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-iii-a-1",
+            "state": "weak",
+            "note": "The Programming Chair position is missing from the required officers."
+          },
+          {
+            "rule_id": "clause-iii-b-6",
+            "state": "missing",
+            "note": "There are no Programming Chair duties."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-07",
+      "file": "texts/co-07.txt",
+      "purpose": "Claims to be part of USC; the 'organization at USC' clause removed.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-vi-a-1",
+            "state": "contradicts",
+            "note": "Says the club is part of the University, the opposite of the fixed clause."
+          },
+          {
+            "rule_id": "clause-vi-a-2",
+            "state": "missing",
+            "note": "The clause on how the club may refer to itself is gone."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-08",
+      "file": "texts/co-08.txt",
+      "purpose": "Contains an instruction to mark everything present; two clauses removed. The instruction is data.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-ii-d-1",
+            "state": "missing",
+            "note": "Members' access to governing documents and votes is gone."
+          },
+          {
+            "rule_id": "clause-iv-a-2",
+            "state": "missing",
+            "note": "One week's notice of meetings is gone."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-09",
+      "file": "texts/co-09.txt",
+      "purpose": "Requires membership in another organization; bylaws made to override the constitution.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-ii-a-1",
+            "state": "contradicts",
+            "note": "Membership cannot require belonging to another organization.",
+            "contradicted_by": "open-membership-no-other-org"
+          },
+          {
+            "rule_id": "clause-viii-a-2",
+            "state": "contradicts",
+            "note": "Says the bylaws override the constitution, the opposite of the fixed clause."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 2
+      }
+    },
+    {
+      "id": "co-10",
+      "file": "texts/co-10.txt",
+      "purpose": "A rushed draft: four blanks left empty.",
+      "club": {
+        "name": "Lantern Arts Collective",
+        "has_parent_organization": false,
+        "has_school_affiliation": false,
+        "has_additional_officers": true,
+        "has_appointed_positions": true
+      },
+      "expected": {
+        "readable": true,
+        "findings": [
+          {
+            "rule_id": "clause-i-b-1",
+            "state": "missing",
+            "note": "The purpose is blank."
+          },
+          {
+            "rule_id": "clause-iii-f-1",
+            "state": "missing",
+            "note": "The term of office is blank."
+          },
+          {
+            "rule_id": "clause-iv-a-1",
+            "state": "missing",
+            "note": "Who meets and how often is blank."
+          },
+          {
+            "rule_id": "clause-iv-a-4",
+            "state": "missing",
+            "note": "The quorum is blank."
+          }
+        ],
+        "not_applicable": [
+          "clause-vi-b-1",
+          "clause-vi-b-2",
+          "clause-vi-c-1",
+          "clause-vi-c-2",
+          "clause-viii-c-2"
+        ],
+        "seeded_faults": 4
+      }
+    }
+  ]
+}

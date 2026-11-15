@@ -1,0 +1,109 @@
+{
+  "description": "The fictional demo club for PROJECT_CONTEXT section 11. Every name and email here is made up. Loaded by scripts/seed_demo.py.",
+  "club": {
+    "name": "Lantern Cultural Society",
+    "purpose": "Share East and Southeast Asian lantern traditions with the USC community.",
+    "level": "undergraduate",
+    "first_registered_on": "2021-09-07"
+  },
+  "users": [
+    {
+      "email": "officer@demo.greenlight.test",
+      "display_name": "Demo Officer",
+      "role": "officer"
+    },
+    {
+      "email": "usg-reviewer@demo.greenlight.test",
+      "display_name": "Demo USG Reviewer",
+      "role": "usg_reviewer"
+    }
+  ],
+  "year_plan": {
+    "period": "spring-2027",
+    "money_on_hand_cents": 120000,
+    "expected_income_cents": 30000,
+    "unavailable_dates": [
+      "2027-03-12"
+    ]
+  },
+  "events": [
+    {
+      "name": "Welcome mixer",
+      "event_date": "2027-02-05",
+      "end_date": null,
+      "estimated_cost_cents": 40000,
+      "attributes": {
+        "venue": "venue_tes_meeting_room",
+        "headcount": 40,
+        "flags": [
+          "food",
+          "social_event"
+        ],
+        "usg_request_cents": 40000
+      }
+    },
+    {
+      "name": "Lantern-making workshop",
+      "event_date": "2027-02-24",
+      "end_date": null,
+      "estimated_cost_cents": 20000,
+      "attributes": {
+        "venue": "venue_classroom",
+        "headcount": 30,
+        "flags": [
+          "food"
+        ],
+        "usg_request_cents": 20000
+      }
+    },
+    {
+      "name": "Spring retreat in Big Bear",
+      "event_date": "2027-03-26",
+      "end_date": "2027-03-28",
+      "estimated_cost_cents": 300000,
+      "attributes": {
+        "venue": "venue_off_campus",
+        "headcount": 20,
+        "flags": [
+          "travel",
+          "lodging",
+          "multi_day"
+        ],
+        "usg_request_cents": 240000
+      }
+    },
+    {
+      "name": "Culture night",
+      "event_date": "2027-04-09",
+      "end_date": null,
+      "estimated_cost_cents": 707000,
+      "attributes": {
+        "venue": "venue_outdoor",
+        "headcount": 150,
+        "flags": [
+          "food",
+          "amplified_sound",
+          "performers",
+          "social_event"
+        ],
+        "usg_request_cents": 525000
+      }
+    },
+    {
+      "name": "Spring banquet",
+      "event_date": "2027-04-24",
+      "end_date": null,
+      "estimated_cost_cents": 360000,
+      "attributes": {
+        "venue": "venue_tes_large",
+        "headcount": 120,
+        "flags": [
+          "ticket_sales",
+          "food",
+          "social_event"
+        ],
+        "usg_request_cents": 300000
+      }
+    }
+  ]
+}

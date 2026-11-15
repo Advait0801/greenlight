@@ -1,0 +1,26 @@
+# Backend and scripts. Python 3.12. Install inside a virtual environment:
+#   python3.12 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+
+# Web API
+fastapi==0.163.0
+uvicorn[standard]==0.54.0
+python-multipart==0.0.33      # file uploads (Phases 1 and 3)
+
+# Data and settings
+pydantic==2.14.3
+pydantic-settings==2.16.3
+sqlalchemy==2.1.8
+jsonschema==4.26.0            # test-set schemas in data/eval/schemas/
+
+# Claude API
+anthropic==2.8.0
+
+# Documents
+pypdf==7.1.0                  # PDF text (source snapshots; constitutions in Phase 1)
+cryptography==50.0.2          # lets pypdf open the encrypted constitution template
+python-docx==1.2.0            # DOCX constitutions (Phase 1)
+beautifulsoup4==4.15.0        # HTML source snapshots (scripts/fetch_sources.py)
+
+# Tests
+pytest==9.2.0
+httpx==0.28.1                 # FastAPI TestClient

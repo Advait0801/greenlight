@@ -1,0 +1,44 @@
+SNAPSHOT OF: USG Funding Application Deadlines table (linked from the Funding Department Guidelines, Section 1)
+URL: https://docs.google.com/spreadsheets/d/1M8FHvuw6f7ErnHnrQIR_ijjVmaKVXZp5-5fxrrJ7e68/edit
+FETCHED FROM: manual transcription made in a signed-in browser; the sheet needs a Google sign-in
+FETCHED AT: 2026-11-14
+RAW SHA-256: f294535282b377faf52e822125d76976237e50b7f2aaa41c8d642635ec4330b9 (of the transcription file)
+FORMAT: csv (manual)
+==== END OF SNAPSHOT HEADER ====
+# source: "EDITED 26-27 Funding Application Deadlines" (USG Funding Department), linked from the 26-27 Funding Department Guidelines, Section 1
+# source_url: https://docs.google.com/spreadsheets/d/1M8FHvuw6f7ErnHnrQIR_ijjVmaKVXZp5-5fxrrJ7e68/edit
+# fetched: 2026-11-14, read in a signed-in browser (sheet needs a Google login); transcribed by hand. Blank = no deadline listed (no USG funding that week).
+# The sheet labels the winter row "December 7, 2026 - January 10, 2026"; the end year is a typo for 2027.
+event_week_start,event_week_end,deadline_6_week,deadline_9_week
+2026-08-24,2026-08-28,N/A,N/A
+2026-08-31,2026-09-04,N/A,N/A
+2026-09-07,2026-09-11,N/A,N/A
+2026-09-14,2026-09-18,N/A,N/A
+2026-09-21,2026-09-25,N/A,N/A
+2026-09-28,2026-10-02,N/A,N/A
+2026-10-05,2026-10-09,2026-08-26,
+2026-10-12,2026-10-16,2026-09-02,
+2026-10-19,2026-10-23,2026-09-09,
+2026-10-26,2026-10-30,2026-09-16,2026-08-26
+2026-11-02,2026-11-06,2026-09-23,2026-09-02
+2026-11-09,2026-11-13,2026-09-30,2026-09-09
+2026-11-16,2026-11-20,2026-10-07,2026-09-16
+2026-11-23,2026-11-27,2026-10-14,2026-09-23
+2026-11-30,2026-12-04,2026-10-21,2026-09-30
+2026-12-07,2027-01-10,,
+2027-01-11,2027-01-15,2026-11-11,2026-11-11
+2027-01-18,2027-01-22,2026-11-11,2026-11-11
+2027-01-25,2027-01-29,2026-11-11,2026-11-11
+2027-02-01,2027-02-05,2026-11-18,2026-11-11
+2027-02-08,2027-02-12,2026-11-18,2026-11-11
+2027-02-15,2027-02-19,2026-11-18,2026-11-11
+2027-02-22,2027-02-26,2027-01-13,2026-11-18
+2027-03-01,2027-03-05,2027-01-20,2026-11-18
+2027-03-08,2027-03-12,2027-01-27,2026-11-18
+2027-03-15,2027-03-19,,
+2027-03-22,2027-03-26,2027-02-03,2027-01-20
+2027-03-29,2027-04-02,2027-02-10,2027-01-27
+2027-04-05,2027-04-09,2027-02-17,2027-02-03
+2027-04-12,2027-04-16,2027-02-24,2027-02-10
+2027-04-19,2027-04-23,2027-03-03,2027-02-17
+2027-04-26,2027-04-30,2027-03-10,2027-02-24
