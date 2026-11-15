@@ -17,6 +17,7 @@ import { EventTimeline, formatDay } from "../components/EventTimeline";
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
 import { StatusBadge, type BadgeState } from "../components/StatusBadge";
+import { PageHeader, Panel, SummaryStats, Wizard } from "../components/ui";
 
 const EXAMPLE = "Culture night for about 150 people on McCarthy Quad on Friday, April 9, 2027, with a DJ and catered food.";
 const EMPTY: EventFacts = { name: null, event_date: null, end_date: null, venue: null, headcount: null, attributes: [], possible_attributes: [], needs_officer_input: [] };
@@ -92,6 +93,7 @@ export function EventPacket() {
   const [details, setDetails] = useState<Detail[]>([]);
   const [busy, setBusy] = useState<"" | "reading" | "checking" | "ics">("");
   const [error, setError] = useState("");
+  const [step, setStep] = useState(0);
 
   // Opened from the year plan: start from that event's details. The officer still checks them before the packet runs.
   const location = useLocation();
@@ -100,6 +102,7 @@ export function EventPacket() {
     if (state?.facts) {
       setFacts({ ...EMPTY, ...state.facts, needs_officer_input: [] });
       setNotes(["Opened from your year plan. Check the details, then build the packet."]);
+      setStep(1);
     }
   }, [location.state]);
 
@@ -120,10 +123,12 @@ export function EventPacket() {
       setError(`${result.error} You can fill in the details below by hand.`);
       setFacts({ ...EMPTY });
       setNotes([]);
+      setStep(1);
       return;
     }
     setFacts(result.data.facts);
     setNotes(result.data.notes);
+    setStep(1);
   }
 
   // A packet built from other details is wrong once a detail changes: clear it (phase 6 iteration 2).
@@ -140,8 +145,10 @@ export function EventPacket() {
     const confirmed: EventFacts = { ...facts, needs_officer_input: [] };
     const result = await postJson<Packet>("/events/packet", { event: confirmed });
     setBusy("");
-    if (result.ok) setPacket(result.data);
-    else setError(result.error);
+    if (result.ok) {
+      setPacket(result.data);
+      setStep(2);
+    } else setError(result.error);
   }
 
   async function ics() {
@@ -171,14 +178,86 @@ export function EventPacket() {
   const shown = details.filter((d) => facts && (facts.attributes.includes(d.name) || facts.possible_attributes.includes(d.name)));
   const others = details.filter((d) => !shown.includes(d));
 
+  const packetView = packet ? (
+    <section aria-labelledby="result-heading" className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="result-heading" className="text-2xl font-semibold">Packet for {packet.event.name ?? "your event"}</h2>
+        <button type="button" onClick={ics} disabled={busy !== "" || packet.timeline.length === 0} className="rounded-md border border-cardinal px-4 py-2 font-medium text-cardinal disabled:opacity-60">
+          {busy === "ics" ? "Preparing…" : "Add the dates to my calendar (.ics)"}
+        </button>
+      </div>
+      <PrecheckNotice text={packet.notice} />
+      <p className="text-sm text-stone-700">Worked out on {formatDay(packet.as_of)}. {packet.obligations.length} items: {ORDER.map((s) => `${packet.counts[s] ?? 0} ${GROUP_TITLES[s].toLowerCase()}`).join(", ")}.</p>
+      <SummaryStats stats={ORDER.map((st) => ({ label: GROUP_TITLES[st], value: packet.counts[st] ?? 0, tone: (st === "blocked" ? "red" : st === "check_with_office" ? "yellow" : st === "office_decides" ? "office_decides" : "info") as BadgeState }))} />
+          {packet.hard_blocks.length ? (
+            <div role="alert" className="rounded-md border-2 border-red-700 bg-red-50 p-4">
+              <h3 className="flex items-center gap-2 font-semibold text-red-900"><StatusBadge state="red" label="Blocked" /> Fix these first</h3>
+              <ul className="mt-2 list-disc pl-5">{packet.hard_blocks.map((b) => <li key={b}>{b}</li>)}</ul>
+              {packet.fallbacks.length ? (
+                <>
+                  <p className="mt-3 font-medium">Options</p>
+                  <ul className="list-disc pl-5">{packet.fallbacks.map((f) => <li key={f.text}>{f.text}</li>)}</ul>
+                </>
+              ) : null}
+            </div>
+          ) : null}
+
+          {packet.questions.length ? (
+            <div className="rounded-md border border-amber-700 bg-amber-50 p-4">
+              <h3 className="flex items-center gap-2 font-semibold"><StatusBadge state="yellow" label="Questions" /> Answer these for a complete packet</h3>
+              <ul className="mt-2 list-disc pl-5">{packet.questions.map((q) => <li key={q}>{q}</li>)}</ul>
+            </div>
+          ) : null}
+
+
+      <div className="grid gap-5 xl:grid-cols-[minmax(18rem,2fr)_minmax(0,3fr)] xl:items-start">
+        <Panel title="Timeline" intro="Dates counted back from the event. Select an item to jump to it.">
+          <div className="xl:max-h-[calc(100vh-10rem)] xl:overflow-y-auto xl:pr-2"><EventTimeline packet={packet} /></div>
+        </Panel>
+        <div className="space-y-5">
+          {packet.source_conflicts.length ? (
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">Sources disagree</h3>
+              {packet.source_conflicts.map((c) => (
+                <div key={c.rules.join("|")} className="rounded-md border border-sky-700 bg-sky-50 p-4">
+                  <p><StatusBadge state="info" label="Two sources" /> {c.explanation}</p>
+                  {c.citations.map((citation) => <SourceLink key={citation.rule_id} citation={citation} />)}
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {ORDER.map((status) => {
+            const items = packet.obligations.filter((o) => o.status === status);
+            if (!items.length) return null;
+            return (
+              <div key={status}>
+                <h3 className="mb-3 text-lg font-semibold">{GROUP_TITLES[status]} ({items.length})</h3>
+                <ul className="space-y-3">{items.map((o) => <ObligationCard key={o.rule_id} o={o} describe={describe} />)}</ul>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  ) : null;
+
   return (
-    <div className="space-y-8">
-      <section aria-labelledby="packet-heading" className="space-y-3">
-        <h1 id="packet-heading" className="text-3xl font-bold tracking-tight">Event packet</h1>
-        <p className="max-w-2xl text-stone-700">
+    <div className="space-y-6">
+      <PageHeader eyebrow="Events" title="Event packet">
+        <p>
           Describe one event in a sentence. Greenlight reads it, asks about anything unclear, then lists every form, approval and
           deadline that applies, with dates counted back from the event and the rule text behind each.
         </p>
+      </PageHeader>
+      {error ? <p role="alert" className="rounded-xl border border-red-300 bg-red-50 p-3 text-red-900">{error}</p> : null}
+      <Wizard
+        label="Event packet steps"
+        step={step}
+        onStep={setStep}
+        steps={[
+          { id: "describe", label: "Describe the event", content: (
+            <Panel title="Your event">
         <form onSubmit={read} className="space-y-2">
           <label htmlFor="sentence" className="block font-medium">Your event</label>
           <textarea id="sentence" value={sentence} onChange={(e) => setSentence(e.target.value)} maxLength={2000} rows={3} required
@@ -188,13 +267,12 @@ export function EventPacket() {
               {busy === "reading" ? "Reading…" : "Read my event"}
             </button>
             <button type="button" onClick={() => setSentence(EXAMPLE)} className="rounded-md border border-stone-400 px-4 py-2">Use an example</button>
-            <button type="button" onClick={() => { setFacts({ ...EMPTY }); setNotes([]); setPacket(null); }} className="rounded-md border border-stone-400 px-4 py-2">Fill in a form instead</button>
+            <button type="button" onClick={() => { setFacts({ ...EMPTY }); setNotes([]); setPacket(null); setStep(1); }} className="rounded-md border border-stone-400 px-4 py-2">Fill in a form instead</button>
           </div>
         </form>
-        {error ? <p role="alert" className="rounded-md border border-red-700 bg-red-50 p-3 text-red-900">{error}</p> : null}
-      </section>
-
-      {facts ? (
+            </Panel>
+          ) },
+          { id: "details", label: "Check the details", content: facts ? (
         <section aria-labelledby="facts-heading" className="space-y-4 rounded-md border border-stone-300 bg-white p-4">
           <h2 id="facts-heading" className="text-xl font-semibold">Check the details</h2>
           <p className="text-sm text-stone-700">Greenlight only uses what you confirm here. Fields marked "please answer" were not clear.</p>
@@ -265,68 +343,10 @@ export function EventPacket() {
             </div>
           </form>
         </section>
-      ) : null}
-
-      {packet ? (
-        <section aria-labelledby="result-heading" className="space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 id="result-heading" className="text-2xl font-semibold">Packet for {packet.event.name ?? "your event"}</h2>
-            <button type="button" onClick={ics} disabled={busy !== "" || packet.timeline.length === 0} className="rounded-md border border-cardinal px-4 py-2 font-medium text-cardinal disabled:opacity-60">
-              {busy === "ics" ? "Preparing…" : "Add the dates to my calendar (.ics)"}
-            </button>
-          </div>
-          <PrecheckNotice text={packet.notice} />
-          <p className="text-sm text-stone-700">Worked out on {formatDay(packet.as_of)}. {packet.obligations.length} items: {ORDER.map((s) => `${packet.counts[s] ?? 0} ${GROUP_TITLES[s].toLowerCase()}`).join(", ")}.</p>
-
-          {packet.hard_blocks.length ? (
-            <div role="alert" className="rounded-md border-2 border-red-700 bg-red-50 p-4">
-              <h3 className="flex items-center gap-2 font-semibold text-red-900"><StatusBadge state="red" label="Blocked" /> Fix these first</h3>
-              <ul className="mt-2 list-disc pl-5">{packet.hard_blocks.map((b) => <li key={b}>{b}</li>)}</ul>
-              {packet.fallbacks.length ? (
-                <>
-                  <p className="mt-3 font-medium">Options</p>
-                  <ul className="list-disc pl-5">{packet.fallbacks.map((f) => <li key={f.text}>{f.text}</li>)}</ul>
-                </>
-              ) : null}
-            </div>
-          ) : null}
-
-          {packet.questions.length ? (
-            <div className="rounded-md border border-amber-700 bg-amber-50 p-4">
-              <h3 className="flex items-center gap-2 font-semibold"><StatusBadge state="yellow" label="Questions" /> Answer these for a complete packet</h3>
-              <ul className="mt-2 list-disc pl-5">{packet.questions.map((q) => <li key={q}>{q}</li>)}</ul>
-            </div>
-          ) : null}
-
-          {packet.source_conflicts.length ? (
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold">Sources disagree</h3>
-              {packet.source_conflicts.map((c) => (
-                <div key={c.rules.join("|")} className="rounded-md border border-sky-700 bg-sky-50 p-4">
-                  <p><StatusBadge state="info" label="Two sources" /> {c.explanation}</p>
-                  {c.citations.map((citation) => <SourceLink key={citation.rule_id} citation={citation} />)}
-                </div>
-              ))}
-            </div>
-          ) : null}
-
-          <div>
-            <h3 className="mb-3 text-lg font-semibold">Timeline</h3>
-            <EventTimeline packet={packet} />
-          </div>
-
-          {ORDER.map((status) => {
-            const items = packet.obligations.filter((o) => o.status === status);
-            if (!items.length) return null;
-            return (
-              <div key={status}>
-                <h3 className="mb-3 text-lg font-semibold">{GROUP_TITLES[status]} ({items.length})</h3>
-                <ul className="space-y-3">{items.map((o) => <ObligationCard key={o.rule_id} o={o} describe={describe} />)}</ul>
-              </div>
-            );
-          })}
-        </section>
-      ) : null}
+          ) : null, ...(facts ? {} : { locked: "Read your event first (step 1), or choose \"Fill in a form instead\"." }) },
+          { id: "packet", label: "The packet", content: packetView, ...(packet ? {} : { locked: "Check the details and build the packet (step 2) to see it." }) },
+        ]}
+      />
     </div>
   );
 }
