@@ -131,6 +131,12 @@ def _load(name: str) -> dict[str, Any]:
         ("constitutions", lambda d: d["cases"][0].update(file="texts/co-99.txt"), "not found"),
         ("constitutions", lambda d: d["cases"][0].update(file="texts/../../../etc.txt"), "does not match"),
         ("constitutions", lambda d: d["cases"][1]["expected"].update(seeded_faults=7), "seeded_faults"),
+        # Regression (phase 0 iteration 3, recognition audit M and L): an empty file must be unreadable, and
+        # not-applicable clauses follow the club's flags.
+        ("constitutions", lambda d: d["cases"][6]["expected"].update(readable=True), "readable must be false"),
+        ("constitutions", lambda d: d["cases"][6]["expected"].update(not_applicable=["clause-vi-b-1"]), "unreadable file has no findings"),
+        ("constitutions", lambda d: d["cases"][5]["club"].update(has_appointed_positions=True), "from the club's flags"),
+        ("constitutions", lambda d: d["cases"][1]["club"].update(has_parent_organization=False), "from the club's flags"),
         ("year_plans", lambda d: d["cases"][0]["expected"]["budget"].update(total_cost_cents=1), "budget.total_cost_cents"),
         ("year_plans", lambda d: d["cases"][0]["expected"]["calendar"][0].update(event="ghost"), "unknown event 'ghost'"),
     ],
@@ -223,3 +229,16 @@ def test_business_days_count_every_weekday_so_deadlines_are_never_late() -> None
     assert back(date(2027, 1, 19), 5, "business_days") == date(2027, 1, 12)
     # Ten business days before Monday 2027-03-22 runs through spring recess (March 14 to 21) as weekdays:
     assert back(date(2027, 3, 22), 10, "business_days") == date(2027, 3, 8)
+
+
+def test_constitution_set_covers_conditional_clauses_and_unreadable_files(sets) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, recognition audit M): the set holds a chapter of a national
+    organization, a school affiliation, an empty blank, altered words around a blank, and an empty file."""
+    cases = {case["id"]: case for case in sets["constitutions"]["cases"]}
+    assert cases["co-02"]["club"]["has_parent_organization"] and "clause-viii-c-2" not in cases["co-02"]["expected"]["not_applicable"]
+    assert cases["co-06"]["club"]["has_school_affiliation"] and not cases["co-06"]["club"]["has_appointed_positions"]
+    assert cases["co-07"]["expected"]["readable"] is False
+    assert not (EVAL_DIR / "constitutions" / cases["co-07"]["file"]).read_text().strip()
+    states = {(f["rule_id"], f["state"]) for case in cases.values() for f in case["expected"]["findings"]}
+    assert ("clause-iii-d-4", "weak") in states and ("clause-ii-b-3", "missing") in states
+    assert ("clause-vii-b-2", "contradicts") in states

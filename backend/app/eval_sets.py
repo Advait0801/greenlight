@@ -272,10 +272,12 @@ def _check_constitutions(data: dict[str, Any], eval_dir: Path, ruleset: RuleSet 
             problems.append(f"{cid}: file {case['file']} not found")
         else:
             try:
-                if not path.read_text(encoding="utf-8").strip():
-                    problems.append(f"{cid}: file {case['file']} is empty")
+                if not path.read_text(encoding="utf-8").strip() and expected["readable"]:
+                    problems.append(f"{cid}: file {case['file']} is empty, so readable must be false")
             except UnicodeDecodeError:
                 problems.append(f"{cid}: file {case['file']} is not UTF-8 text")
+        if not expected["readable"] and (expected["findings"] or expected["not_applicable"]):
+            problems.append(f"{cid}: an unreadable file has no findings and no not-applicable clauses")
         if expected["seeded_faults"] != len(expected["findings"]):
             problems.append(f"{cid}: seeded_faults must equal the number of findings")
         listed = [f["rule_id"] for f in expected["findings"]] + expected["not_applicable"]
@@ -285,6 +287,15 @@ def _check_constitutions(data: dict[str, Any], eval_dir: Path, ruleset: RuleSet 
             for rule_id in listed:
                 if rule_id not in clause_ids:
                     problems.append(f"{cid}: {rule_id} is not a constitution clause rule")
+        if ruleset is not None and expected["readable"]:
+            # A clause is not applicable exactly when the club does not meet its condition (params.required_if_flag).
+            want = sorted(
+                rule.id for rule in ruleset
+                if rule.kind == "clause" and rule.params.get("required_if_flag")
+                and not case["club"].get(rule.params["required_if_flag"], False)
+            )
+            if sorted(expected["not_applicable"]) != want:
+                problems.append(f"{cid}: not_applicable must be {want}, from the club's flags")
 
 
 def _check_year_plans(data: dict[str, Any], ruleset: RuleSet | None, problems: list[str]) -> None:

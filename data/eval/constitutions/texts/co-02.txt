@@ -47,7 +47,7 @@ Part 5. Officers must notify the advisor of results of the vote for member remov
 ARTICLE III. OFFICERS
 Section A: OFFICER TITLES
 Part 1. The following positions are required by Campus Activities for all RSOs to ensure there is leadership across all core areas, and each is either elected or appointed as noted here. The President is an elected position. Vice President is an elected position. Secretary is an elected position. Treasurer is an elected position. Programming Chair is an appointed position.
-Part 2. In addition to the required positions, Lantern Arts Collective also has the following officer positions: Outreach Chair.
+Part 2. In addition to the required positions, Lantern Arts Collective also has the following officer positions: Outreach Chair, an appointed position.
 
 Section B. OFFICER DUTIES
 Part 1. All officers must complete the annual requirements for recognition status, including Hazing Prevention, Event Accessibility, and RSO Officer Training modules.
@@ -67,7 +67,7 @@ Section D. NOMINATIONS AND ELECTIONS
 Part 1. Elections will be held according to the USC academic year.
 Part 2. For off-cycle elections and appointments, new officers must complete all officer requirements within one month of the election for their RSO to remain active.
 Part 3. Nominations for all offices will be taken at the first general meeting in April.
-Part 4. Any voting member may nominate any other member, including self nominations.
+Part 4. Any voting member may nominate any other member.
 Part 5. Elections will be held at the second general meeting in April by secret ballot.
 Part 6. A simple majority vote of the quorum present at that meeting will be sufficient to elect an officer.
 Part 7. If there are more than two candidates and no candidate receives a majority, the following procedure will be followed: a runoff vote is held between the two candidates with the most votes.
@@ -111,14 +111,15 @@ Part 2. In appointing such committees, Executive Board members must specify the 
 
 ARTICLE VI. AFFILIATIONS
 Section A. USC
+Part 1. This organization is a recognized student organization at the University of Southern California, but is not part of the University itself.
 Part 2. In all correspondence and business transactions, it may refer to itself as an organization at USC, but not as part of USC itself.
 Part 3. Lantern Arts Collective accepts full financial and production responsibility for all activities it sponsors.
 Part 4. Lantern Arts Collective agrees to abide by all pertinent USC policies and regulations. Where USC policies and regulations and those of Lantern Arts Collective differ, the policies and regulations of USC will take precedence.
 Part 5. This organization recognizes and understands that the University assumes no Legal liability for the actions of the organization, and that the University is not providing blanket indemnification insurance coverage for any activities of the organization, unless those activities expressly benefit and further the goals of the University, and have received prior review, approval, and consent of Campus Activities, Risk Management, and/or General Counsel.
 
 Section B. PARENT ORGANIZATION AFFILIATION
-Part 1. Not applicable.
-Part 2. Not applicable.
+Part 1. Lantern Arts Collective is the USC chapter of the National Collegiate Arts Alliance.
+Part 2. Where the National Collegiate Arts Alliance guidelines, regulations, or policies differ from those of USC, USC's policies, regulations, and guidelines take precedence.
 
 Section C. SCHOOL/DEPARTMENT/PROGRAM AFFILIATION
 Part 1. Not applicable.
@@ -149,4 +150,3 @@ Part 2. Notification of such a motion must be made to members at least one week 
 
 Section C. AVAILABILITY OF GOVERNING DOCUMENTS
 Part 1. Governing documents, including the constitution and bylaws, must be publicly available on the group’s EngageSC webpage in the Documents folder.
-Part 2. Not applicable: this organization is not affiliated with a national organization.

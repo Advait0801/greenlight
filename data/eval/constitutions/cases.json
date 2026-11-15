@@ -31,10 +31,10 @@
     {
       "id": "co-02",
       "file": "texts/co-02.txt",
-      "purpose": "Non-Hazing Statement and the 'not part of USC' clause removed.",
+      "purpose": "Chapter of a national organization: the link to the national bylaws and the Non-Hazing Statement removed, and self nominations no longer allowed.",
       "club": {
         "name": "Lantern Arts Collective",
-        "has_parent_organization": false,
+        "has_parent_organization": true,
         "has_school_affiliation": false,
         "has_additional_officers": true,
         "has_appointed_positions": true
@@ -48,19 +48,21 @@
             "note": "The Non-Hazing Statement is gone."
           },
           {
-            "rule_id": "clause-vi-a-1",
+            "rule_id": "clause-viii-c-2",
             "state": "missing",
-            "note": "The statement that the club is not part of the University is gone."
+            "note": "A chapter of a national organization must link to the national bylaws; the clause is gone."
+          },
+          {
+            "rule_id": "clause-iii-d-4",
+            "state": "weak",
+            "note": "The fixed words 'including self nominations' were deleted around the blank."
           }
         ],
         "not_applicable": [
-          "clause-vi-b-1",
-          "clause-vi-b-2",
           "clause-vi-c-1",
-          "clause-vi-c-2",
-          "clause-viii-c-2"
+          "clause-vi-c-2"
         ],
-        "seeded_faults": 2
+        "seeded_faults": 3
       }
     },
     {
@@ -174,13 +176,13 @@
     {
       "id": "co-06",
       "file": "texts/co-06.txt",
-      "purpose": "Only four required officers: the Programming Chair is left out.",
+      "purpose": "Affiliated with a school; only four required officers (the Programming Chair, the only appointed position, is left out); the club name left blank in the open membership statement.",
       "club": {
         "name": "Lantern Arts Collective",
         "has_parent_organization": false,
-        "has_school_affiliation": false,
+        "has_school_affiliation": true,
         "has_additional_officers": true,
-        "has_appointed_positions": true
+        "has_appointed_positions": false
       },
       "expected": {
         "readable": true,
@@ -194,22 +196,26 @@
             "rule_id": "clause-iii-b-6",
             "state": "missing",
             "note": "There are no Programming Chair duties."
+          },
+          {
+            "rule_id": "clause-ii-b-3",
+            "state": "missing",
+            "note": "The blank for the club's name in the open membership statement is empty."
           }
         ],
         "not_applicable": [
+          "clause-iii-d-8",
           "clause-vi-b-1",
           "clause-vi-b-2",
-          "clause-vi-c-1",
-          "clause-vi-c-2",
           "clause-viii-c-2"
         ],
-        "seeded_faults": 2
+        "seeded_faults": 3
       }
     },
     {
       "id": "co-07",
       "file": "texts/co-07.txt",
-      "purpose": "Claims to be part of USC; the 'organization at USC' clause removed.",
+      "purpose": "An empty file: nothing can be read, so the result is a clear message, never a pass.",
       "club": {
         "name": "Lantern Arts Collective",
         "has_parent_organization": false,
@@ -218,27 +224,10 @@
         "has_appointed_positions": true
       },
       "expected": {
-        "readable": true,
-        "findings": [
-          {
-            "rule_id": "clause-vi-a-1",
-            "state": "contradicts",
-            "note": "Says the club is part of the University, the opposite of the fixed clause."
-          },
-          {
-            "rule_id": "clause-vi-a-2",
-            "state": "missing",
-            "note": "The clause on how the club may refer to itself is gone."
-          }
-        ],
-        "not_applicable": [
-          "clause-vi-b-1",
-          "clause-vi-b-2",
-          "clause-vi-c-1",
-          "clause-vi-c-2",
-          "clause-viii-c-2"
-        ],
-        "seeded_faults": 2
+        "readable": false,
+        "findings": [],
+        "not_applicable": [],
+        "seeded_faults": 0
       }
     },
     {
@@ -279,7 +268,7 @@
     {
       "id": "co-09",
       "file": "texts/co-09.txt",
-      "purpose": "Requires membership in another organization; bylaws made to override the constitution.",
+      "purpose": "Requires membership in another organization; bylaws made to override the constitution; no meetings with the advisor.",
       "club": {
         "name": "Lantern Arts Collective",
         "has_parent_organization": false,
@@ -300,6 +289,12 @@
             "rule_id": "clause-viii-a-2",
             "state": "contradicts",
             "note": "Says the bylaws override the constitution, the opposite of the fixed clause."
+          },
+          {
+            "rule_id": "clause-vii-b-2",
+            "state": "contradicts",
+            "note": "The advisor must meet with the club at least once a semester.",
+            "contradicted_by": "advisor-meets-once-a-semester"
           }
         ],
         "not_applicable": [
@@ -309,7 +304,7 @@
           "clause-vi-c-2",
           "clause-viii-c-2"
         ],
-        "seeded_faults": 2
+        "seeded_faults": 3
       }
     },
     {
