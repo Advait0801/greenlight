@@ -36,6 +36,7 @@ export interface Citation {
   verified: string;
   snapshot_fetched_at: string | null;
   uncertain_reasons: string[];
+  display_severity: Severity;
 }
 
 export interface Rule {

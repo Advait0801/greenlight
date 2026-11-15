@@ -22,4 +22,5 @@ def citation_for(ruleset: RuleSet, rule_id: str) -> Citation:
         verified=rule.verified,
         snapshot_fetched_at=source.fetched_at,
         uncertain_reasons=ruleset.uncertain_reasons(rule_id),
+        display_severity=ruleset.display_severity(rule_id),
     )
