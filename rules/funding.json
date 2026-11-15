@@ -859,10 +859,10 @@
       "effective_date": "2026-10-21",
       "verified": "read",
       "severity": "red",
-      "message": "USG pays at most $4,000 toward on-campus venue rental and personnel for an event.",
-      "fix_template": "Venue and personnel come to ${venue_personnel_total}. USG covers up to $4,000; cut ${over} or cover it another way.",
-      "applies_to": "On-campus venue rental and personnel lines of one event",
-      "check": "sum(venue_rental + personnel) <= 4000",
+      "message": "USG pays at most $4,000 of the cost of on-campus venue rental and personnel.",
+      "fix_template": "You are asking USG for ${venue_personnel_requested} for venue and personnel. USG covers up to $4,000; ask for ${over} less and cover the rest another way.",
+      "applies_to": "The amount asked of USG for on-campus venue rental and personnel",
+      "check": "usg_requested(venue_rental + personnel) <= 4000",
       "triggers": [
         "venue_rental",
         "personnel"
@@ -874,7 +874,8 @@
           "personnel"
         ]
       },
-      "conflicts_with": null
+      "conflicts_with": null,
+      "notes": "The cap limits what USG pays, not what the venue costs: a club may pay the rest itself. The guidelines do not say whether the $4,000 is per event or per year; a single request over $4,000 breaks it either way, and Phase 3 should show a total across events as needing a check."
     },
     {
       "id": "usg-over-4000-case-by-case",
@@ -1476,7 +1477,7 @@
       "applies_to": "A budget line or event that is: Alcoholic beverages",
       "check": "A line in this category is not fundable by USG.",
       "triggers": [
-        "alcohol"
+        "alcoholic_drinks"
       ],
       "params": {
         "item_quote": "Alcoholic beverages"
@@ -1596,8 +1597,8 @@
       "effective_date": "2026-10-21",
       "verified": "read",
       "severity": "red",
-      "message": "USG does not fund rideshare, buses, vans, Amtrak cabins or car rentals. The board may make an exception for an item critical to the program, at its discretion.",
-      "fix_template": "Remove {item} from the USG request.",
+      "message": "USG does not fund rideshare, buses, vans, Amtrak cabins or car rentals. (Its travel rules do cover 'ground' transportation, and its vendor list has a Buses section; ask USG before planning a bus.) The board may make an exception for an item critical to the program, at its discretion.",
+      "fix_template": "Remove {item} from the USG request, or ask USG (usgfunds@usc.edu) first.",
       "applies_to": "A budget line or event that is: Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.)",
       "check": "A line in this category is not fundable by USG.",
       "triggers": [

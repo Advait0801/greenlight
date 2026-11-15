@@ -127,6 +127,7 @@ def _load(name: str) -> dict[str, Any]:
         ("budgets", lambda d: d["cases"][0]["expected"].update(draft_allowed=True), "draft_allowed"),
         ("budgets", lambda d: d["cases"][0]["lines"][0].update(amount_cents=-5), "less than the minimum"),
         ("budgets", lambda d: d["cases"][0]["lines"][0].update(quantity="150"), "is not of type 'integer'"),
+        ("budgets", lambda d: d["cases"][0]["lines"][0].update(category="beer"), "category 'beer' is not in rules/vocabulary.json"),
         ("constitutions", lambda d: d["cases"][0].update(file="texts/co-99.txt"), "not found"),
         ("constitutions", lambda d: d["cases"][0].update(file="texts/../../../etc.txt"), "does not match"),
         ("constitutions", lambda d: d["cases"][1]["expected"].update(seeded_faults=7), "seeded_faults"),

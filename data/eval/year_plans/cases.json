@@ -1454,12 +1454,6 @@
             "due": null
           },
           {
-            "event": "networking-night",
-            "rule_id": "usg-ineligible-alcohol",
-            "status": "condition",
-            "due": null
-          },
-          {
             "event": "speaker-series-2",
             "rule_id": "tes-space-request",
             "status": "check_with_office",

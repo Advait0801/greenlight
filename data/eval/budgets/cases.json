@@ -1433,7 +1433,7 @@
           "line": 1,
           "vendor": "Vino Distributors",
           "item": "Wine, 12 bottles",
-          "category": "alcohol",
+          "category": "alcoholic_drinks",
           "quantity": 12,
           "unit_price_cents": 2000,
           "amount_cents": 24000,

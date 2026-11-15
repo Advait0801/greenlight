@@ -412,3 +412,18 @@ def test_summer_usg_funding_is_flagged(ruleset) -> None:  # type: ignore[no-unty
     assert "summer" in rule.params["blocked"]
     assert ruleset.display_severity(rule.id) == "yellow"
     assert ruleset.get("usg-no-funding-breaks").params["also_blocks_submissions"] is True
+
+
+def test_alcohol_ineligibility_is_about_budget_lines_not_events(ruleset) -> None:
+    """Regression (phase 0 iteration 3, funding audit M7): alcohol served at an event is not a USG expense."""
+    rule = ruleset.get("usg-ineligible-alcohol")
+    assert rule.triggers == ["alcoholic_drinks"]
+    assert "alcoholic_drinks" in ruleset.vocabulary["line_item_categories"]
+    assert "alcohol" not in ruleset.vocabulary["line_item_categories"]
+
+
+def test_venue_cap_checks_what_usg_is_asked_to_pay(ruleset) -> None:
+    """Regression (phase 0 iteration 3, funding audit M6)."""
+    rule = ruleset.get("usg-venue-personnel-cap")
+    assert "usg_requested" in (rule.check or "")
+    assert "for an event" not in rule.message

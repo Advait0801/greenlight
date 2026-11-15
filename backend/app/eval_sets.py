@@ -338,6 +338,12 @@ def validate_set(name: str, data: Any, *, eval_dir: Path = EVAL_DIR, ruleset: Ru
         _check_events(data, ruleset, problems)
     elif name == "budgets":
         _check_budgets(data, problems)
+        categories = ruleset.vocabulary.get("line_item_categories", {}) if ruleset else {}
+        if categories:
+            for case in data["cases"]:
+                for line in case["lines"]:
+                    if line["category"] not in categories:
+                        problems.append(f"{case['id']} line {line['line']}: category '{line['category']}' is not in rules/vocabulary.json")
     elif name == "constitutions":
         _check_constitutions(data, eval_dir, ruleset, problems)
     elif name == "year_plans":
