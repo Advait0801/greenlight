@@ -6,9 +6,9 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
-- **Phase 0, 1, 2, 3:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
-- **Phase 4 (year plan):** built on `main` (2026-11-15); iterations next.
-- **Next action:** Phase 4 iteration 3 (audit).
+- **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
+- **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
+- **Next action:** Phase 5 (supporting features and the USG screen) can start, on `main`.
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -19,7 +19,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 4 | Year plan | done (on `main`) | 2 | no (iteration 2: 2 blockers, 3 high, all fixed) | open |
+| 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
@@ -93,6 +93,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 4, iteration 3 — audit; phase closed
+Date/time: 2026-11-15
+Agent and model: auditor (fresh), Opus 5.5, medium effort, on commit 8dd0805
+Report: docs/reviews/phase-4-iter-3-audit.md
+Findings: 0/1/5/7 (every funding rule the plan uses matches its snapshot; the 4-a-semester limit is yellow everywhere; no model output in any figure; the planner reuses the packet engine and the money check's findings, fund matching and caps; earlier fixes hold; 200 random plans never planned over 4 a term or $8,000 a year and every split added up)
+Fixed: H the plan called "event date minus N calendar weeks" the latest possible USG deadline and told the officer to use the table's later date (e.g. a Feb 22 event: table Jan 13, count Jan 11); every USG application date is now the earlier of the two (`TableDeadline.apply_by`), with no "at the latest" claim (regression test in tests/unit/test_year_planner.py). Also M: requests alone over $8,000 are red even when the amount received is unknown; M: events left out of the funding plan get no "apply to USG" date in the calendar or .ics; L: an unconfirmed table date that has passed reads "May have passed: check with USG"; L: test that calendar items carry their citation.
+Left open: see "Open findings after Phase 4".
+Full test suite: pass (695, adversarial included); validate_rules.py OK; run_eval all sets clean (year_plans 2/2, 233/0/0; events 30/456/0/0; budgets 30/0/0; constitutions 21/0/0); frontend build OK
+Close: Phase 4 closed after iteration 3 (PLAN.md section 1); no further review round
 
 ### Phase 4, iteration 2 — break
 Date/time: 2026-11-15
@@ -262,6 +272,14 @@ Left open: ...
 Full test suite: pass / fail
 Gate: passed / not yet, because ...
 ```
+
+## Open findings after Phase 4
+
+Medium and low findings left open when Phase 4 closed (details in docs/reviews/phase-4-iter-{1,2,3}-*.md):
+- **Fund:** the funding strategy names a fund only when the officer picks one; otherwise every step shows the fund as "needs a human look" (M, iterations 1 and 3).
+- **Reading a pasted list:** the reader's notes on each line are returned by the API but not shown on the page (M); recorded mode has readings only for the 30 event-set sentences, so other lines come back "fill in by hand" (record the demo list in Phase 6).
+- **Evaluator scope:** the year plan evaluator compares each event's packet, budget totals and problems, not the plan's own calendar view, funding order or "this week" (M).
+- **Lows:** every event past the semester limit is called "funded event number 5"; a deadline note says "One of the two falls before the semester" with no row that triggers it today; "this week" can list items months away; the plan does not ask how many events USG already funded this semester; the browser recomputes the start of each busy week; a USG deadline falling in spring recess is not flagged; tap targets are small (checkboxes, nav links); a partial USG request can be a few cents; a venue request is due on December 25 (Phase 2 rule, matches the test set).
 
 ## Open findings after Phase 0
 
