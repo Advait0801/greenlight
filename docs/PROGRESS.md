@@ -9,8 +9,8 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
 - **Phase 5 (supporting features and the USG screen):** closed 2026-11-15 after three iterations, pushed to `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut).
-- **Phase 6 (ship):** in progress. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres). Iterations 1 (verify) and 2 (break) done; iteration 3 (audit) running.
-- **Next action:** a person adds `USG_REVIEWER_KEY` to Replit secrets, then redeploy (the USG screen answers 503 until then).
+- **Phase 6 (ship):** closed 2026-11-15 after three iterations, pushed to `main`. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres; `/api/health` shows `database_kind: postgresql`).
+- **Next action:** a person adds `USG_REVIEWER_KEY` (12+ characters, not a value in the repository) to Replit secrets and clicks Republish; until then the USG screen answers 503 and the demo's 2:25 step cannot run. Then Phase 7.
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -23,7 +23,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 6 | Ship | done (on `main`, deployed) | 2 | no (iteration 2: 0 blockers, 2 high, fixed) | open |
+| 6 | Ship | done (on `main`, deployed) | 3 | no (iteration 3: 0 blockers, 2 high: one fixed by redeploy, one needs the secret) | yes, 2026-11-15 (pushed to main) |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
 ## Phase 0 build (2026-11-14)
@@ -113,6 +113,13 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 6, iteration 3 — audit; phase closed
+
+Report: `docs/reviews/phase-6-iter-3-auditor.md`. 0 blockers, 2 high, 2 medium, 6 low. History, bundle, recordings and `/health` hold no secret; licences compatible with MIT; the four iteration 2 fixes' tests fail when the fixes are reverted.
+- H1 (live link ran code from before the iteration 2 fixes): fixed by redeploying `main`; checked on the live link: `/api/health` has `database_kind: postgresql`, a missing `/assets/` file is 404. No code change, so no regression test.
+- H2 (`USG_REVIEWER_KEY` not set, USG step 503): needs a person; not a code fix. Never type the value from an agent.
+- L5 fixed: `.claude/launch.json` is git-ignored.
 
 ### Phase 6, iteration 2 — break
 
@@ -337,6 +344,15 @@ Left open: ...
 Full test suite: pass / fail
 Gate: passed / not yet, because ...
 ```
+
+## Open findings after Phase 6
+
+- **USG_REVIEWER_KEY missing on Replit** (iterations 1 and 3, high): a person adds it and republishes; the demo's USG step needs it, and the presenter drives that step (the passcode is private).
+- M (audit): any visitor can make unlimited paid Claude calls in `AI_MODE=live`; no per-client limit or daily cap. Switch the secret to `AI_MODE=recorded` if cost matters (the demo still works from recordings).
+- M (audit): the audit log keeps AI outputs, including `evidence` quotes of uploaded text, with no retention limit.
+- M5 (break): `/money/gap` opened directly has no event name, so the demo email paragraph replays only when the page is opened from the year plan.
+- M1 (verify): no "accept the fix" button; the officer edits red lines by hand (README says so).
+- L: `/api/docs` public; no licence notices in the minified bundle; psycopg (LGPL-3.0), certifi (MPL-2.0) not listed in the README; transitive Python packages unpinned; .docx parsed on the event loop; withdrawn USG applications keep their data; unlimited anonymous audit writes; 422 instead of 503 for some AI-down answers and no client timeout; story figures differ from the app ($1,170 gap, Nov 18 travel deadline); no adoption material for the 2:45 step; first live application draft ~23 s.
 
 ## Open findings after Phase 5
 
