@@ -7,7 +7,7 @@ lines are folded at 75 octets as the standard requires.
 from __future__ import annotations
 
 import hashlib
-from datetime import date, datetime, timedelta, UTC
+from datetime import UTC, date, datetime, timedelta
 
 from app.schemas.events import EventPacket
 
@@ -16,6 +16,8 @@ PRODID = "-//Greenlight//Event packet//EN"
 
 def _escape(text: str) -> str:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
+    # Control characters other than the newline are not allowed in iCalendar text.
+    text = "".join(ch for ch in text if ch == "\n" or (ord(ch) >= 32 and ord(ch) != 127))
     return text.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
 
 
