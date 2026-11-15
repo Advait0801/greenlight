@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Closed |
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
-| 1 | Recognition check | — | 0 | — | open |
+| 1 | Recognition check | done | 0 | — | open (branch `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
@@ -50,6 +50,19 @@ What exists now:
 - **Evaluator** (`scripts/evaluators/events.py`): end to end on recorded readings 30/30 obligation lists match, 0 missed, 0 wrongly flagged; engine on the test set's attributes 30/30 with every due date, past-due flag and conflict; one deliberate status difference (ev-28: with no date, every date check is "check with the office", not "rule to keep").
 - **Shared code changed** (backward compatible): `app/eval_sets.py` (`_back`/`_forward` call the calculator), `tests/unit/test_architecture.py` (`event_intake.py` allowed to use the AI client), `frontend/src/routes.tsx` (one entry).
 - **Tests**: 386 passing.
+
+## Phase 1 build (2026-11-15)
+
+Branch `phase-1/recognition`. What exists now:
+- **Reading uploads** (`backend/app/services/recognition_document.py`): pasted text, TXT (UTF-8/UTF-16), DOCX (python-docx), PDF (pypdf; the real template, flagged encrypted with an empty password, opens; typed form-field answers are placed on the page by position). A PDF with no text layer or an image goes to the AI reader for transcription. Empty, too short, damaged, password-protected, `.doc` and mislabelled files give a clear message and no verdict.
+- **Clause check** (`recognition_check.py`, pure code): every `clause` rule in `rules/recognition.json` is located by Article, Section and Part (renumbered parts and one-paragraph pastes handled; page headers, the table of contents and the appendix ignored) and compared letter for letter with the template's fixed words around each blank. States: present, missing (absent, blank empty, a placeholder such as N/A or TBD, or "not applicable" on a required clause), weak (fixed words changed, with the missing and added words named), contradicts, needs a human look, not applicable (only when the officer says the club fact is false; unknown counts as required). Text outside the template is listed for the officer. Notes for another year's template, a fragment, instruction-like text, a non-fillable PDF and transcribed scans. Advisor meetings below the minimum are counted in code. Green only through `finding_for`, so clause III.B.1 (sources disagree on trainings) is yellow.
+- **AI reader** (`recognition_intake.py`): fixed yes/no questions built from the rule table ("does this wording require an interview / dues / another membership…") about the membership blanks; the document is an `UntrustedDocument` under a fixed name. A "yes" is a conflict only when confident and its quoted evidence is in the document; anything else is yellow; a confident "no" is overruled to yellow by warning words (GPA, interview, dues…). The reader can never make a clause present. Off or failing reader means yellow. Transcription of scans: nothing from it is ever green. Recordings for the 9 synthetic test constitutions committed in `data/ai_recordings/constitution-answers/` (read by a person first, as `.gitignore` asks).
+- **Readiness tracker** (`recognition_readiness.py`): 5 officers × (named + 3 documents), member minimum (5 more, 10 in all), advisor items due Dec 1, documents, key dates and days left from the rules; rules shown yellow (Clery course, Event Accessibility, EngageSC acceptance) are never ticked green. Nothing stored server-side.
+- **Routes** (`backend/app/api/recognition.py`): `POST /constitution/check` (file or text, four optional yes/no club facts), `GET`/`POST /recognition/readiness`. AI outputs go to the audit log.
+- **Page** (`frontend/src/pages/Recognition*.tsx`, route `/recognition`): upload or paste, club questions with "Not sure", report grouped by article with icon and text badges, template wording and source on every clause, readiness checklist (ticks saved in the browser only).
+- **Evaluator** (`scripts/evaluators/constitutions.py`): 21/21 planted faults found, 0 missed, 0 wrongly flagged; one found with a different state (co-09 VIII.A.2 shown "wording changed", key says "contradicts").
+- **Tests**: 421 passing (103 new). Shared change: `tests/unit/test_architecture.py` allows `app/services/recognition_intake.py` to import the AI client.
+- Known limit: II.C.5 (dues) stays yellow on every constitution because the reader answers "no" only at medium confidence.
 
 ## Iteration log
 
