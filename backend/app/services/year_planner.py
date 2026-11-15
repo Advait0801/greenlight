@@ -43,7 +43,8 @@ from app.schemas.plans import (
     YearPlanRequest,
 )
 from app.services import deadlines, usg_deadline_table
-from app.services.money_check import ORDER, limit_cents, match_fund, money
+from app.schemas.money import BudgetEvent, BudgetLine, MoneyCheckRequest
+from app.services.money_check import ORDER, check_budget, limit_cents, match_fund, money
 from app.services.rule_engine import build_packet
 
 YEARLY_CAP_RULE = "usg-yearly-cap"
@@ -77,10 +78,18 @@ def _finding(ruleset: RuleSet, rule_id: str, verdict: Verdict, message: str, fix
         return finding_for(ruleset, rule_id, Verdict.YELLOW, message, fix)
 
 
-def _academic_year(day: date) -> str:
-    """USC's academic year runs from the fall term (August) to the summer session; a date from July on belongs to the
-    year that starts that fall."""
-    first = day.year if day.month >= 7 else day.year - 1
+def _academic_year(day: date, calendar: AcademicCalendar) -> str:
+    """USC's academic year runs from the fall term to the end of the summer session. A date inside a term belongs to
+    that term's year (Summer Session 2027, May 19 to August 10, is 2026-27); a date between terms belongs to the year
+    of the next term to start (winter recess belongs with the spring). Outside the calendar: from August on, the year
+    that starts that fall."""
+    term = calendar.term_for(day) or next((t for t in calendar.terms if t.classes_begin > day and
+                                           (t.classes_begin - day).days < 120), None)
+    if term is not None:
+        start = term.classes_begin
+        first = start.year if start.month >= 8 else start.year - 1
+    else:
+        first = day.year if day.month >= 8 else day.year - 1
     return f"{first}-{(first + 1) % 100:02d}"
 
 
@@ -109,9 +118,42 @@ def _facts(event: PlanEvent) -> EventFacts:
     attributes = list(dict.fromkeys(event.attributes))
     if event.usg_request_cents > 0 and USG_ATTRIBUTE not in attributes:
         attributes.append(USG_ATTRIBUTE)
+    if (event.end_date is not None and event.event_date is not None and event.end_date > event.event_date
+            and "multi_day" not in attributes):
+        attributes.append("multi_day")
     possible = [name for name in dict.fromkeys(event.possible_attributes) if name not in attributes]
     return EventFacts(name=event.name, event_date=event.event_date, end_date=event.end_date, venue=event.venue,
                       headcount=event.headcount, attributes=attributes, possible_attributes=possible)
+
+
+def _usg_reviews(event: PlanEvent, packet: EventPacket, ruleset: RuleSet, calendar: AcademicCalendar,
+                 as_of: date) -> list[PacketObligation]:
+    """USG's case-by-case reviews (expenses over $4,000, multi-day events) for an event that asks USG for money. They
+    come from the money check itself, run on the plan's rough cost as one line; only its 'office decides' findings
+    about the application are kept (the line-level findings need real quotes, which the money check asks for)."""
+    if event.usg_request_cents == 0:
+        return []
+    facts = packet.event
+    budget_event = BudgetEvent(
+        name=event.name, event_date=event.event_date, end_date=event.end_date, expected_attendance=event.headcount,
+        venue=event.venue, ticketed=True if "ticket_sales" in facts.attributes else None,
+        attributes=[a for a in facts.attributes if a in ruleset.vocabulary.get("event_attributes", {})
+                    and not a.startswith("venue_") and a != "ticket_sales"])
+    line = BudgetLine(line=1, item="Rough cost from the year plan", quantity=1,
+                      unit_price_cents=event.estimated_cost_cents, amount_cents=event.estimated_cost_cents)
+    report = check_budget(MoneyCheckRequest(event=budget_event, lines=[line]), ruleset, calendar, as_of)
+    out: list[PacketObligation] = []
+    for item in report.application:
+        f = item.finding
+        rule = ruleset.get(f.rule_id)
+        if f.verdict is not Verdict.OFFICE_DECIDES:
+            continue
+        out.append(PacketObligation(
+            rule_id=rule.id, title=rule.title, owner_office=rule.owner_office, status="office_decides",
+            status_label=STATUS_LABELS["office_decides"], due=None, due_note=None, violated=False, past_due=False,
+            message=rule.message, note=f"From the money check on the plan's rough cost: {f.message}", fix=f.fix, finding=f,
+            citation=f.citation, link=rule.source_url, triggered_by=[USG_ATTRIBUTE], from_possible_attribute=False))
+    return out
 
 
 def _active(packet: EventPacket) -> list[PacketObligation]:
@@ -145,7 +187,15 @@ class _Problems:
             existing = self.items[self._index[key]]
             merged = list(dict.fromkeys([*existing.events, *events]))
             notes = existing.note if note in existing.note else f"{existing.note} {note}"
-            self.items[self._index[key]] = existing.model_copy(update={"events": merged, "note": notes})
+            update: dict[str, object] = {"events": merged, "note": notes}
+            if ORDER[verdict] > ORDER[existing.severity] and rule_id is not None:
+                finding = _finding(self.ruleset, rule_id, verdict, notes, existing.fix or fix)
+                update.update(severity=finding.verdict, severity_label=VERDICT_LABELS[finding.verdict], finding=finding)
+            elif ORDER[verdict] > ORDER[existing.severity]:
+                update.update(severity=verdict, severity_label=VERDICT_LABELS[verdict])
+            elif existing.finding is not None:
+                update["finding"] = existing.finding.model_copy(update={"message": notes})
+            self.items[self._index[key]] = existing.model_copy(update=update)
             return
         finding = _finding(self.ruleset, rule_id, verdict, note, fix) if rule_id else None
         shown = finding.verdict if finding else verdict
@@ -214,6 +264,11 @@ def plan_year(request: YearPlanRequest, ruleset: RuleSet, calendar: AcademicCale
     events: list[_Event] = []
     for plan_event in request.events:
         packet = build_packet(_facts(plan_event), ruleset, calendar, as_of)
+        reviews = _usg_reviews(plan_event, packet, ruleset, calendar, as_of)
+        if reviews:
+            packet = packet.model_copy(update={
+                "obligations": [*packet.obligations, *reviews],
+                "counts": {**packet.counts, "office_decides": packet.counts.get("office_decides", 0) + len(reviews)}})
         term = calendar.term_for(plan_event.event_date) if plan_event.event_date else None
         events.append(_Event(plan=plan_event, packet=packet, term=term,
                              usg_deadlines=_usg_deadlines(ruleset, calendar, sources_dir, plan_event, packet, as_of)))
@@ -226,20 +281,23 @@ def plan_year(request: YearPlanRequest, ruleset: RuleSet, calendar: AcademicCale
     _same_day_problems(events, problems, ruleset)
     semester_cap = _semester_problems(events, problems, ruleset)
     yearly_cap = limit_cents(ruleset.get(YEARLY_CAP_RULE), "max_usd_per_year")
-    _yearly_problems(request, events, problems, ruleset, yearly_cap, as_of)
+    _yearly_problems(request, events, problems, ruleset, yearly_cap, as_of, calendar)
     if request.usg_received_this_year_cents is None and any(e.asks_usg for e in events):
         questions.append("How much has the club already received from USG this academic year?")
     if request.level == "graduate" and any(e.asks_usg for e in events):
         questions.append("Greenlight checks the Undergraduate Student Government (USG) funding rules. Is this an "
                          "undergraduate club? Graduate clubs apply to the Graduate Student Government instead.")
 
-    strategy = _strategy(request, events, problems, ruleset, semester_cap, yearly_cap, as_of)
-    budget = _budget(request, events, strategy, ruleset, yearly_cap, as_of)
+    strategy = _strategy(request, events, problems, ruleset, semester_cap, yearly_cap, as_of, calendar)
+    budget = _budget(request, events, strategy, ruleset, yearly_cap, as_of, calendar)
     by_key = {row.key: row for row in budget.rows}
 
     calendar_items = _calendar(events, ruleset)
     crowded = _crowded(calendar_items)
-    upcoming = [item for item in calendar_items if item.kind != "event" and item.day >= as_of and not item.past_due]
+    planned_keys = {step.key for step in strategy.steps}
+    upcoming = [item for item in calendar_items if item.kind != "event" and item.day >= as_of and not item.past_due
+                and not (item.event_key not in planned_keys and item.rule_id is not None
+                         and ruleset.get(item.rule_id).domain == "funding")]
     this_week = upcoming[:THIS_WEEK_ITEMS]
 
     problem_verdicts: dict[str, list[Verdict]] = defaultdict(list)
@@ -372,13 +430,13 @@ def _semester_problems(events: list[_Event], problems: _Problems, ruleset: RuleS
 
 
 def _yearly_problems(request: YearPlanRequest, events: list[_Event], problems: _Problems, ruleset: RuleSet,
-                     cap: int, as_of: date) -> None:
+                     cap: int, as_of: date, calendar: AcademicCalendar) -> None:
     rule = ruleset.get(YEARLY_CAP_RULE)
     by_year: dict[str, list[_Event]] = defaultdict(list)
     for e in events:
-        if e.asks_usg and e.plan.event_date is not None:
-            by_year[_academic_year(e.plan.event_date)].append(e)
-    this_year = _academic_year(as_of)
+        if e.asks_usg:
+            by_year[_academic_year(e.plan.event_date or as_of, calendar)].append(e)
+    this_year = _academic_year(as_of, calendar)
     for year, group in sorted(by_year.items()):
         requested = sum(e.plan.usg_request_cents for e in group)
         keys = [e.plan.key for e in group]
@@ -431,19 +489,23 @@ def _not_fundable(e: _Event, ruleset: RuleSet) -> tuple[str, Verdict, Citation |
             return f"{o.title}: {o.note or o.message}", verdict, o.citation
         if o.past_due:
             return f"{o.title}: the deadline has passed.", verdict, o.citation
+        if o.violated or (rule.kind == "ineligible" and o.from_possible_attribute):
+            # Possibly against a funding rule (for example tickets may be sold, or a summer date): not planned as
+            # certain money until a person confirms.
+            return f"{o.title}: {o.note or o.message} Confirm before counting on USG money.", Verdict.YELLOW, o.citation
     if e.term is None:
         return "The event is outside the academic terms in Greenlight's calendar.", Verdict.YELLOW, None
     for d in e.usg_deadlines:
         if d.passed_per_table and d.table_date is not None:
             return (f"{d.title}: {_table_text(d)}, which has passed. Confirm with USG.", Verdict.YELLOW,
                     d.table_citation)
-        if d.table_status in ("no_deadline", "not_applicable"):
+        if d.table_status in ("no_deadline", "not_applicable", "not_in_table"):
             return f"{_table_text(d)}. Confirm with USG.", Verdict.YELLOW, d.table_citation
     return None
 
 
 def _strategy(request: YearPlanRequest, events: list[_Event], problems: _Problems, ruleset: RuleSet, semester_cap: int,
-              yearly_cap: int, as_of: date) -> FundingStrategy:
+              yearly_cap: int, as_of: date, calendar: AcademicCalendar) -> FundingStrategy:
     sem_rule, year_rule = ruleset.get(SEMESTER_CAP_RULE), ruleset.get(YEARLY_CAP_RULE)
     not_planned: list[NotPlanned] = []
     fundable: list[_Event] = []
@@ -476,12 +538,12 @@ def _strategy(request: YearPlanRequest, events: list[_Event], problems: _Problem
         per_term[term_id] += 1
         chosen.append(e)
 
-    this_year = _academic_year(as_of)
+    this_year = _academic_year(as_of, calendar)
     remaining: dict[str, int] = {}
     unknown_years: set[str] = set()
     steps: list[FundingStep] = []
     for e in chosen:
-        year = _academic_year(e.plan.event_date or as_of)
+        year = _academic_year(e.plan.event_date or as_of, calendar)
         if year not in remaining:
             received = request.usg_received_this_year_cents if year == this_year else 0
             if received is None:
@@ -528,7 +590,7 @@ def _strategy(request: YearPlanRequest, events: list[_Event], problems: _Problem
 
 
 def _budget(request: YearPlanRequest, events: list[_Event], strategy: FundingStrategy, ruleset: RuleSet,
-            yearly_cap: int, as_of: date) -> BudgetSummary:
+            yearly_cap: int, as_of: date, calendar: AcademicCalendar) -> BudgetSummary:
     planned = {step.key: step.planned_cents for step in strategy.steps}
     available = request.money_on_hand_cents + request.expected_income_cents
     remaining = available
@@ -547,11 +609,11 @@ def _budget(request: YearPlanRequest, events: list[_Event], strategy: FundingStr
     total = sum(r.cost_cents for r in ordered)
     requested = sum(r.usg_requested_cents for r in ordered)
     # Over the yearly cap, academic year by year (money received is known only for the current year).
-    this_year = _academic_year(as_of)
+    this_year = _academic_year(as_of, calendar)
     by_year: dict[str, int] = defaultdict(int)
     for e in events:
         if e.asks_usg:
-            by_year[_academic_year(e.plan.event_date or as_of)] += e.plan.usg_request_cents
+            by_year[_academic_year(e.plan.event_date or as_of, calendar)] += e.plan.usg_request_cents
     over: int | None = 0
     for year, amount in by_year.items():
         received = request.usg_received_this_year_cents if year == this_year else 0
