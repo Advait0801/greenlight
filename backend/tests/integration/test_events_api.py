@@ -82,3 +82,10 @@ def test_parse_route_rejects_empty_and_long_sentences(client) -> None:  # type: 
 def test_vocabulary_lists_tickable_details(client) -> None:  # type: ignore[no-untyped-def]
     details = {d["name"]: d["description"] for d in client.get("/events/vocabulary").json()["details"]}
     assert "food" in details and "usg_funding" in details and "venue_outdoor" not in details
+
+
+def test_ics_leaves_out_the_date_not_applied_in_a_conflict(client) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit M1): the calendar file held both conflicting cancellation dates."""
+    text = client.post("/events/packet.ics", json={"event": EVENT, "as_of": "2026-11-15"}).text.replace("\r\n ", "")
+    assert "tes-cancellation-large-faq@greenlight" in text
+    assert "tes-cancellation-large-terms@greenlight" not in text

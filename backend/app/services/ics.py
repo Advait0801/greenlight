@@ -72,7 +72,7 @@ def packet_to_ics(packet: EventPacket, *, now: datetime | None = None) -> str:
         lines += _vevent(f"{key}-event@greenlight", packet.event.event_date, last + timedelta(days=1), name,
                          "The event. " + packet.notice, None, stamp)
     for o in packet.obligations:
-        if o.due is None:
+        if o.due is None or o.superseded_by is not None:
             continue
         summary = f"{o.status_label}: {o.title}"
         if o.past_due:

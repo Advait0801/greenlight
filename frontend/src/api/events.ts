@@ -60,6 +60,7 @@ export interface PacketObligation {
   triggered_by: string[];
   from_possible_attribute: boolean;
   fallbacks: Fallback[];
+  superseded_by: string | null;
 }
 
 export interface SourceConflict {

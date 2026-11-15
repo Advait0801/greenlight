@@ -235,12 +235,39 @@ def _due_note(rule: Rule, facts: EventFacts, due: date | None) -> str | None:
     return f"{_lead_time(rule)}."
 
 
-def _fallbacks(ruleset: RuleSet, rule: Rule, as_of: date, triggered_by: list[str], facts: EventFacts) -> list[Fallback]:
+def _blocked_day(day: date, ruleset: RuleSet, calendar: AcademicCalendar) -> bool:
+    """A day an event should not be moved to: a break, holiday, study day or final exam, or the start of spring 2027
+    that Trojan Event Services blocks (through the end of its confirm window)."""
+    if calendar.is_break(day) or calendar.is_university_holiday(day) or calendar.is_study_day_or_final_exam(day):
+        return True
+    if "tes-no-events-first-three-weeks" in ruleset:
+        params = ruleset.get("tes-no-events-first-three-weeks").params
+        through = date.fromisoformat(params["no_events_through"])
+        window = params.get("confirm_window") or {}
+        last = date.fromisoformat(window["end"]) if window else through
+        if date(through.year, 1, 1) <= day <= last:
+            return True
+    return False
+
+
+def _next_open_day(day: date, ruleset: RuleSet, calendar: AcademicCalendar) -> date:
+    """The first day on or after `day` that is not blocked, while the calendar covers it (bounded to a year)."""
+    for _ in range(366):
+        if not calendar.covers(day) or not _blocked_day(day, ruleset, calendar):
+            return day
+        day += timedelta(days=1)
+    return day
+
+
+def _fallbacks(ruleset: RuleSet, calendar: AcademicCalendar, rule: Rule, as_of: date, triggered_by: list[str],
+               facts: EventFacts) -> list[Fallback]:
     out: list[Fallback] = []
     earliest = deadlines.latest_start_meeting(rule, as_of)
     if earliest is not None:
-        out.append(Fallback(kind="move_date", earliest_date=earliest,
-                            text=f"Move the event to {_fmt(earliest)} or later to meet this deadline, then check the new date again."))
+        open_day = _next_open_day(earliest, ruleset, calendar)
+        skipped = " (the first day after it that is not a break, holiday, study day or finals day)" if open_day != earliest else ""
+        out.append(Fallback(kind="move_date", earliest_date=open_day,
+                            text=f"Move the event to {_fmt(open_day)} or later{skipped} to meet this deadline, then check the new date again."))
     droppable = [name for name in triggered_by if name != facts.venue and name != "usg_funding"]
     if droppable:
         what = "; ".join(_describe(ruleset, name) for name in droppable)
@@ -317,7 +344,7 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
         message = rule.message
         fix = _fix(rule)
         finding = _finding(ruleset, rule, status, note or message, fix, green=green and status == "condition", past_due=past_due)
-        fallbacks = _fallbacks(ruleset, rule, as_of, triggered_by, facts) if (past_due or status == "blocked" or (violated and status == "check_with_office")) else []
+        fallbacks = _fallbacks(ruleset, calendar, rule, as_of, triggered_by, facts) if (past_due or status == "blocked" or (violated and status == "check_with_office")) else []
         obligations.append(PacketObligation(
             rule_id=rule.id,
             title=rule.title,
@@ -340,19 +367,36 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
         ))
 
     conflicts = _conflicts(ruleset, obligations)
-    hard_blocks = _hard_blocks(facts, as_of, obligations)
+    by_id = {o.rule_id: o for o in obligations}
+    for conflict in conflicts:
+        if conflict.applied is None:
+            continue
+        loser = by_id[next(rule_id for rule_id in conflict.rules if rule_id != conflict.applied)]
+        if loser.superseded_by is None:
+            loser.superseded_by = conflict.applied
+            loser.note = (loser.note + " " if loser.note else "") + (
+                f"Not applied: sources disagree, and Greenlight uses the stricter rule instead ({by_id[conflict.applied].title}).")
+            loser.fallbacks = []
+    active = [o for o in obligations if o.superseded_by is None]
+    hard_blocks = _hard_blocks(facts, as_of, active)
     questions = _questions(ruleset, facts, possible)
     timeline = sorted(
         (TimelineEntry(day=o.due, rule_id=o.rule_id, title=o.title, status=o.status, past_due=o.past_due)
-         for o in obligations if o.due is not None),
+         for o in active if o.due is not None),
         key=lambda entry: (entry.day, entry.rule_id),
     )
-    move_dates = [f.earliest_date for o in obligations if o.past_due for f in o.fallbacks if f.earliest_date]
+    move_dates = [f.earliest_date for o in active if o.past_due for f in o.fallbacks if f.kind == "move_date" and f.earliest_date]
+    undated_passed = [o for o in active if o.past_due and o.due is None]
     fallbacks: list[Fallback] = []
     if move_dates:
-        latest = max(move_dates)
-        fallbacks.append(Fallback(kind="move_date", earliest_date=latest,
-                                  text=f"Every passed deadline is met if the event moves to {_fmt(latest)} or later. Check the new date again: it may fall in a blocked period."))
+        latest = _next_open_day(max(move_dates), ruleset, calendar)
+        text = f"Every passed dated deadline is met if the event moves to {_fmt(latest)} or later"
+        text += (", the first such day outside breaks, holidays, study days and finals." if calendar.covers(latest)
+                 else ". Greenlight's calendar does not cover that date, so check it with the office.")
+        if undated_passed:
+            text += (" That does not settle " + "; ".join(o.title for o in undated_passed)
+                     + ": no source dates these, so check USG's deadline table for the new date.")
+        fallbacks.append(Fallback(kind="move_date", earliest_date=latest, text=text))
     if any(o.rule_id.startswith("usg-") and (o.status == "blocked" or o.past_due) for o in obligations):
         fallbacks.append(Fallback(kind="other_funding", text="Undergraduate Student Government (USG) funding is not possible as described. Plan the event with club money, an in-kind sponsor or a co-host, or ask the Undergraduate Student Government (USG) funding office at usgfunds@usc.edu."))
     counts = {status: sum(1 for o in obligations if o.status == status) for status in STATUS_LABELS}

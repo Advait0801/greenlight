@@ -29,6 +29,7 @@ const GROUP_TITLES: Record<(typeof ORDER)[number], string> = {
 };
 
 function badgeFor(o: PacketObligation): { state: BadgeState; label: string } {
+  if (o.superseded_by) return { state: "info", label: "Not applied: a stricter source is used" };
   if (o.finding) {
     const verdict = o.finding.verdict;
     if (verdict === "green") return { state: "green", label: "Meets the rule (date checked)" };
@@ -51,7 +52,7 @@ function ObligationCard({ o, describe }: { o: PacketObligation; describe: (name:
         <StatusBadge state={badge.state} label={badge.label} />
       </div>
       <p className="mt-2">{o.message}</p>
-      {o.due ? (
+      {o.due && !o.superseded_by ? (
         <p className="mt-2 font-medium">
           {o.status === "office_decides" ? "Contact them by " : "Due "}
           <time dateTime={o.due}>{formatDay(o.due)}</time>

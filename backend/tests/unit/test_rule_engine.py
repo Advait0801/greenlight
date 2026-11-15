@@ -103,7 +103,9 @@ def test_passed_deadlines_get_fallbacks(ruleset, calendar) -> None:  # type: ign
     kinds = {f.kind for f in minors.fallbacks}
     assert {"move_date", "change_format"} <= kinds
     move = next(f for f in minors.fallbacks if f.kind == "move_date")
-    assert move.earliest_date == date(2027, 1, 14)  # 60 days after November 15
+    # 60 days after November 15 is January 14, 2027, inside the spring block (no events through January 26,
+    # confirm through January 31), so the suggestion is the first open day after it.
+    assert move.earliest_date == date(2027, 2, 1)
     assert any("was due on" in block for block in packet.hard_blocks)
     assert packet.fallbacks and packet.fallbacks[0].earliest_date == max(
         f.earliest_date for o in packet.obligations for f in o.fallbacks if f.earliest_date)
@@ -165,7 +167,7 @@ def test_timeline_is_sorted_and_only_holds_dated_items(ruleset, calendar) -> Non
                      attributes=["social_dance", "social_event", "amplified_sound", "performers"])
     days = [entry.day for entry in packet.timeline]
     assert days == sorted(days)
-    assert len(days) == sum(1 for o in packet.obligations if o.due)
+    assert len(days) == sum(1 for o in packet.obligations if o.due and o.superseded_by is None)
     assert days[0] == date(2027, 1, 17)  # social dance: start 3 months before
 
 
@@ -194,3 +196,31 @@ def test_usg_breaks_rule_is_not_green_for_a_summer_event(ruleset, calendar) -> N
     item = _by_id(packet)["usg-no-funding-breaks"]
     assert item.status == "check_with_office"
     assert item.finding is not None and item.finding.verdict is Verdict.YELLOW
+
+
+def test_the_rule_not_applied_in_a_conflict_is_marked_and_left_off_the_timeline(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit M1): both decoration dates showed as plain to-do items."""
+    packet = _packet(ruleset, calendar, event_date=date(2027, 4, 22), venue="venue_tes_large", attributes=["decorations"])
+    o = _by_id(packet)
+    assert o["tes-decorations-faq"].superseded_by == "tes-decorations-terms"
+    assert "Not applied" in (o["tes-decorations-faq"].note or "")
+    assert o["tes-decorations-terms"].superseded_by is None
+    on_timeline = {entry.rule_id for entry in packet.timeline}
+    assert "tes-decorations-terms" in on_timeline and "tes-decorations-faq" not in on_timeline
+    assert "tes-cancellation-large-terms" not in on_timeline and "tes-cancellation-large-faq" in on_timeline
+
+
+def test_move_date_suggestions_skip_breaks_and_name_undated_usg_deadlines(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit M4; iteration 1, verify L2): the suggestion fell in winter break and
+    claimed every passed deadline was met while USG's academic-week deadline had certainly passed."""
+    packet = _packet(ruleset, calendar, event_date=date(2026, 11, 20), venue="venue_tes_meeting_room", attributes=["food", "usg_funding"])
+    move = next(f for f in packet.fallbacks if f.kind == "move_date")
+    assert move.earliest_date is not None
+    assert not (calendar.is_break(move.earliest_date) or calendar.is_university_holiday(move.earliest_date)
+                or calendar.is_study_day_or_final_exam(move.earliest_date))
+    assert move.earliest_date >= date(2027, 2, 1)
+    assert "USG's deadline table" in move.text
+    for o in packet.obligations:
+        for f in o.fallbacks:
+            if f.kind == "move_date" and f.earliest_date and calendar.covers(f.earliest_date):
+                assert not calendar.is_break(f.earliest_date), (o.rule_id, f.earliest_date)

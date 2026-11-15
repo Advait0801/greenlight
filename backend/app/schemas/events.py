@@ -92,6 +92,9 @@ class PacketObligation(BaseModel):
     triggered_by: list[str]
     from_possible_attribute: bool
     fallbacks: list[Fallback] = Field(default_factory=list)
+    # Set when sources disagree and Greenlight applies another, stricter rule instead of this one. The item stays
+    # listed (with its citation) but is left out of the timeline, the calendar file and the hard blocks.
+    superseded_by: str | None = None
 
 
 class SourceConflict(BaseModel):
