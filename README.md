@@ -6,6 +6,8 @@ Greenlight is a planning and pre-check tool for student organization officers at
 
 Built at the AI@USC hackathon (HackSC × USC AI Committee), November 14–15, 2026.
 
+**Live app:** https://greenlight--manasman1.replit.app — no sign-up and no setup. Start with **Load the demo club** on the year plan. Every result is a pre-check, not a decision.
+
 ## The problem
 
 Running a USC club means passing checks owned by different offices: yearly recognition, event approvals and student government funding. Each has its own rules and clocks, no single page puts them on one timeline, and a small mistake can cost a club its funding or its recognition. One club was denied recognition over three missing words in its constitution.
@@ -91,6 +93,37 @@ python scripts/validate_rules.py
 ```bash
 python scripts/run_eval.py
 ```
+
+## Try the demo (3 minutes)
+
+Everything below uses made-up data, and its AI readings are recorded, so it works even when the AI service is slow or down.
+
+1. **Recognition** → *No file to hand? Try a sample constitution* → *Check my constitution*. A GPA limit on members is flagged as breaking the open-membership rule, and the blank officer-transition clause as missing.
+2. **Year plan** → *Load the demo club*. Five spring events and $1,200 on hand become a calendar and a budget, with the problems to fix early (USG's yearly cap, a ticketed event, a travel deadline that falls before the semester).
+3. On *Culture night*, **Open event packet** → *Build the packet*: every form and deadline, dated and sourced, a "sources disagree" note and items the office decides.
+4. **Open money check** → *Load the demo club's culture night budget* → *Check the budget*: catering over the $35 per person cap, a DJ fee and ticket sales are red. Send it to the USG screen with the club name `Lantern Cultural Society`.
+5. Back on the year plan, **Close the $1,170 gap** → *Show the options USC allows* → *Fill in the demo club's example* → *Draft the email*. Edit, then approve; nothing is sent.
+6. **USG screen**: reviewers enter the passcode (kept by the team, not public), open the application and draft a reason from the ticked findings; a person approves it before the club can read it.
+7. **Accuracy**: caught, missed and wrongly flagged on the test sets.
+
+## Accuracy
+
+`python scripts/run_eval.py` measures four hand-written test sets with known answers (data/eval/). The figures on the app's Accuracy page come from `data/eval/results.json`, which a test keeps equal to a fresh run. Refresh it after a change with `python scripts/run_eval.py --json > data/eval/results.json`.
+
+## Deploying
+
+The deployed site is one process: `python -m app --site` (from `backend/`) serves the built frontend and the API under `/api` on one address. `scripts/deploy/build.sh` installs the backend into `.venv-deploy/` and builds the frontend; `scripts/deploy/start.sh` seeds the demo club and starts the site on `$PORT` (default 5000). `.replit` runs these two scripts on Replit.
+
+Settings come from the environment (Replit secrets), never from the repository:
+
+| Name | Purpose |
+|---|---|
+| `DATABASE_URL` | Postgres URL (Replit sets it for its database). Without it the site falls back to a SQLite file that a redeploy erases. |
+| `AI_MODE` | `live` reads new input with Claude and replays recorded answers for the demo's inputs; `recorded` never calls the API. |
+| `ANTHROPIC_API_KEY` | Needed only for `live`. |
+| `MODEL_EXTRACT`, `MODEL_CLASSIFY` | Model names. |
+| `USG_REVIEWER_KEY` | Passcode for the USG screen, at least 12 characters. Unset: the USG screen stays closed. |
+| `APP_ENV` | `production` when deployed. |
 
 ## Repository layout
 
