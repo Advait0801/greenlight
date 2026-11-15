@@ -6,7 +6,10 @@ import ast
 from pathlib import Path
 
 APP = Path(__file__).resolve().parents[2] / "app"
-NO_AI = [APP / "rules", APP / "services" / "rule_engine.py", APP / "services" / "deadlines.py", APP / "services" / "year_planner.py"]
+# The only modules outside app/ai that may use the AI client: intake (reading uploads into typed JSON)
+# and drafting. Add a module here only if it reads or drafts, never if it checks. Everything else under
+# app/ (rules, services, deadlines, planner, API routes) is checked, whatever its file name.
+AI_ALLOWED: set[Path] = set()
 
 
 def _imports(path: Path) -> set[str]:
@@ -17,15 +20,33 @@ def _imports(path: Path) -> set[str]:
             names.update(alias.name for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module:
             names.add(node.module)
+            if node.module == "app":  # from app import ai
+                names.update(f"app.{alias.name}" for alias in node.names)
+        elif isinstance(node, ast.Call) and getattr(node.func, "id", None) == "__import__" and node.args:
+            first = node.args[0]
+            if isinstance(first, ast.Constant) and isinstance(first.value, str):
+                names.add(first.value)
     return names
 
 
-def test_rule_code_never_imports_the_ai_client() -> None:
-    files = [p for target in NO_AI if target.exists() for p in ([target] if target.is_file() else target.rglob("*.py"))]
-    assert files, "expected at least app/rules to exist"
-    for path in files:
-        bad = {name for name in _imports(path) if name == "anthropic" or name.startswith(("app.ai", "anthropic."))}
-        assert not bad, f"{path.relative_to(APP.parent)} imports {bad}"
+def _uses_ai(path: Path) -> set[str]:
+    return {name for name in _imports(path) if name in ("anthropic", "app.ai") or name.startswith(("app.ai.", "anthropic."))}
+
+
+def test_only_intake_and_drafting_modules_import_the_ai_client() -> None:
+    """Regression (phase 0 iteration 3, code audit L): the guard covers every module, not fixed file names."""
+    for path in APP.rglob("*.py"):
+        if APP / "ai" in path.parents or path in AI_ALLOWED:
+            continue
+        bad = _uses_ai(path)
+        assert not bad, f"{path.relative_to(APP.parent)} imports {bad}; checking code never uses the AI"
+
+
+def test_the_guard_sees_every_import_form(tmp_path: Path) -> None:
+    sample = tmp_path / "sample.py"
+    for line in ("from app import ai", "import app.ai.client", "from app.ai.schemas import ExtractedField", "import anthropic"):
+        sample.write_text(line + "\n", encoding="utf-8")
+        assert _uses_ai(sample), line
 
 
 def test_only_the_ai_package_imports_the_sdk() -> None:
