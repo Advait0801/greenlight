@@ -137,7 +137,7 @@ const centsText = (cents: number | null) => (cents === null ? "" : (cents / 100)
 export function MoneyCheck() {
   const [vocab, setVocab] = useState<MoneyVocabulary | null>(null);
   const [event, setEvent] = useState<BudgetEvent>(BLANK_EVENT);
-  const [club, setClub] = useState({ received: "0", funded: "0" });
+  const [club, setClub] = useState({ received: "", funded: "" });
   const [attachments, setAttachments] = useState<string[]>([]);
   const [lines, setLines] = useState<EditLine[]>([{ ...BLANK_LINE }]);
   const [documents, setDocuments] = useState<QuoteDocument[]>([]);
