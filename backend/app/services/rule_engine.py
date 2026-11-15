@@ -297,12 +297,22 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
     obligations: list[PacketObligation] = []
     start, end = facts.event_date, facts.end_date
     for rule in select_rules(ruleset, everything):
+        tent_limit = rule.params.get("tent_area_sqft_over")
+        tent_note: str | None = None
+        if isinstance(tent_limit, int) and "open_flame" not in everything:
+            # Only open flame or a tent larger than the limit needs this permit.
+            if facts.tent_area_sqft is not None and facts.tent_area_sqft <= tent_limit:
+                continue
+            tent_note = (f"Your tent is {facts.tent_area_sqft} square feet, larger than {tent_limit} square feet."
+                         if facts.tent_area_sqft is not None else
+                         f"Needed only for a tent, canopy or membrane structure larger than {tent_limit} square feet. "
+                         "Enter the tent's size to check.")
         from_possible = rule.id not in certain_rules
         triggered_by = [t for t in rule.triggers if t in everything]
         fact_name = rule.params.get("violated_when")
         if isinstance(fact_name, str) and fact_name in everything and fact_name not in triggered_by and _breaking_fact(ruleset, rule, everything):
             triggered_by.append(fact_name)
-        note: str | None = None
+        note: str | None = tent_note
         unsure = from_possible
         green = False
 
@@ -378,6 +388,15 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
                 f"Not applied: sources disagree, and Greenlight uses the stricter rule instead ({by_id[conflict.applied].title}).")
             loser.fallbacks = []
     active = [o for o in obligations if o.superseded_by is None]
+    approvals = by_id.get("approvals-two-weeks")
+    if approvals is not None and approvals.due is not None and approvals.superseded_by is None:
+        for o in active:
+            if o.status == "office_decides" and o.due is None and ruleset.get(o.rule_id).kind == "requirement":
+                o.contact_by = approvals.due
+                o.contact_by_citation = approvals.citation
+                o.note = (o.note + " " if o.note else "") + (
+                    f"No lead time is published for this. Every required approval must be in place by {_fmt(approvals.due)} "
+                    "(two weeks before the event), so contact the office well before then.")
     hard_blocks = _hard_blocks(facts, as_of, active)
     questions = _questions(ruleset, facts, possible)
     timeline = sorted(

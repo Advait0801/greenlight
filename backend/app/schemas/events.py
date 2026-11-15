@@ -42,6 +42,8 @@ class EventFacts(BaseModel):
     end_date: date | None = None
     venue: VenueType | None = None
     headcount: int | None = Field(default=None, ge=0, le=MAX_HEADCOUNT)
+    # Entered by the officer (never read by the model): the largest tent, canopy or membrane structure, in square feet.
+    tent_area_sqft: int | None = Field(default=None, ge=0, le=1_000_000)
     attributes: list[str] = Field(default_factory=list, max_length=MAX_ATTRIBUTES)
     possible_attributes: list[str] = Field(default_factory=list, max_length=MAX_ATTRIBUTES)
     # Fields the reading step could not read with confidence; the officer must answer them.
@@ -95,6 +97,10 @@ class PacketObligation(BaseModel):
     # Set when sources disagree and Greenlight applies another, stricter rule instead of this one. The item stays
     # listed (with its citation) but is left out of the timeline, the calendar file and the hard blocks.
     superseded_by: str | None = None
+    # For an 'office decides' approval with no lead time of its own: the date by which every required approval must be
+    # in place (rule approvals-two-weeks), with that rule's citation. Never a date the item's own source gives.
+    contact_by: date | None = None
+    contact_by_citation: Citation | None = None
 
 
 class SourceConflict(BaseModel):

@@ -224,3 +224,38 @@ def test_move_date_suggestions_skip_breaks_and_name_undated_usg_deadlines(rulese
         for f in o.fallbacks:
             if f.kind == "move_date" and f.earliest_date and calendar.covers(f.earliest_date):
                 assert not calendar.is_break(f.earliest_date), (o.rule_id, f.earliest_date)
+
+
+@pytest.mark.parametrize(("area", "listed"), [(None, True), (600, True), (451, True), (450, False), (200, False)])
+def test_fire_permit_follows_the_tent_size(ruleset, calendar, area, listed) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit M6): the LAFD permit fired on any tent; the source says larger than
+    450 square feet. Unknown size keeps it listed with a note to check."""
+    packet = _packet(ruleset, calendar, event_date=date(2027, 4, 15), venue="venue_outdoor", attributes=["tent", "outside_rentals"],
+                     tent_area_sqft=area)
+    o = _by_id(packet)
+    assert ("lafd-division-5-permit" in o) is listed
+    if listed:
+        assert "450 square feet" in (o["lafd-division-5-permit"].note or "")
+    assert "tes-outside-rentals" in o  # a rented tent still needs its rental deadline
+
+
+def test_open_flame_needs_the_fire_permit_whatever_the_tent_size(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    packet = _packet(ruleset, calendar, event_date=date(2027, 4, 15), venue="venue_outdoor", attributes=["tent", "open_flame"],
+                     tent_area_sqft=100)
+    assert "lafd-division-5-permit" in _by_id(packet)
+
+
+def test_office_decides_approvals_get_the_all_approvals_date_with_its_source(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit M8; iteration 1, verify M3): office-decides items had no contact-by
+    date. The terms require every approval two weeks before, which is the sourced latest date."""
+    packet = _packet(ruleset, calendar, event_date=date(2027, 4, 9), venue="venue_outdoor",
+                     attributes=["food", "amplified_sound", "performers", "social_event"])
+    o = _by_id(packet)
+    for rule_id in ("special-event-insurance", "amplified-sound-outdoor", "fpm-outdoor-electrical"):
+        item = o[rule_id]
+        assert item.due is None and item.contact_by == date(2027, 3, 26), rule_id
+        assert item.contact_by_citation is not None and item.contact_by_citation.rule_id == "approvals-two-weeks"
+        assert item.finding is not None and item.finding.verdict is Verdict.OFFICE_DECIDES
+    assert o["dps-security"].contact_by is None and o["dps-security"].due == date(2027, 3, 26)  # it has its own date
+    off_campus = _packet(ruleset, calendar, event_date=date(2027, 4, 9), venue="venue_off_campus", attributes=["performers"])
+    assert _by_id(off_campus)["special-event-insurance"].contact_by is None  # no approvals rule off campus
