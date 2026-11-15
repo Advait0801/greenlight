@@ -147,20 +147,27 @@ export function Strategy({ report }: { report: YearPlanReport }) {
       <details className="text-sm text-stone-700"><summary className="cursor-pointer font-medium text-cardinal">How the order is worked out</summary>
         <ul className="mt-2 list-disc space-y-1 pl-5">{report.strategy.explanation.map((t) => <li key={t}>{t}</li>)}</ul></details>
       {report.strategy.steps.length === 0 ? <p className="mt-3 text-stone-700">No event is planned for USG funding.</p> : (
-        <ol className="mt-4 space-y-3">
+        <ol className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {report.strategy.steps.map((s) => (
-            <li key={s.key} className="rounded-xl border border-stone-200 bg-white p-4">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <p className="font-semibold"><span className="mr-2 tabular-nums text-stone-500">{s.order}.</span>{s.name}</p>
-                <StatusBadge state={s.status === "apply" ? "info" : "yellow"} label={s.status === "apply" ? `Ask for ${dollars(s.planned_cents)}` : `Ask for ${dollars(s.planned_cents)} of ${dollars(s.requested_cents)}`} />
-              </div>
-              <p className="mt-1 text-sm">{s.note}</p>
-              {s.apply_by ? <p className="mt-1 text-sm"><span className="font-medium">Apply by: </span>{deadlineText(s.apply_by)}</p> : null}
-              <p className="mt-1 text-sm">
-                <span className="font-medium">Fund: </span>
-                {s.fund.fund_name ?? "Not chosen yet"}{s.fund.status === "unsure" ? " (needs a human look)" : ""}. {s.fund.explanation}
-              </p>
-              <Sources citations={[...(s.apply_by ? [s.apply_by.citation, s.apply_by.table_citation] : []), ...s.fund.citations]} />
+            <li key={s.key} className="flex flex-col rounded-lg bg-white p-4 shadow-[var(--shadow-card)] ring-1 ring-stone-200">
+              <p className="text-sm text-stone-500">Step {s.order}</p>
+              <p className="font-semibold">{s.name}</p>
+              <p className="mt-3 font-display text-2xl font-semibold tabular-nums">{dollars(s.planned_cents)}</p>
+              <p className="text-sm text-stone-600">{s.status === "apply" ? "to ask USG for" : `of ${dollars(s.requested_cents)} requested`}</p>
+              {s.status !== "apply" ? <div className="mt-1"><StatusBadge state="yellow" label={`Ask for ${dollars(s.planned_cents)} of ${dollars(s.requested_cents)}`} /></div> : null}
+              <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
+                <dt className="text-stone-500">Apply by</dt>
+                <dd className="font-medium">{s.apply_by ? formatDay(s.apply_by.apply_by) : "No date"}</dd>
+                <dt className="text-stone-500">Fund</dt>
+                <dd className="font-medium">{s.fund.fund_name ?? "Not chosen yet"}{s.fund.status === "unsure" ? <span className="ml-1"><StatusBadge state="yellow" label="Check" /></span> : null}</dd>
+              </dl>
+              <details className="mt-3">
+                <summary className="cursor-pointer text-sm text-cardinal">Why?</summary>
+                <p className="mt-2 text-sm">{s.note}</p>
+                {s.apply_by ? <p className="mt-1 text-sm"><span className="font-medium">Apply by: </span>{deadlineText(s.apply_by)}</p> : null}
+                <p className="mt-1 text-sm"><span className="font-medium">Fund: </span>{s.fund.fund_name ?? "Not chosen yet"}{s.fund.status === "unsure" ? " (needs a human look)" : ""}. {s.fund.explanation}</p>
+                {[...(s.apply_by ? [s.apply_by.citation, s.apply_by.table_citation] : []), ...s.fund.citations].filter((c): c is NonNullable<typeof c> => c !== null).map((c) => <SourceLink key={c.rule_id} citation={c} />)}
+              </details>
             </li>
           ))}
         </ol>
@@ -232,9 +239,9 @@ export function Budget({ report }: { report: YearPlanReport }) {
 
 export function BudgetAndFunding({ report }: { report: YearPlanReport }) {
   return (
-    <div className="grid gap-10 xl:grid-cols-2">
-      <Budget report={report} />
+    <div className="space-y-12">
       <Strategy report={report} />
+      <Budget report={report} />
     </div>
   );
 }
