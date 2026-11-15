@@ -8,8 +8,8 @@ Final reviewers in Phase 7 must **not** read this file.
 
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
-- **Phase 5 (supporting features and the USG screen):** built on `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut). Review iterations under way.
-- **Next action:** Phase 5 iteration 3 (audit).
+- **Phase 5 (supporting features and the USG screen):** closed 2026-11-15 after three iterations, pushed to `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut).
+- **Next action:** Phase 6 (ship). Set `USG_REVIEWER_KEY` in Replit secrets; record the demo's denial opening and gap email (AI_MODE=record).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -21,7 +21,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 2 | no (iteration 2: 0 blockers, 4 high, all fixed) | open |
+| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
@@ -102,6 +102,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 5, iteration 3 — audit; phase closed
+Date/time: 2026-11-15
+Agent and model: auditor (fresh), Opus 5.5, medium effort, on commit b2cc360
+Report: docs/reviews/phase-5-iter-3-audit.md
+Findings: 0/1/4/7 (the 26 rules the gap helper offers, cites or bans match their snapshots word for word; code makes every figure, date and verdict; every option, reason and chart row carries its rule text and source; other USC funds always yellow; nothing is sent; tokens random, hashed, compared in constant time; the iteration 2 tests exercise their fixes)
+Fixed: H asks for the company to pay a bill ("cover our venue fee", "reimburse our food costs") and names like "paid for by Dominos" reached the email: the ask is now chosen from a fixed list of in-kind help (food, products, venue, equipment, services), names with payment words are replaced, and the note scan flags bill-paying asks (regression tests in tests/unit/test_gap_helper.py and tests/integration/test_gap_api.py; the 20 prompts re-recorded with the fixed asks). Also M: the fundraiser and ticket-sales options now read "The office decides" with that finding instead of "Allowed"; M: the CORS preflight now allows X-Reviewer-Key; M: no new denial draft once a reason is approved (409); L: a 401 test for denial-approve.
+Left open: see "Open findings after Phase 5".
+Full test suite: pass (807, adversarial included); validate_rules.py OK; run_eval all sets clean (events 456/0/0, budgets 30/0/0, constitutions 21/0/0, year_plans 233/0/0); frontend build OK
+Close: Phase 5 closed after iteration 3 (PLAN.md section 1); no further review round
 
 ### Phase 5, iteration 2 — break
 Date/time: 2026-11-15
@@ -301,6 +311,16 @@ Left open: ...
 Full test suite: pass / fail
 Gate: passed / not yet, because ...
 ```
+
+## Open findings after Phase 5
+
+Medium and low findings left open when Phase 5 closed (details in docs/reviews/phase-5-iter-{1,2,3}-*.md):
+- **Who sent it:** `/usg/send` takes any club name with no account and no rate limit, so anyone can queue an application in a real club's name and move the failure chart; sending twice gives two queue entries counted twice (M, iterations 2 and 3).
+- **Denial text:** the reviewer may approve any text, so it can differ from the rules recorded with it; the model's denial opening is checked for figures only ("do not promise funding" is in the prompt); no recorded answer for the denial opening, so recorded mode uses the plain opening (record the demo in Phase 6) (L).
+- **Gap helper:** the note scan and the filters are word lists (the ask is now an allowlist; names and the drafted paragraph still rely on the lists and on plain English); the donations option shows the 2-week fundraiser meeting, which section 7 does not state for donations; `cosponsors-named-in-uepa` is cited without its campus-space scope; "5k" in a note reads as cash (L).
+- **Access and data:** one shared reviewer passcode with no lockout, and the reviewer name is self-declared; the email and packet approval routes accept anonymous audit-log writes; withdrawn applications keep their data; the status route does not trim spaces around the token (L).
+- **Code:** small duplicated helpers (`_money`, `figures_ok` beside `_numbers_ok`, two private `_as_of`, imports of the private `_club_row`); the banned-options test checks a fixed tuple (L).
+- **Demo note:** the demo plan's culture night gap is $1,170, not the story's $900.
 
 ## Open findings after Phase 4
 
