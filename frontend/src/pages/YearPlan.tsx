@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { VENUE_LABELS, getDetails, type Detail, type EventFacts, type VenueType } from "../api/events";
 import { dollars, toCents, type BudgetEvent, type FundId } from "../api/money";
@@ -67,7 +67,7 @@ function blankEvent(events: EditEvent[], name = ""): EditEvent {
   return { key: newKey(events), name, event_date: "", end_date: "", venue: "", headcount: "", attributes: [], possible_attributes: [], cost: "", request: "0", fund: "" };
 }
 
-function fromRequest(plan: YearPlanRequest): EditPlan {
+export function fromRequest(plan: YearPlanRequest): EditPlan {
   return {
     club_name: plan.club_name, mission: plan.mission, level: plan.level ?? "",
     on_hand: centsText(plan.money_on_hand_cents), income: centsText(plan.expected_income_cents), received: centsText(plan.usg_received_this_year_cents),
@@ -80,7 +80,7 @@ function fromRequest(plan: YearPlanRequest): EditPlan {
   };
 }
 
-function toRequest(edit: EditPlan): { body: YearPlanRequest | null; problems: string[] } {
+export function toRequest(edit: EditPlan): { body: YearPlanRequest | null; problems: string[] } {
   const problems: string[] = [];
   const money = (text: string, label: string, blank: number | null): number | null => {
     if (text.trim() === "") return blank;
@@ -120,7 +120,7 @@ function toRequest(edit: EditPlan): { body: YearPlanRequest | null; problems: st
   };
 }
 
-function loadSaved(): EditPlan {
+export function loadSaved(): EditPlan {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) return { ...EMPTY_PLAN, ...(JSON.parse(raw) as EditPlan) };
@@ -191,6 +191,12 @@ function EventEditor({ e, details, onChange, onDelete }: {
 export function YearPlan() {
   const navigate = useNavigate();
   const [edit, setEdit] = useState<EditPlan>(loadSaved);
+  // Opened from the handover packet: start next year's plan from the one it seeded (the officer edits it).
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as { seedPlan?: YearPlanRequest } | null;
+    if (state?.seedPlan) setEdit(fromRequest(state.seedPlan));
+  }, [location.state]);
   const [details, setDetails] = useState<Detail[]>([]);
   const [report, setReport] = useState<YearPlanReport | null>(null);
   const [inputProblems, setInputProblems] = useState<string[]>([]);

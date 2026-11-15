@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 
 import { EventPacket } from "./pages/EventPacket";
 import { GapHelper } from "./pages/GapHelper";
+import { Handover } from "./pages/Handover";
 import { Home } from "./pages/Home";
 import { Recognition } from "./pages/Recognition";
 import { MoneyCheck } from "./pages/MoneyCheck";
@@ -21,6 +22,7 @@ export const routes: AppRoute[] = [
   { path: "/recognition", element: <Recognition />, label: "Recognition" },
   { path: "/money/check", element: <MoneyCheck />, label: "Money check" },
   { path: "/money/gap", element: <GapHelper />, label: "Funding gap" },
+  { path: "/handover", element: <Handover />, label: "Handover" },
   { path: "/usg", element: <UsgScreen />, label: "USG screen" },
   { path: "/status", element: <Home />, label: "Status" },
 ];
