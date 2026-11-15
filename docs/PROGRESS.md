@@ -6,12 +6,10 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
-- **Phase 2 (this branch):** closed 2026-11-15 after three iterations; pull request from `phase-2/event-packet` into `main` for the humans to merge.
-- **Phase:** 0 — Foundation
-
-- **Phase:** 1 — Recognition check (closed on its branch; pull request into main pending the humans' merge). Phase 0 below.
-- **Step:** closed. Iterations 1-4 ran; every blocker and high from iteration 4 is fixed; the humans ended the review loop there (see Decisions, 2026-11-15)
-- **Next action:** paused at the user's request after the Phase 0 push. Phase 1 (recognition check) starts only when the humans say so, under the new process (at most 3 iterations, 1-2 reviewers each)
+- **Phase 0:** closed 2026-11-15 (Foundation).
+- **Phase 2:** closed 2026-11-15 after three iterations; merged into `main` (pull request from `phase-2/event-packet`).
+- **Phase 1:** closed 2026-11-15 after three iterations; pull request from `phase-1/recognition` into `main` for the humans to merge.
+- **Next action:** the humans merge the Phase 1 pull request; Phase 3 (money check) can start once Phase 2 is on `main` (it is).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
