@@ -33,8 +33,15 @@ def _date(value: str | None) -> date | None:
 
 def seed(session: Session, demo: dict[str, Any]) -> dict[str, int]:
     club_data = demo["club"]
+    demo_emails = {user["email"] for user in demo["users"]}
     existing = session.scalars(select(Club).where(Club.name == club_data["name"])).all()
     for club in existing:
+        members = set(session.scalars(select(User.email).where(User.club_id == club.id)).all())
+        if members - demo_emails:
+            raise SystemExit(
+                f"A club named '{club.name}' with real users already exists; refusing to replace it. "
+                "Rename the demo club in data/demo/club.json or remove that club yourself."
+            )
         plan_ids = session.scalars(select(YearPlan.id).where(YearPlan.club_id == club.id)).all()
         if plan_ids:
             session.execute(delete(Event).where(Event.plan_id.in_(plan_ids)))

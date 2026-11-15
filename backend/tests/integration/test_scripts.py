@@ -106,3 +106,26 @@ def test_seed_demo_and_app_share_one_database_file(tmp_path: Path) -> None:
         assert Settings(_env_file=None, database_url=f"sqlite:///./{name}").database_url == f"sqlite:///{target}"  # type: ignore[call-arg]
     finally:
         target.unlink(missing_ok=True)
+
+
+def test_seed_demo_never_deletes_a_real_club_with_the_same_name(tmp_path: Path) -> None:
+    """Regression (phase 0 iteration 2, L12)."""
+    from sqlalchemy import create_engine, text
+
+    from app.db import init_db
+
+    db = tmp_path / "shared.db"
+    engine = create_engine(f"sqlite:///{db}")
+    init_db(engine)
+    demo_name = json.loads((REPO_ROOT / "data" / "demo" / "club.json").read_text())["club"]["name"]
+    with engine.begin() as connection:
+        connection.execute(text("insert into clubs (name, level, created_at, updated_at) values (:n, 'undergraduate', current_timestamp, current_timestamp)"), {"n": demo_name})
+        connection.execute(text("insert into users (email, display_name, role, club_id, created_at, updated_at) values ('real@usc.edu', 'Real Officer', 'officer', 1, current_timestamp, current_timestamp)"))
+    engine.dispose()
+    result = run(str(SCRIPTS / "seed_demo.py"), env={"DATABASE_URL": f"sqlite:///{db}"})
+    assert result.returncode != 0
+    assert "refusing to replace it" in result.stderr
+    engine = create_engine(f"sqlite:///{db}")
+    with engine.connect() as connection:
+        assert connection.execute(text("select count(*) from users where email = 'real@usc.edu'")).scalar() == 1
+    engine.dispose()
