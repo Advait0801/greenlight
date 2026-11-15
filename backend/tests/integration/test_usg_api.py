@@ -126,3 +126,26 @@ def test_failure_chart_counts_red_rules_once_per_application_and_names_no_club(u
     rows = {r["rule_id"]: r["applications"] for r in stats["rows"]}
     assert rows["usg-food-cap"] == 2 and rows["usg-ineligible-performers"] == 2
     assert "Club A" not in str(stats)
+
+
+def test_no_new_draft_once_a_reason_is_approved(usg) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 5 iteration 3, M): re-drafting after approval changed the recorded reasons behind the text
+    the club already reads."""
+    _send(usg)
+    app_id = usg.get("/usg/queue", headers=REVIEWER).json()["applications"][0]["id"]
+    text = usg.post(f"/usg/applications/{app_id}/denial-draft", headers=REVIEWER, json={"rule_ids": ["usg-food-cap"]}).json()["text"]
+    usg.post(f"/usg/applications/{app_id}/denial-approve", headers=REVIEWER, json={"text": text, "reviewer_name": "R"})
+    again = usg.post(f"/usg/applications/{app_id}/denial-draft", headers=REVIEWER, json={"rule_ids": ["usg-ineligible-performers"]})
+    assert again.status_code == 409
+    assert usg.get(f"/usg/applications/{app_id}", headers=REVIEWER).json()["denial_rule_ids"] == ["usg-food-cap"]
+
+
+def test_denial_approve_needs_the_passcode(usg) -> None:  # type: ignore[no-untyped-def]
+    assert usg.post("/usg/applications/1/denial-approve", json={"text": "x", "reviewer_name": "R"}).status_code == 401
+
+
+def test_the_reviewer_header_is_allowed_cross_origin(usg) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 5 iteration 3, M): the CORS preflight refused X-Reviewer-Key."""
+    response = usg.options("/usg/queue", headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "GET",
+                                                  "Access-Control-Request-Headers": "X-Reviewer-Key"})
+    assert response.status_code == 200

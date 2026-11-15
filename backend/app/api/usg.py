@@ -178,6 +178,11 @@ class DenialDraftRequest(BaseModel):
 def denial_draft(application_id: int, body: DenialDraftRequest, _: str = Depends(require_reviewer),
                  session: Session = Depends(get_session)) -> dict[str, Any]:
     row = _reviewer_row(application_id, session)
+    if row.denial_status == "approved":
+        # The club already reads the approved text; a new draft would make the recorded reasons disagree with it
+        # (phase 5 iteration 3).
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail={"message": "A reason for this application is already approved and visible to the club."})
     available = reasons(row.report)
     chosen = [r for r in available if r.rule_id in set(body.rule_ids)]
     unknown = sorted(set(body.rule_ids) - {r.rule_id for r in available})
@@ -188,8 +193,7 @@ def denial_draft(application_id: int, body: DenialDraftRequest, _: str = Depends
     draft.log(session, row.reference)
     row.denial_rule_ids = sorted({r.rule_id for r in chosen})
     row.denial_draft = draft.text
-    if row.denial_status != "approved":
-        row.denial_status = "draft"
+    row.denial_status = "draft"
     session.commit()
     return {"text": draft.text, "notes": draft.notes, "approved": False,
             "notice": "Edit the reason, then approve it. The club sees nothing until a person approves it."}
