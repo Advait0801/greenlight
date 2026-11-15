@@ -110,7 +110,7 @@ docs/               progress log, review reports, research notes, submission mat
 
 PLAN.md section 1 is the rule book. In short:
 
-- At most **three iterations** per phase: verify, break, audit. Each iteration uses **one or two fresh reviewers**, never more.
+- At most **three iterations** per phase: verify, break, audit. Each iteration uses **exactly one fresh reviewer** (sub-agent), launched with `effort: "medium"`; phase sessions run at medium effort too.
 - Verifier, breaker and auditor are **fresh** agents every iteration. Give them the spec section, the exit criteria and the run commands. Do not give them your reasoning or tell them the code works.
 - They report; they do not fix. The breaker may add tests under `backend/tests/adversarial/` only.
 - Reports go in `docs/reviews/`.

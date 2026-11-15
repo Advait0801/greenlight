@@ -10,7 +10,7 @@ Read [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) first. It says what to build and w
 
 ## 1. How every phase runs
 
-Each phase has **one goal**: one main feature working to its exit criteria. A phase is one build step followed by **at most three verification iterations** (verify, break, audit), each run by **one or two fresh reviewers**.
+Each phase has **one goal**: one main feature working to its exit criteria. A phase is one build step followed by **at most three verification iterations** (verify, break, audit), each run by **exactly one fresh reviewer** (a sub-agent) at **medium effort**.
 
 ```
 BUILD ──> ITERATION 1: VERIFY ──> fix ──> ITERATION 2: BREAK ──> fix ──> ITERATION 3: AUDIT ──> fix ──> CLOSE
@@ -30,7 +30,8 @@ BUILD ──> ITERATION 1: VERIFY ──> fix ──> ITERATION 2: BREAK ──>
 
 - **Fresh context.** Each sub-agent is a new agent that has not seen this conversation or the build. It gets only: the relevant section of `PROJECT_CONTEXT.md`, the phase's exit criteria, and how to run the app and tests. It does **not** get the orchestrator's explanation of how the code works or why it should pass.
 - **A new agent every iteration.** Never reuse a sub-agent across iterations. An agent that saw the last round is no longer independent.
-- **One or two reviewers per iteration.** Split an iteration between two agents only when its scope is clearly two pieces (for example rules and code); never more than two.
+- **One reviewer per iteration.** Each iteration is exactly one fresh sub-agent, so a phase uses three in all. The orchestrator does not review its own work, because the reviewer must not have seen the build.
+- **Effort.** Launch every sub-agent with `effort: "medium"`. Phase sessions also run at medium effort.
 - **Model.** Opus 5.5 (`model: opus`) for verifier, breaker and auditor. The orchestrator may use a cheaper model for mechanical work such as running a test set.
 - **Sub-agents do not fix application code.** The breaker may add tests under `backend/tests/adversarial/` only. Verifier and auditor write nothing except their report.
 - **Reports** go to `docs/reviews/phase-<n>-iter-<m>-<role>.md`. Each finding has: severity (blocker, high, medium, low), what was expected, what happened, exact steps or a failing test to reproduce.
