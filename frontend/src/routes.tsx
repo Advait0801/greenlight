@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 
 import { EventPacket } from "./pages/EventPacket";
 import { Home } from "./pages/Home";
+import { Recognition } from "./pages/Recognition";
 
 // One entry per page. A feature adds its page here (and to the navigation if `label` is set).
 export interface AppRoute {
@@ -13,4 +14,5 @@ export interface AppRoute {
 export const routes: AppRoute[] = [
   { path: "/", element: <Home />, label: "Start" },
   { path: "/events/packet", element: <EventPacket />, label: "Event packet" },
+  { path: "/recognition", element: <Recognition />, label: "Recognition" },
 ];
