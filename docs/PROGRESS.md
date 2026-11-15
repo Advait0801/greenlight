@@ -6,6 +6,7 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
+- **Phase 2 (this branch):** closed 2026-11-15 after three iterations; pull request from `phase-2/event-packet` into `main` for the humans to merge.
 - **Phase:** 0 — Foundation
 - **Step:** closed. Iterations 1-4 ran; every blocker and high from iteration 4 is fixed; the humans ended the review loop there (see Decisions, 2026-11-15)
 - **Next action:** paused at the user's request after the Phase 0 push. Phase 1 (recognition check) starts only when the humans say so, under the new process (at most 3 iterations, 1-2 reviewers each)
@@ -17,7 +18,7 @@ Final reviewers in Phase 7 must **not** read this file.
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | — | 0 | — | open |
-| 2 | Event packet | done (branch `phase-2/event-packet`) | 2 | no (iteration 2: 3 blockers, 2 high, all fixed) | open |
+| 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
@@ -53,6 +54,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 2, iteration 3 — audit; phase closed
+Date/time: 2026-11-15, about 01:35-01:50 PT
+Agent and model: auditor (fresh), Opus 5.5, medium effort, on commit cf5b22e
+Report: docs/reviews/phase-2-iter-3-audit.md
+Findings: 0/1/8/9 (every date-producing rule matches its snapshot in number, unit and anchor; earlier fixes hold)
+Fixed: H1 a summer date was green on "no USG funding during breaks"; dates outside the fall and spring semesters are now "check with the office" (regression test in tests/unit/test_rule_engine.py).
+Left open: see "Open findings after Phase 2".
+Full test suite: pass (413, adversarial included); validate_rules.py OK; run_eval.py events 30/456/0/0; frontend build OK
+Close: Phase 2 closed after iteration 3 (PLAN.md section 1); no further review round
 
 ### Phase 2, iteration 2 — break
 Date/time: 2026-11-15, about 01:10-01:30 PT
@@ -136,6 +147,17 @@ Medium and low findings left open when Phase 0 closed (details in the iteration 
 - **Outside money and calendar:** ticket-sales-cover-costs is information with no fact (M); the deadline-table test checks only the after-recess rows (M); lows on club-to-club co-hosting conditions, sponsorship wording, emblem-product and silent-auction passages, payment dates in blank table rows, the Nov 11 deadline on Veterans Day, no free-drawing case in the event set.
 - **Recognition:** co-06's deleted officer is "weak" where "contradicts" may fit; template wording shows raw {blank} markers and VIII.B.1 is split across a page; blank positions and the continuation's position are not validated; VI.B.2 and VI.C.2 quotes differ only in underscores; some messages state facts outside the quoted passage; no test that each constitution text differs from co-01 only in its listed clauses; the Appendix is not encoded.
 - **Code:** 9 of 62 single-guard removals still leave the suite green (number checks inside lists, relative imports in the architecture test); status and deadline logic is written in more than one place until Phase 2 builds the calculator; the start page miscounts unconfirmed rules; a re-fetched source keeps its old version date; SourceLink does not mark a read rule resting on an unverified one.
+
+## Open findings after Phase 2
+
+Medium and low findings left open when Phase 2 closed (details in docs/reviews/phase-2-iter-{1,2,3}-*.md):
+- **Conflicts:** the date not applied in a source conflict still shows as a plain "To do" in the timeline and .ics (audit M1); the parking pair and USG payment-vs-event pair give no applied rule although the rule messages say which applies (M2); the outdoor deposit ($100 vs $200) and late-travel conflicts are not event obligations, so never reach the packet (M3).
+- **Fallbacks:** the packet-level "move the event to ..." date ignores passed USG academic-week deadlines and can fall in a blocked period such as winter break (audit M4, verify L2).
+- **Reading step:** the year, day and headcount the model reports are not checked against the sentence text (audit M5).
+- **Rule scope:** the LAFD permit fires on any tent, though the source says over 450 sq ft (M6, tent size is not an attribute); the first-three-weeks rule is applied to Trojan Event Services venues only (M7, an open question since Phase 0 M10); final payment leaves out meeting rooms (L); the officer-facing text says the source gives first-three-weeks dates for spring 2027 only, but it also gives fall dates (L).
+- **Office decides:** most items have no contact-by date because no source gives one (verify M3, audit M8); passed contact-by dates are not hard blocks (L).
+- **Lows:** ev-28's answer key expects "condition" where the engine (more cautiously) says "check with the office"; the stricter-rule choice and date checks still appear in eval_sets.py's validator; no test parses the .ics with an independent iCalendar library (the verifier did, by hand); hard blocks carry no citation; the "certainly passed" check assumes the first vendor payment is never after the event; /events/parse has no rate limit and logs audit rows with no club; an .ics with no dated items is empty; DPS and GSG appear without full names in some rule titles; the repository's local .env sets AI_MODE=live (developer setting).
+- **Questions for a person (breaker):** should a due date on a holiday or weekend move earlier; does the first-three-weeks rule cover classrooms and off campus; should the packet mention USG's ineligible line items.
 
 ## Phase ownership and branches
 
