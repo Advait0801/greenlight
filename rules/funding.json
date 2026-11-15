@@ -37,7 +37,7 @@
           "2027-04-19",
           "2027-04-26"
         ],
-        "while_unconfirmed": "show the earlier of the table's date and the same number of weeks counted back with breaks skipped, and cite both"
+        "while_unconfirmed": "give no date; show the deadline as 'check with USG', citing the guidelines and the table"
       },
       "conflicts_with": null,
       "notes": "Open question in PROJECT_CONTEXT section 8. A hand transcription of the table, made in a signed-in browser on 2026-11-14, is in rules/sources/usg-funding-deadlines.txt; code cannot check it against the sheet. In the transcription, the 9-week column for event weeks March 22 to April 26, 2027 is only 2 weeks before the 6-week column (3 weeks elsewhere), and some January and February rows give fewer weeks than the guidelines; a person must compare these rows (rows_to_confirm) with the sheet. The transcribed table is keyed by event week and gives a 6-week and a 9-week deadline (always a Wednesday). It does not follow a simple count of weeks, so deadlines should be looked up in it, not computed. Weeks with no deadline (winter recess, study days, finals, spring recess) have no USG funding."
