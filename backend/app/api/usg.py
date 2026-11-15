@@ -220,6 +220,10 @@ def denial_approve(application_id: int, body: DenialApproval, _: str = Depends(r
     if row.denial_status == "none" or not row.denial_rule_ids:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail={"message": "Draft a reason from the application's findings first."})
+    if row.denial_status == "approved":
+        # The club already reads the approved text; a second approval must not replace it silently (phase 6 iteration 2).
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail={"message": "A reason for this application is already approved and visible to the club."})
     digest = hashlib.sha256(body.text.encode("utf-8")).hexdigest()
     row.denial_status = "approved"
     row.denial_approved_text = body.text
