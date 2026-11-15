@@ -49,8 +49,9 @@ def compare(packet: EventPacket, expected: dict[str, Any]) -> dict[str, Any]:
                 field_diffs.append({"rule_id": rule_id, "field": key, "got": actual[key], "want": entry[key]})
     got_conflicts = {frozenset(c.rules): c.applied for c in packet.source_conflicts}
     want_conflicts = {frozenset(c["rules"]): c["applied"] for c in expected["source_conflicts"]}
-    # A missing expected obligation is 'silent' unless the packet says, in yellow, to check with the office.
-    yellow_cover = any(o.status == "check_with_office" for o in packet.obligations) or bool(packet.questions)
+    # A missing expected obligation is 'silent' unless the packet asks the officer about the event (a missing
+    # detail or an unsure one), which is what would bring it back. A yellow item elsewhere does not count.
+    yellow_cover = bool(packet.questions)
     return {
         "match": not missing and not extra,
         "missing": missing,

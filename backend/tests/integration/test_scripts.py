@@ -153,3 +153,24 @@ def test_seed_demo_never_deletes_a_same_named_club_with_no_users(tmp_path: Path)
     with engine.connect() as connection:
         assert connection.execute(text("select count(*) from year_plans")).scalar() == 1
     engine.dispose()
+
+
+def test_events_evaluator_counts_a_miss_as_silent_unless_the_officer_is_asked() -> None:
+    """Regression (phase 2 iteration 1, verify M2): a yellow item elsewhere in the packet no longer hides a miss."""
+    import sys
+    from datetime import date
+
+    from app.config import REPO_ROOT
+    from app.rules import get_calendar, get_ruleset
+    from app.schemas.events import EventFacts
+    from app.services.rule_engine import build_packet
+
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    from evaluators.events import compare
+
+    ruleset = get_ruleset()
+    packet = build_packet(EventFacts(event_date=date(2027, 4, 9), venue="venue_outdoor", attributes=[]), ruleset, get_calendar(), date(2026, 11, 15))
+    assert any(o.status == "check_with_office" for o in packet.obligations) and not packet.questions
+    expected = {"obligations": [{"rule_id": "minors-registration", "status": "to_do", "due": None, "violated": False, "past_due": False}],
+                "source_conflicts": []}
+    assert compare(packet, expected)["silently_missing"] == ["minors-registration"]
