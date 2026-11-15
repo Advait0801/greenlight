@@ -7,6 +7,7 @@ import {
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
 import { StatusBadge } from "../components/StatusBadge";
+import { PageHeader } from "../components/ui";
 
 const input = "mt-1 w-full rounded border border-stone-400 px-2 py-1";
 const DENIAL_LABELS = { none: "No reason drafted", draft: "Reason drafted, not approved", approved: "Reason approved" } as const;
@@ -138,17 +139,16 @@ export function UsgScreen() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
-        <h2 className="text-2xl font-semibold">USG screen</h2>
+      <PageHeader eyebrow="For USG reviewers" title="USG screen">
         <p>
           For the USG (Undergraduate Student Government) Funding Department. Applications arrive already checked by Greenlight, but only
           the ones a club chose to send. A reviewer can draft a reason for not funding an application, citing the guideline; nothing
           reaches the club until a person approves the text.
         </p>
-      </header>
+      </PageHeader>
 
       {!open ? (
-        <form onSubmit={unlock} className="flex flex-col gap-2 rounded-md border border-stone-300 bg-white p-4 sm:flex-row sm:items-end">
+        <form onSubmit={unlock} className="flex max-w-2xl flex-col gap-3 rounded-2xl border border-stone-300 bg-white p-5 sm:flex-row sm:items-end">
           <label className="block grow">Reviewer passcode<input type="password" className={input} value={key} onChange={(e) => setKey(e.target.value)} autoComplete="off" /></label>
           <button type="submit" className="rounded bg-cardinal px-4 py-2 font-medium text-white">Open the USG screen</button>
         </form>
@@ -158,14 +158,14 @@ export function UsgScreen() {
       {open ? (
         <>
           <PrecheckNotice />
-          {stats ? <FailureChart stats={stats} /> : null}
-          <section aria-labelledby="queue-heading" className="space-y-2">
+          <div className="grid gap-5 xl:grid-cols-[minmax(18rem,26rem)_minmax(0,1fr)] xl:items-start">
+          <section aria-labelledby="queue-heading" className="space-y-2 xl:sticky xl:top-20">
             <h3 id="queue-heading" className="text-lg font-semibold">Queue ({queue.length})</h3>
             {queue.length === 0 ? <p>No club has sent an application yet.</p> : (
               <ul className="space-y-2">
                 {queue.map((a) => (
-                  <li key={a.id} className="rounded-md border border-stone-300 bg-white p-3">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <li key={a.id} className={`rounded-md border bg-white p-3 ${current?.id === a.id ? "border-cardinal ring-2 ring-gold" : "border-stone-300"}`}>
+                    <div className="flex flex-col gap-2">
                       <div>
                         <p className="font-semibold">{a.event_name} · {a.club_name}</p>
                         <p className="text-sm text-stone-600">{a.reference} · {a.event_date ?? "no date"} · {a.total_text} · {DENIAL_LABELS[a.denial_status]}</p>
@@ -220,7 +220,9 @@ export function UsgScreen() {
                 </div>
               ) : null}
             </section>
-          ) : null}
+          ) : <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white/60 p-8 text-center text-stone-700">Open an application from the queue to see Greenlight's findings and draft a reason.</div>}
+          </div>
+          {stats ? <FailureChart stats={stats} /> : null}
         </>
       ) : null}
 
