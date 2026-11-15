@@ -29,6 +29,7 @@ from app.schemas.events import (
 )
 from app.services import deadlines
 
+ON_CAMPUS_VENUES = {"venue_tes_meeting_room", "venue_tes_large", "venue_outdoor", "venue_classroom"}
 EVENT_KINDS = {"deadline", "requirement", "cap", "banned", "blocked_period"}
 FUNDING_KINDS = {"deadline", "blocked_period", "ineligible"}
 VENUE_GROUP = "event_attributes"
@@ -226,7 +227,7 @@ def _fallbacks(ruleset: RuleSet, rule: Rule, as_of: date, triggered_by: list[str
     elif facts.venue in triggered_by:
         out.append(Fallback(kind="change_format", text="Choose a different kind of venue; each venue has its own steps and lead times."))
     if rule.domain == "funding":
-        out.append(Fallback(kind="other_funding", text="Plan the event without USG funding (club money, an in-kind sponsor or a co-host), or ask USG at usgfunds@usc.edu."))
+        out.append(Fallback(kind="other_funding", text="Plan the event without Undergraduate Student Government (USG) funding (club money, an in-kind sponsor or a co-host), or ask the Undergraduate Student Government (USG) funding office at usgfunds@usc.edu."))
     return out
 
 
@@ -238,6 +239,10 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
 
     confirmed = set(facts.attributes) | ({facts.venue} if facts.venue else set())
     possible = set(facts.possible_attributes) - confirmed
+    if facts.venue is None and "tabling" not in confirmed:
+        # The venue is not known: every on-campus venue's steps may apply. List them as 'check with the office'
+        # rather than dropping them (an event with no venue would otherwise show no permit or approvals at all).
+        possible |= ON_CAMPUS_VENUES
     everything = confirmed | possible
     certain_rules = {rule.id for rule in select_rules(ruleset, confirmed)}
 
@@ -277,7 +282,7 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
 
         status = _status(ruleset, rule, violated, unsure=unsure)
         due = deadlines.due_date(rule, start=start, end=end)
-        past_due = bool(due and due < as_of and rule.direction == "before")
+        past_due = bool(due and due < as_of)
         if past_due:
             note = (note + " " if note else "") + f"This was due on {_fmt(due)}, which has passed."  # type: ignore[arg-type]
         message = rule.message
@@ -320,7 +325,7 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
         fallbacks.append(Fallback(kind="move_date", earliest_date=latest,
                                   text=f"Every passed deadline is met if the event moves to {_fmt(latest)} or later. Check the new date again: it may fall in a blocked period."))
     if any(o.rule_id.startswith("usg-") and (o.status == "blocked" or o.past_due) for o in obligations):
-        fallbacks.append(Fallback(kind="other_funding", text="USG funding is not possible as described. Plan the event with club money, an in-kind sponsor or a co-host, or ask USG at usgfunds@usc.edu."))
+        fallbacks.append(Fallback(kind="other_funding", text="Undergraduate Student Government (USG) funding is not possible as described. Plan the event with club money, an in-kind sponsor or a co-host, or ask the Undergraduate Student Government (USG) funding office at usgfunds@usc.edu."))
     counts = {status: sum(1 for o in obligations if o.status == status) for status in STATUS_LABELS}
     return EventPacket(
         as_of=as_of,
@@ -389,6 +394,6 @@ def _questions(ruleset: RuleSet, facts: EventFacts, possible: set[str]) -> list[
         out.append(asks["event_date"])
     if facts.venue is None and "venue" not in facts.needs_officer_input and "tabling" not in facts.attributes:
         out.append(asks["venue"])
-    out.extend(f"Does the event have this: {_describe(ruleset, name)}?" for name in sorted(possible))
+    out.extend(f"Does the event have this: {_describe(ruleset, name)}?" for name in sorted(possible - ON_CAMPUS_VENUES))
     return out
 

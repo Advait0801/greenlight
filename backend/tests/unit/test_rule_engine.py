@@ -166,3 +166,22 @@ def test_timeline_is_sorted_and_only_holds_dated_items(ruleset, calendar) -> Non
     assert days == sorted(days)
     assert len(days) == sum(1 for o in packet.obligations if o.due)
     assert days[0] == date(2027, 1, 17)  # social dance: start 3 months before
+
+
+def test_unknown_venue_lists_every_venue_step_as_check_with_the_office(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 1, verify M1): with no venue, the permit, approvals and security were all missing."""
+    packet = _packet(ruleset, calendar, event_date=date(2027, 4, 9), attributes=["food"])
+    o = _by_id(packet)
+    for rule_id in ("uepa-required", "approvals-two-weeks", "dps-security", "tes-space-request"):
+        assert o[rule_id].status == "check_with_office" and o[rule_id].from_possible_attribute, rule_id
+    assert any("Where is the event" in q for q in packet.questions)
+    tabling = _packet(ruleset, calendar, event_date=date(2027, 2, 10), attributes=["tabling", "food"])
+    assert "uepa-required" not in _by_id(tabling)
+
+
+def test_passed_deadlines_after_the_event_are_past_due(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 1, verify L1): an evaluation due after an event that has passed is past due."""
+    packet = build_packet(EventFacts(event_date=date(2026, 11, 5), venue="venue_tes_meeting_room", attributes=["usg_funding"]),
+                          ruleset, calendar, date(2026, 11, 15))
+    evaluation = _by_id(packet)["usg-post-event-evaluation"]
+    assert evaluation.due == date(2026, 11, 10) and evaluation.past_due
