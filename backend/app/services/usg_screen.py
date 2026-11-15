@@ -98,7 +98,15 @@ def reasons(report: dict[str, Any]) -> list[Reason]:
         add((line.get("vendor_check") or {}).get("finding"), where)
     for entry in report.get("application", []):
         add(entry.get("finding"), "Whole application")
+    from app.rules import get_ruleset
+
+    ruleset = get_ruleset()
     for obligation in report.get("dates", []):
+        rule_id = obligation.get("rule_id", "")
+        # A duty due after the event (evaluation, final invoices, fixing a returned application) is not something the
+        # application breaks, so it is never a reason to deny it (phase 5 iteration 2).
+        if rule_id in ruleset and ruleset.get(rule_id).direction == "after":
+            continue
         add(obligation.get("finding"), "Dates")
     order = {Verdict.RED: 0, Verdict.OFFICE_DECIDES: 1, Verdict.YELLOW: 2}
     out.sort(key=lambda r: (order.get(r.verdict, 3), r.where, r.rule_id))
