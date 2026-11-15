@@ -8,7 +8,7 @@ Any problem raises EvalSetError listing every problem found.
 from __future__ import annotations
 
 import json
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -36,8 +36,68 @@ class EvalSetError(Exception):
 
 
 def _schema(eval_dir: Path, name: str) -> dict[str, Any]:
-    schema: dict[str, Any] = json.loads((eval_dir / "schemas" / f"{name}.schema.json").read_text(encoding="utf-8"))
+    path = eval_dir / "schemas" / f"{name}.schema.json"
+    try:
+        schema: dict[str, Any] = loads_strict(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise EvalSetError(name, [f"schema {path} not found"]) from exc
+    except (UnicodeDecodeError, json.JSONDecodeError, StrictJSONError) as exc:
+        raise EvalSetError(name, [f"schema {path.name} is not readable JSON ({exc})"]) from exc
     return schema
+
+
+VERDICT_ORDER = {"green": 0, "yellow": 1, "office_decides": 2, "red": 3}
+
+
+def _back(day: date, offset: int, unit: str) -> date | None:
+    """A 'before' deadline in plain calendar units: the day minus the lead time."""
+    if unit == "days":
+        return day - timedelta(days=offset)
+    if unit == "weeks":
+        return day - timedelta(weeks=offset)
+    if unit == "months":
+        month, year = day.month - offset, day.year
+        while month < 1:
+            month, year = month + 12, year - 1
+        for candidate in range(day.day, 0, -1):
+            try:
+                return date(year, month, candidate)
+            except ValueError:
+                continue
+    return None
+
+
+def _expected_status(ruleset: RuleSet, rule_id: str, violated: bool | None) -> set[str]:
+    """Statuses that follow from a rule's certainty, severity and kind. `violated` None means unknown."""
+    rule = ruleset.get(rule_id)
+    if not ruleset.is_certain(rule_id) or rule.severity == "yellow":
+        return {"check_with_office"}
+    if rule.severity == "office_decides":
+        return {"office_decides"}
+    plain = "to_do" if rule.kind in ("deadline", "requirement") else "condition"
+    if violated is None:
+        return {plain, "blocked"}
+    return {"blocked"} if violated else {plain}
+
+
+def _check_obligation(where: str, ruleset: RuleSet, entry: dict[str, Any], start: date | None, as_of: date | None,
+                      problems: list[str]) -> None:
+    rule = ruleset.get(entry["rule_id"])
+    due = _iso(entry.get("due"))
+    if rule.kind == "deadline" and rule.direction == "before" and start and rule.unit in ("days", "weeks", "months"):
+        want = _back(start, rule.offset or 0, rule.unit)
+        if due != want:
+            problems.append(f"{where}: {rule.id} is due {entry.get('due')}, but {rule.offset} {rule.unit} before {start} is {want}")
+    if rule.unit == "academic_weeks" and entry.get("due") is not None:
+        problems.append(f"{where}: {rule.id} counts academic weeks, which no source defines; its due date must be null")
+    allowed = _expected_status(ruleset, rule.id, entry.get("violated"))
+    explained = entry.get("note") and entry["status"] == "check_with_office"
+    if entry["status"] not in allowed and not explained:
+        problems.append(f"{where}: {rule.id} has status '{entry['status']}', but the rule gives {sorted(allowed)}")
+    if "past_due" in entry and as_of is not None:
+        want_past = bool(due and due < as_of and rule.direction == "before")
+        if entry["past_due"] != want_past:
+            problems.append(f"{where}: {rule.id} past_due must be {want_past} (due {entry.get('due')}, as of {as_of})")
 
 
 def _iso(value: Any) -> date | None:
@@ -85,6 +145,34 @@ def _rule_refs(node: Any, path: str, out: list[tuple[str, str]]) -> None:
             _rule_refs(value, f"{path}[{index}]", out)
 
 
+def _check_conflicts(where: str, ruleset: RuleSet, obligations: list[dict[str, Any]], conflicts: list[dict[str, Any]],
+                     problems: list[str]) -> None:
+    listed = {o["rule_id"]: o for o in obligations}
+    named = {frozenset(c["rules"]) for c in conflicts}
+    for rule_id in listed:
+        for other in ruleset.get(rule_id).conflicts_with or []:
+            if other in listed and frozenset((rule_id, other)) not in named:
+                problems.append(f"{where}: {rule_id} and {other} disagree in the rule table but the conflict is not listed")
+    for conflict in conflicts:
+        first, second = conflict["rules"]
+        if first not in listed or second not in listed:
+            problems.append(f"{where}: conflict {first} / {second} names a rule that is not an obligation of this case")
+            continue
+        applied = conflict["applied"]
+        if applied is not None and applied not in (first, second):
+            problems.append(f"{where}: the applied rule {applied} is not one of {first} / {second}")
+            continue
+        due_a, due_b = _iso(listed[first].get("due")), _iso(listed[second].get("due"))
+        rule_a, rule_b = ruleset.get(first), ruleset.get(second)
+        stricter = None
+        if due_a and due_b and due_a != due_b:
+            stricter = first if due_a < due_b else second
+        elif rule_a.unit == rule_b.unit and rule_a.anchor == rule_b.anchor and rule_a.offset != rule_b.offset:
+            stricter = first if (rule_a.offset or 0) > (rule_b.offset or 0) else second
+        if stricter is not None and applied != stricter:
+            problems.append(f"{where}: {stricter} is the stricter of {first} / {second}, so it must be the one applied")
+
+
 def _check_events(data: dict[str, Any], ruleset: RuleSet | None, problems: list[str]) -> None:
     vocabulary = {name for group in (ruleset.vocabulary.values() if ruleset else []) for name in group}
     for case in data["cases"]:
@@ -101,6 +189,11 @@ def _check_events(data: dict[str, Any], ruleset: RuleSet | None, problems: list[
         for o in expected["obligations"]:
             if o["status"] == "blocked" and not o["violated"]:
                 problems.append(f"{cid}: {o['rule_id']} is blocked but not marked violated")
+        if ruleset is not None and all(o["rule_id"] in ruleset for o in expected["obligations"]):
+            start, as_of = _iso(expected["event_date"]), _iso(case["as_of"])
+            for o in expected["obligations"]:
+                _check_obligation(cid, ruleset, o, start, as_of, problems)
+            _check_conflicts(cid, ruleset, expected["obligations"], expected["source_conflicts"], problems)
 
 
 def _check_budgets(data: dict[str, Any], problems: list[str]) -> None:
@@ -125,6 +218,21 @@ def _check_budgets(data: dict[str, Any], problems: list[str]) -> None:
             problems.append(f"{cid}: food_per_person_cents must be null without food or attendance")
         if [entry["line"] for entry in expected["lines"]] != numbers:
             problems.append(f"{cid}: expected.lines must give a verdict for every line, in order")
+        all_findings = [f for entry in expected["lines"] for f in entry["findings"]] + expected["application"]
+        for finding in all_findings:
+            reason = finding.get("reason", "rule")
+            if reason != "rule" and finding["verdict"] != "yellow":
+                problems.append(f"{cid}: a '{reason}' finding is an uncertainty and must be yellow")
+            if reason == "rule" and not finding.get("rule_id"):
+                problems.append(f"{cid}: a rule finding needs a rule_id (it carries the rule text and source)")
+        for entry in expected["lines"]:
+            worst = max((f["verdict"] for f in entry["findings"]), key=VERDICT_ORDER.__getitem__, default="green")
+            if entry["verdict"] != worst:
+                problems.append(f"{cid} line {entry['line']}: verdict {entry['verdict']} but its findings make it {worst}")
+        found = {f.get("rule_id") for f in all_findings}
+        for seeded in expected["seeded_violations"]:
+            if seeded["rule_id"] not in found:
+                problems.append(f"{cid}: seeded violation {seeded['rule_id']} ({seeded['where']}) has no matching finding")
         reds = any(entry["verdict"] == "red" for entry in expected["lines"]) or any(
             finding["verdict"] == "red" for finding in expected["application"]
         )
@@ -145,8 +253,12 @@ def _check_constitutions(data: dict[str, Any], eval_dir: Path, ruleset: RuleSet 
             problems.append(f"{cid}: file path escapes data/eval/constitutions")
         elif not path.is_file():
             problems.append(f"{cid}: file {case['file']} not found")
-        elif not path.read_text(encoding="utf-8").strip():
-            problems.append(f"{cid}: file {case['file']} is empty")
+        else:
+            try:
+                if not path.read_text(encoding="utf-8").strip():
+                    problems.append(f"{cid}: file {case['file']} is empty")
+            except UnicodeDecodeError:
+                problems.append(f"{cid}: file {case['file']} is not UTF-8 text")
         if expected["seeded_faults"] != len(expected["findings"]):
             problems.append(f"{cid}: seeded_faults must equal the number of findings")
         listed = [f["rule_id"] for f in expected["findings"]] + expected["not_applicable"]
@@ -158,7 +270,7 @@ def _check_constitutions(data: dict[str, Any], eval_dir: Path, ruleset: RuleSet 
                     problems.append(f"{cid}: {rule_id} is not a constitution clause rule")
 
 
-def _check_year_plans(data: dict[str, Any], problems: list[str]) -> None:
+def _check_year_plans(data: dict[str, Any], ruleset: RuleSet | None, problems: list[str]) -> None:
     for case in data["cases"]:
         cid = case["id"]
         keys = [event["key"] for event in case["events"]]
@@ -185,6 +297,19 @@ def _check_year_plans(data: dict[str, Any], problems: list[str]) -> None:
         for key, value in checks.items():
             if budget[key] != value:
                 problems.append(f"{cid}: budget.{key} is {budget[key]}, but the plan gives {value}")
+        if ruleset is None or "usg-yearly-cap" not in ruleset:
+            continue
+        cap = int(ruleset.get("usg-yearly-cap").params["max_usd_per_year"]) * 100
+        over = max(0, plan["usg_received_this_year_cents"] + usg - cap)
+        if budget["usg_requested_over_yearly_cap_cents"] != over:
+            problems.append(f"{cid}: budget.usg_requested_over_yearly_cap_cents must be {over}")
+        if over and not any(p["type"] == "over_yearly_cap" for p in case["expected"]["problems"]):
+            problems.append(f"{cid}: the requests exceed the yearly cap by {over} cents but no over_yearly_cap problem is listed")
+        events = {event["key"]: event for event in case["events"]}
+        for entry in case["expected"]["calendar"]:
+            if entry["event"] in events and entry["rule_id"] in ruleset:
+                _check_obligation(f"{cid} {entry['event']}", ruleset, {**entry, "violated": None},
+                                  _iso(events[entry["event"]]["event_date"]), None, problems)
 
 
 def validate_set(name: str, data: Any, *, eval_dir: Path = EVAL_DIR, ruleset: RuleSet | None = None) -> list[str]:
@@ -213,7 +338,7 @@ def validate_set(name: str, data: Any, *, eval_dir: Path = EVAL_DIR, ruleset: Ru
     elif name == "constitutions":
         _check_constitutions(data, eval_dir, ruleset, problems)
     elif name == "year_plans":
-        _check_year_plans(data, problems)
+        _check_year_plans(data, ruleset, problems)
     return problems
 
 
@@ -226,6 +351,8 @@ def load_set(name: str, *, eval_dir: Path = EVAL_DIR, ruleset: RuleSet | None = 
         data = loads_strict(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise EvalSetError(name, [f"{path} not found"]) from exc
+    except UnicodeDecodeError as exc:
+        raise EvalSetError(name, [f"{path.name}: not UTF-8 text ({exc.reason})"]) from exc
     except json.JSONDecodeError as exc:
         raise EvalSetError(name, [f"{path.name}: not valid JSON (line {exc.lineno}, column {exc.colno}: {exc.msg})"]) from exc
     except StrictJSONError as exc:
