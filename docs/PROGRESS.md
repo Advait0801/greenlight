@@ -20,7 +20,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
-| 3 | Money check | done (branch `phase-3/money-check`) | 0 | — | open |
+| 3 | Money check | done (branch `phase-3/money-check`) | 1 | no (iteration 1: 0 blockers, 2 high, fixed) | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
@@ -83,6 +83,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 3, iteration 1 — verify
+Date/time: 2026-11-15
+Agent and model: verifier (fresh), Opus 5.5, medium effort, on commit 434a330
+Report: docs/reviews/phase-3-iter-1-verify.md
+Findings: 0/2/3/4 (6 of 8 exit criteria pass; the two failures were on budgets outside the test set; test set 30/30 caught, 0 wrong greens, fund 20/20)
+Fixed: H1 security staffing now counts toward the $4,000 venue and personnel cap (rule params and triggers; it was shown green); H2 a food fix no longer shows a rounded per-person figure ("more than $35.00"). Each with a regression test in tests/unit/test_money_check.py.
+Left open: M a certainly passed USG deadline is yellow (from the Phase 2 engine; the draft is still blocked); M the vendor-list note does not change a line's verdict (by design: kept apart from eligibility, always yellow); M the test set does not measure reading line items from uploads (no PDF or image recordings); L instructions in a quote leave its lines marked sure; L unsure food lines are left out of food per person; L an unknown funded-events count gives a question but no finding; L "plan for at least N people" may invite overstating attendance.
+Full test suite: pass (509, adversarial included); run_eval budgets 30/0/0, events 30/456/0/0
+Gate: iteration 2 (break) next
 
 ### Phase 2, after closing — five open mediums fixed at the humans' request
 Date/time: 2026-11-15, about 02:10-02:30 PT
