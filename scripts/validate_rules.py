@@ -20,7 +20,7 @@ from _common import RULES_DIR, use_backend
 
 use_backend()
 
-from app.rules import CalendarLoadError, RuleLoadError, load_calendar, load_rules  # noqa: E402
+from app.rules import CalendarLoadError, RuleLoadError, calendar_rule_problems, load_calendar, load_rules  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -45,29 +45,8 @@ def main(argv: list[str] | None = None) -> int:
         failed = True
 
     if ruleset is not None and calendar is not None:
-        pointer = ruleset.rules.get(calendar.id)
-        if pointer is None:
-            print(f"No rule '{calendar.id}' points at the academic calendar.", file=sys.stderr)
-            failed = True
-        elif pointer.verified != calendar.verified:
-            print(
-                f"Rule '{calendar.id}' is marked '{pointer.verified}' but rules/calendar.json is marked "
-                f"'{calendar.verified}'. They must agree.",
-                file=sys.stderr,
-            )
-            failed = True
-
-    if ruleset is not None and calendar is not None:
-        business = ruleset.rules.get("usc-business-days-definition")
-        if business is None:
-            print("No rule 'usc-business-days-definition' carries the business-day assumption.", file=sys.stderr)
-            failed = True
-        elif business.verified != calendar.business_days.verified:
-            print(
-                f"Rule 'usc-business-days-definition' is marked '{business.verified}' but rules/calendar.json "
-                f"business_days is marked '{calendar.business_days.verified}'. They must agree.",
-                file=sys.stderr,
-            )
+        for problem in calendar_rule_problems(ruleset, calendar):
+            print(f"Calendar and rule table disagree: {problem}", file=sys.stderr)
             failed = True
 
     if ruleset is not None and not args.quiet:

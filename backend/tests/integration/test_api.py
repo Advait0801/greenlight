@@ -80,3 +80,46 @@ def test_every_route_module_is_discovered() -> None:
 
     paths = {route.path for router in discover_routers() for route in router.routes}  # type: ignore[attr-defined]
     assert {"/health", "/rules", "/rules/{rule_id}"} <= paths
+
+
+def test_health_shows_no_absolute_server_paths(rules_copy: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression (phase 0 iteration 2, L6)."""
+    from fastapi.testclient import TestClient
+
+    from app.config import REPO_ROOT
+    from app.main import create_app
+
+    (rules_copy / "sources" / "manifest.json").write_text("{not json", encoding="utf-8")
+    monkeypatch.setenv("RULES_DIR", str(rules_copy))
+    clear_caches()
+    try:
+        with TestClient(create_app()) as broken:
+            text = broken.get("/health").text
+            assert "manifest.json" in text
+            assert str(rules_copy.parent) not in text
+            assert str(REPO_ROOT) not in text
+    finally:
+        monkeypatch.delenv("RULES_DIR")
+        clear_caches()
+
+
+def test_health_degrades_when_calendar_and_rules_disagree(rules_copy: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression (phase 0 iteration 2, L5): the app, not only validate_rules.py, checks agreement."""
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    path = rules_copy / "calendar.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["business_days"]["verified"] = "read"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    monkeypatch.setenv("RULES_DIR", str(rules_copy))
+    clear_caches()
+    try:
+        with TestClient(create_app()) as broken:
+            health = broken.get("/health")
+            assert health.status_code == 503
+            assert any("must agree" in p for p in health.json()["rules"]["problems"])
+    finally:
+        monkeypatch.delenv("RULES_DIR")
+        clear_caches()

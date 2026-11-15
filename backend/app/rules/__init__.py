@@ -25,12 +25,30 @@ def get_calendar() -> AcademicCalendar:
     return load_calendar(get_settings().rules_dir)
 
 
+def calendar_rule_problems(ruleset: RuleSet, calendar: AcademicCalendar) -> list[str]:
+    """The rule table and the calendar must agree on what is verified: the calendar pointer rule
+    with the calendar, and the business-day rule with the calendar's business-day assumption."""
+    problems = []
+    pairs = (
+        (calendar.id, calendar.verified, "rules/calendar.json"),
+        ("usc-business-days-definition", calendar.business_days.verified, "rules/calendar.json business_days"),
+    )
+    for rule_id, verified, where in pairs:
+        rule = ruleset.rules.get(rule_id)
+        if rule is None:
+            problems.append(f"no rule '{rule_id}' for {where}")
+        elif rule.verified != verified:
+            problems.append(f"rule '{rule_id}' is marked '{rule.verified}' but {where} is marked '{verified}'; they must agree")
+    return problems
+
+
 __all__ = [
     "AcademicCalendar",
     "CalendarLoadError",
     "Rule",
     "RuleLoadError",
     "RuleSet",
+    "calendar_rule_problems",
     "citation_for",
     "get_calendar",
     "get_ruleset",

@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api import discover_routers
@@ -31,8 +32,12 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         # Start anyway so /health can explain the problem; every check route answers 503.
         logger.error("%s", exc)
     else:
-        with Session(get_engine()) as session:
-            added = sync_rule_versions(session, ruleset)
+        try:
+            with Session(get_engine()) as session:
+                added = sync_rule_versions(session, ruleset)
+        except IntegrityError:
+            # Another worker stored the same versions at the same moment; nothing is lost.
+            added = 0
         logger.info("Loaded %d rules (%d new versions stored).", len(ruleset), added)
     try:
         get_calendar()

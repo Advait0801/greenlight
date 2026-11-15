@@ -6,9 +6,10 @@ from typing import Any
 from fastapi import APIRouter, Response, status
 from sqlalchemy import text
 
+from app.api.deps import public_problems as _public
 from app.config import get_settings
 from app.db import get_engine
-from app.rules import CalendarLoadError, RuleLoadError, get_calendar, get_ruleset
+from app.rules import CalendarLoadError, RuleLoadError, calendar_rule_problems, get_calendar, get_ruleset
 from app.schemas.common import PRECHECK_NOTICE
 
 router = APIRouter(tags=["health"])
@@ -18,14 +19,18 @@ def _rules_status() -> dict[str, Any]:
     try:
         ruleset = get_ruleset()
     except RuleLoadError as exc:
-        return {"loaded": False, "count": 0, "problems": exc.problems}
+        return {"loaded": False, "count": 0, "problems": _public(exc.problems)}
+    try:
+        problems = calendar_rule_problems(ruleset, get_calendar())
+    except CalendarLoadError:
+        problems = []  # reported under "calendar"
     return {
         "loaded": True,
         "count": len(ruleset),
         "by_domain": dict(sorted(Counter(rule.domain for rule in ruleset).items())),
         "by_verification": dict(sorted(Counter(rule.verified for rule in ruleset).items())),
         "shown_yellow_until_verified": sum(1 for rule in ruleset if not ruleset.is_certain(rule.id)),
-        "problems": [],
+        "problems": _public(problems),
     }
 
 
@@ -33,7 +38,7 @@ def _calendar_status() -> dict[str, Any]:
     try:
         calendar = get_calendar()
     except CalendarLoadError as exc:
-        return {"loaded": False, "problems": exc.problems}
+        return {"loaded": False, "problems": _public(exc.problems)}
     return {
         "loaded": True,
         "verified": calendar.verified,
@@ -61,7 +66,7 @@ def health(response: Response) -> dict[str, Any]:
     rules = _rules_status()
     calendar = _calendar_status()
     database = _database_status()
-    healthy = rules["loaded"] and calendar["loaded"] and database == "ok"
+    healthy = rules["loaded"] and not rules["problems"] and calendar["loaded"] and database == "ok"
     if not healthy:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     return {
