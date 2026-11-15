@@ -81,7 +81,9 @@ export function Handover() {
               {approved[i] ? <p role="status" className="mt-2 font-medium">{approved[i]}</p> : null}
             </div>
           ))}
-          <button type="button" onClick={() => navigate("/", { state: { seedPlan: packet.next_year_plan } })} className="rounded border border-stone-400 px-4 py-2">
+          <button type="button" onClick={() => {
+            if (window.confirm("Replace the year plan saved in this browser with next year's starting plan?")) navigate("/", { state: { seedPlan: packet.next_year_plan } });
+          }} className="rounded border border-stone-400 px-4 py-2">
             Start next year's plan from this one
           </button>
           <p className="text-sm text-stone-600">This replaces the plan saved in this browser with next year's starting plan: the same events, one year later on the same weekday, with the money left blank.</p>
