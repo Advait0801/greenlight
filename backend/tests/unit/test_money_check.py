@@ -253,3 +253,23 @@ def test_food_fix_never_shows_a_rounded_per_person_figure() -> None:
     finding = next(f.finding for f in report.lines[0].findings if f.finding.rule_id == "usg-food-cap")
     assert "35.01" not in (finding.fix or "") and "35.01" not in finding.message
     assert "more than $35.00" in (finding.fix or "") and "$0.01" in (finding.fix or "")
+
+
+def test_a_cap_is_not_passed_when_an_unsure_line_could_break_it() -> None:
+    # Final review F1: a sure $3,500 venue line plus an unsure $1,000 personnel line showed a green "within the $4,000".
+    vp = _check(_request([_line(1, category="venue_rental", amount_cents=350000, unit_price_cents=350000),
+                          _line(2, category="personnel", category_sure=False, amount_cents=100000, unit_price_cents=100000)],
+                         attachments=["esr"]))
+    assert not any(f.rule_id == "usg-venue-personnel-cap" for f in vp.lines[0].passed)
+    assert _rules(vp.lines[0].findings).get("usg-venue-personnel-cap") == "yellow"
+    assert vp.lines[0].verdict is not Verdict.GREEN
+    food = _check(_request([_line(1, amount_cents=120000, unit_price_cents=120000),
+                            _line(2, vendor="Slice House", category_sure=False, amount_cents=40000, unit_price_cents=40000)],
+                           expected_attendance=40))
+    assert not any(f.rule_id == "usg-food-cap" for f in food.lines[0].passed)
+    assert _rules(food.lines[0].findings).get("usg-food-cap") == "yellow"
+    # Still green when even the unsure lines keep it within the cap.
+    within = _check(_request([_line(1, amount_cents=80000, unit_price_cents=80000),
+                              _line(2, vendor="Slice House", category_sure=False, amount_cents=40000, unit_price_cents=40000)],
+                             expected_attendance=40))
+    assert any(f.rule_id == "usg-food-cap" for f in within.lines[0].passed)

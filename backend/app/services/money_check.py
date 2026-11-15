@@ -473,6 +473,14 @@ def check_budget(request: MoneyCheckRequest, ruleset: RuleSet, calendar: Academi
                        f"{min_people} people.")
                 for entry in food_entries:
                     entry.findings.append(b.item(food_rule.id, Verdict.RED, message, fix))
+            elif food_total + sum(e.line.amount_cents for e in entries if e.line.category == "food" and not e.line.category_sure) \
+                    > food_cap * attendance:
+                for entry in food_entries:
+                    entry.findings.append(b.item(
+                        food_rule.id, Verdict.YELLOW,
+                        f"Food is {food_pp_text} per person, but a line Greenlight is not sure is food would take it over "
+                        f"the {money(food_cap)} cap; needs a human look.",
+                        "Confirm or change the unsure line's category, then run the check again.", reason="category_unclear"))
             else:
                 for entry in food_entries:
                     ok = b.passed(food_rule.id, f"Food is {food_pp_text} per person, within the {money(food_cap)} cap "
@@ -495,6 +503,14 @@ def check_budget(request: MoneyCheckRequest, ruleset: RuleSet, calendar: Academi
                     f"Venue and personnel total {money(vp_total)}; USG covers up to {money(vp_cap)}.",
                     f"You are asking USG for {money(vp_total)} for venue and personnel. USG covers up to {money(vp_cap)}; "
                     f"ask for {money(over)} less and cover the rest another way."))
+        elif vp_total + sum(e.line.amount_cents for e in entries
+                            if e.line.category in vp_categories and not e.line.category_sure) > vp_cap:
+            for entry in vp_entries:
+                entry.findings.append(b.item(
+                    vp_rule.id, Verdict.YELLOW,
+                    f"Venue and personnel total {money(vp_total)}, but a line Greenlight is not sure about would take it over "
+                    f"the {money(vp_cap)} USG covers; needs a human look.",
+                    "Confirm or change the unsure line's category, then run the check again.", reason="category_unclear"))
         else:
             for entry in vp_entries:
                 ok = b.passed(vp_rule.id, f"Venue and personnel total {money(vp_total)}, within the {money(vp_cap)} USG covers.")
