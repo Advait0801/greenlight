@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 from app.ai import AIError, AIResult, ClaudeClient, Confidence, ExtractedField, UntrustedDocument, is_confident
 from app.ai.audit import log_ai_output
 from app.rules import RuleSet, get_ruleset
-from app.schemas.events import EventFacts, InputField, VenueType
+from app.schemas.events import EARLIEST, LATEST, MAX_HEADCOUNT, EventFacts, InputField, VenueType
 
 MAX_SENTENCE_CHARS = 2000
 OFFERED_GROUPS = ("event_attributes", "facts")
@@ -171,8 +171,11 @@ def _build_date(parts: DateParts | None, label: str, notes: list[str]) -> tuple[
         notes.append(f"The {label} date {parts.year}-{parts.month:02d}-{parts.day:02d} does not exist.")
         return None, False
     if parts.weekday:
-        stated = parts.weekday.strip().lower()
-        if stated in WEEKDAYS and WEEKDAYS[day.weekday()] != stated:
+        stated = parts.weekday.strip().strip(".,;:").lower()[:3]
+        if stated not in {name[:3] for name in WEEKDAYS}:
+            notes.append(f"The sentence names the day as '{parts.weekday}', which Greenlight cannot match to a weekday.")
+            return None, False
+        if WEEKDAYS[day.weekday()][:3] != stated:
             notes.append(f"The sentence says {parts.weekday}, but {day.isoformat()} is a {WEEKDAYS[day.weekday()].title()}.")
             return None, False
     return day, True
@@ -195,15 +198,25 @@ def facts_from_reading(reading: Any, ruleset: RuleSet) -> ParsedEvent:
         end = None
     if end == start:
         end = None
+    if end is not None and start is not None and (end - start).days > 366:
+        notes.append("The event would last more than a year; check the last day.")
+        needs.append("end_date")
+        end = None
+    if start is not None and not (EARLIEST <= start <= LATEST):
+        notes.append(f"The date {start.isoformat()} is outside the years Greenlight can check.")
+        needs.append("event_date")
+        start, end = None, None
 
     venue = reading.venue.value if is_confident(reading.venue) else None
     if venue is None and reading.venue.confidence != "high":
         needs.append("venue")
 
     headcount = reading.headcount.value if is_confident(reading.headcount) else None
-    if headcount is not None and not 0 <= headcount <= 1_000_000:
+    if headcount is not None and not 0 <= headcount <= MAX_HEADCOUNT:
+        notes.append(f"The headcount {headcount} cannot be right; give the number of people expected.")
         headcount = None
-    if headcount is None and reading.headcount.confidence != "high":
+        needs.append("headcount")
+    elif headcount is None and reading.headcount.confidence != "high":
         needs.append("headcount")
 
     known = set(offered_names(ruleset))
@@ -263,7 +276,8 @@ def parse_sentence(sentence: str, *, as_of: date | None = None, client: ClaudeCl
             output_type=output_type,
         )
     except AIError as exc:
-        raise IntakeError(f"Greenlight could not read the description ({exc}). Fill in the form instead.") from exc
+        # The error's own text can name server folders or recording keys; the officer gets a plain message.
+        raise IntakeError("Greenlight could not read the description just now. Fill in the form instead.") from exc
     parsed = facts_from_reading(result.output, ruleset)
     parsed.ai_result = result
     return parsed
