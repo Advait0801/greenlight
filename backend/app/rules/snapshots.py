@@ -150,6 +150,11 @@ def text_in_snapshot(quote: str, snapshot: str) -> bool:
         end = start + len(needle)
         clean_start = start == 0 or not (snapshot[start - 1].isalnum() and needle[0].isalnum())
         clean_end = end == len(snapshot) or not (snapshot[end].isalnum() and needle[-1].isalnum())
+        # A number continues through a decimal point or thousands comma: "$35" is not a quote of "$35.50".
+        if needle[-1].isdigit() and snapshot[end : end + 1] in (".", ",") and snapshot[end + 1 : end + 2].isdigit():
+            clean_end = False
+        if needle[0].isdigit() and start >= 2 and snapshot[start - 1] in (".", ",") and snapshot[start - 2].isdigit():
+            clean_start = False
         if clean_start and clean_end:
             return True
         start = snapshot.find(needle, start + 1)
