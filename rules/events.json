@@ -907,7 +907,7 @@
       "effective_date": "2026-09-17",
       "verified": "read",
       "severity": "red",
-      "message": "Open flame, or a tent, canopy or membrane structure larger than 450 square feet, needs a Los Angeles Fire Department Division 5 permit.",
+      "message": "Open flame (for example canned heat), or a tent, canopy or membrane structure larger than 450 square feet, needs a Los Angeles Fire Department Division 5 permit.",
       "fix_template": "Complete the Division 5 permit (on the Trojan Event Services Forms and Permits page).",
       "applies_to": "An event with open flame or a tent",
       "triggers": [
@@ -918,7 +918,7 @@
         "tent_area_sqft_over": 450
       },
       "conflicts_with": null,
-      "notes": "No lead time is published for this permit; it is one of the approvals that must be in place 2 weeks before (approvals-two-weeks)."
+      "notes": "No lead time is published for this permit; it is one of the approvals that must be in place 2 weeks before (approvals-two-weeks). The same FAQ also says USC does not allow candles or flames on campus (no-candles-flames, triggered by candles) and sends Sterno to separate guidelines (sterno-guidelines)."
     },
     {
       "id": "no-candles-flames",
@@ -933,14 +933,35 @@
       "effective_date": "2026-09-17",
       "verified": "read",
       "severity": "red",
-      "message": "Candles and flames are not allowed on campus; candles must be LED. Canned heat (Sterno) follows separate USC guidelines.",
-      "fix_template": "Use LED candles. For Sterno food warmers, follow the USC Sterno guidelines and ask Trojan Event Services.",
-      "applies_to": "An event with candles or open flame",
+      "message": "Candles and decorative flames are not allowed on campus; candles must be LED.",
+      "fix_template": "Use LED candles instead.",
+      "applies_to": "An event with candles or other decorative flames",
+      "triggers": [
+        "candles"
+      ],
+      "conflicts_with": null,
+      "notes": "The same FAQ describes a fire permit for open flame (lafd-division-5-permit) and sends canned heat (Sterno) to separate guidelines (sterno-guidelines), so this ban is applied to candles and decorative flames only."
+    },
+    {
+      "id": "sterno-guidelines",
+      "domain": "events",
+      "kind": "requirement",
+      "title": "Canned heat (Sterno) follows USC's Sterno guidelines",
+      "owner_office": "Trojan Event Services (TES)",
+      "source": "Trojan Event Services (TES): Frequently Asked Questions",
+      "source_section": "Frequently Asked Questions: Can I use candles or sternos on campus?",
+      "source_url": "https://trojanevents.usc.edu/frequently-asked-questions/",
+      "source_text": "For information about using sternos on campus, please reference the USC Sterno (Canned Heat) Guidelines",
+      "effective_date": "2026-09-17",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "Canned heat (Sterno) is covered by USC's separate Sterno (Canned Heat) Guidelines, which Greenlight does not have. Ask Trojan Event Services whether your use is allowed.",
+      "fix_template": "Ask Trojan Event Services about the Sterno use and follow USC's Sterno guidelines.",
+      "applies_to": "An event with open flame such as canned heat for food",
       "triggers": [
         "open_flame"
       ],
-      "conflicts_with": null,
-      "notes": "The same FAQ describes a fire permit for open flame; Sterno has its own guidelines. Greenlight shows both and asks the officer to confirm with Trojan Event Services."
+      "conflicts_with": null
     },
     {
       "id": "props-approval",

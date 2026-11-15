@@ -427,3 +427,12 @@ def test_venue_cap_checks_what_usg_is_asked_to_pay(ruleset) -> None:
     rule = ruleset.get("usg-venue-personnel-cap")
     assert "usg_requested" in (rule.check or "")
     assert "for an event" not in rule.message
+
+
+def test_sterno_is_not_banned_with_candles(ruleset) -> None:
+    """Regression (phase 0 iteration 3, events audit H1): canned heat gets the fire permit and the
+    office's guidelines, never the red candle ban."""
+    open_flame = {rule.id for rule in ruleset if "open_flame" in rule.triggers}
+    assert open_flame == {"lafd-division-5-permit", "sterno-guidelines"}
+    assert ruleset.get("no-candles-flames").triggers == ["candles"]
+    assert ruleset.get("sterno-guidelines").severity == "office_decides"
