@@ -19,3 +19,12 @@ def test_club_figures_start_empty_so_the_backend_asks() -> None:
     initial = re.search(r"const \[club, setClub\] = useState\(\{([^}]*)\}\)", source)
     assert initial is not None, "the club state is no longer declared as expected; update this test"
     assert re.search(r'received:\s*""', initial.group(1)) and re.search(r'funded:\s*""', initial.group(1)), initial.group(1)
+
+
+def test_vendor_check_opens_and_names_a_vendor_not_on_the_list() -> None:
+    # Final review F1: a line from a vendor not on USG's list showed only a green badge; the vendor result sat in a
+    # closed panel whose summary read the same for every vendor.
+    source = PAGE.read_text(encoding="utf-8")
+    assert 'open={line.vendor_check.status !== "on_list"}' in source
+    assert re.search(r'not_on_list:\s*"[^"]*not found on USG\'s vendor list', source)
+    assert "{VENDOR_STATUS[line.vendor_check.status]" in source

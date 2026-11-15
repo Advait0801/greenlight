@@ -68,6 +68,13 @@ const DEMO_LINES: EditLine[] = [
   { ...BLANK_LINE, vendor: "Campus Print Shop", item: "Flyers and posters", category: "printing", unit_price: "120.00", amount: "120.00", has_quote: true },
 ];
 
+// A green line badge covers eligibility only, so a vendor the list does not show is opened and named (final review F1).
+const VENDOR_STATUS: Record<string, string> = {
+  on_list_check_status: " — on USG's vendor list, but its status there needs checking",
+  not_on_list: " — not found on USG's vendor list",
+  no_vendor: " — no vendor named",
+};
+
 const TRI: { value: string; label: string }[] = [
   { value: "", label: "Not sure" },
   { value: "yes", label: "Yes" },
@@ -526,7 +533,7 @@ export function MoneyCheck() {
                     <details className="mt-2"><summary className="cursor-pointer text-sm">Rules this line meets ({line.passed.length})</summary>
                       <ul className="mt-2 space-y-2">{line.passed.map((f) => <FindingItem key={f.rule_id} finding={f} />)}</ul></details>
                   ) : null}
-                  <details className="mt-2"><summary className="cursor-pointer text-sm">Vendor list check (separate from eligibility): needs a human look</summary>
+                  <details className="mt-2" open={line.vendor_check.status !== "on_list"}><summary className="cursor-pointer text-sm">Vendor list check (separate from eligibility){VENDOR_STATUS[line.vendor_check.status] ?? ""}: needs a human look</summary>
                     <ul className="mt-2"><FindingItem finding={line.vendor_check.finding} /></ul></details>
                 </li>
               ))}
