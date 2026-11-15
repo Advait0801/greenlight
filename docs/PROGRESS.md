@@ -20,7 +20,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
-| 3 | Money check | done (branch `phase-3/money-check`) | 1 | no (iteration 1: 0 blockers, 2 high, fixed) | open |
+| 3 | Money check | done (branch `phase-3/money-check`) | 2 | no (iteration 2: 2 blockers, 1 high, fixed) | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
@@ -83,6 +83,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 3, iteration 2 — break
+Date/time: 2026-11-15
+Agent and model: breaker (fresh), Opus 5.5, medium effort, on commit 9440d6e
+Report: docs/reviews/phase-3-iter-2-break.md (14 failing test cases in backend/tests/adversarial/test_phase3_iter2_money_break.py)
+Findings: 2/1/5/1
+Fixed (all covered by the breaker's tests): B1 quotes in other currencies written as words ("pounds sterling", "euros", "Canadian dollars") or with prefixed dollar signs (C$, CA$, HK$) are no longer read as US dollars; B2 "$.50" is fifty cents, not fifty dollars; H1 /money/draft always checks as of today, so a back-dated as_of cannot unblock a draft; M an uploaded document linked to no line is yellow; M a hotel quantity that is not rooms x nights is yellow and not passed; M an on-campus venue or staffing line on an off-campus event is yellow; M a fund reading that found instructions is unsure (yellow); M drafted paragraphs with figures written in words are replaced; L the fallback no longer says "Fund fund".
+Left open (questions for a person): do mandatory per-night hotel fees count toward the $400 cap; do catering delivery or service fees count toward the $35 per person.
+Full test suite: pass (523, adversarial included); run_eval budgets 30/0/0, events 30/456/0/0
+Gate: iteration 3 (audit) next
 
 ### Phase 3, iteration 1 — verify
 Date/time: 2026-11-15
