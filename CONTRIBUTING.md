@@ -14,8 +14,9 @@ Read [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md), [PLAN.md](PLAN.md) and [docs/PROG
 
 ## Branches and commits
 
-- `main` always runs and passes the tests.
-- Short-lived branches named `phase-2/event-packet` or `fix/food-cap-rounding`.
+- `main` always runs and passes the tests. Nobody commits to it directly: it changes only through merged pull requests.
+- Every phase works on its own branch from the latest `origin/main`, named `phase-<n>/<short-name>` (for example `phase-1/recognition`, `phase-2/event-packet`). Fixes outside a phase use `fix/<what>`, for example `fix/food-cap-rounding`.
+- At the end of a phase, rebase the branch on `origin/main`, push it, and open a pull request into `main`. The humans merge it.
 - Small commits: one per logical piece, and one per finding fixed (code plus its regression test).
 - Commit subjects are imperative and say what changed: `Fix per-person cap when headcount is zero`. The body can say why. Do not start a subject with `phase N` or `iter N`; phases and iterations are tracked in `docs/PROGRESS.md`.
 - During Phase 7: one finding, one small change, one test, one commit.

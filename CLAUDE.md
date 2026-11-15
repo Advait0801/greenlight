@@ -103,7 +103,8 @@ docs/               progress log, review reports, research notes, submission mat
 - Secrets only in `.env` (ignored by git) or Replit secrets. Never commit a key.
 - Small local commits: one per logical piece (a component, a script, the CI fix, one finding fixed with its regression test), not one per iteration.
 - Commit subjects are imperative and say what changed, e.g. `Reject rule files with duplicate ids`. Never start a subject with `phase N` or `iter N`; phases and iterations are tracked in `docs/PROGRESS.md`.
-- Push to `origin main` at the end of every phase, once it is closed, and before starting the next phase (PLAN.md, "Phase checkpoint"). Do not push at any other time, and never force-push.
+- Each phase works on its own branch, `phase-<n>/<short-name>`, cut from the latest `origin/main`. Never commit or push to `main`.
+- At the end of a phase, once it is closed, push the branch and open a pull request into `main`; the humans merge it (PLAN.md, "Branches" and "Phase checkpoint"). Do not push at any other time, and never force-push.
 
 ## Working with sub-agents
 
@@ -114,7 +115,7 @@ PLAN.md section 1 is the rule book. In short:
 - They report; they do not fix. The breaker may add tests under `backend/tests/adversarial/` only.
 - Reports go in `docs/reviews/`.
 - After the third iteration, fix its blockers and highs (each with a regression test), confirm the exit criteria and the full suite, and close the phase. Do not loop for a clean round. List open medium and low findings in `docs/PROGRESS.md`.
-- When the phase is closed: commit the remaining work (small commits, descriptive subjects), push, confirm the push, then start the next phase.
+- When the phase is closed: commit the remaining work (small commits, descriptive subjects), rebase on `origin/main`, push the phase branch, open a pull request into `main`, confirm CI passes on it, then stop. Do not start the next phase until the humans have merged it.
 - In Phase 7, change as little as possible. After the third final review, the code is frozen.
 
 ## Hackathon rules that bind the code

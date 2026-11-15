@@ -24,7 +24,7 @@ BUILD ──> ITERATION 1: VERIFY ──> fix ──> ITERATION 2: BREAK ──>
 | **Iteration 3 — Audit** | `auditor` sub-agent | Reads the phase's code and rules. Checks rules against their sources, the trust rules, security, and that earlier fixes really work. |
 | **Fix** (after each iteration) | Orchestrator | Fixes every blocker and high finding. Adds a regression test for each. Reruns the full test suite. |
 | **Close** | Orchestrator | After the third iteration's fixes, closes the phase (see below). |
-| **Checkpoint** | Orchestrator | Once the phase is closed: commit, push to GitHub, then start the next phase. |
+| **Checkpoint** | Orchestrator | Once the phase is closed: commit, push the phase branch, open a pull request into `main`, then stop. The humans merge it. |
 
 ### Rules for sub-agents
 
@@ -53,22 +53,35 @@ After every build step and every iteration, update [docs/PROGRESS.md](docs/PROGR
 
 Commit locally in small pieces as you go: one commit per logical change, and one per finding fixed (the fix and its regression test together). Subjects are imperative and say what changed, for example `Fix per-person food cap when headcount is zero`. Do not start a subject with the phase or iteration (`phase 2`, `iter 3`); record phases and iterations in `docs/PROGRESS.md`.
 
-### Phase checkpoint: commit and push before moving on
+### Branches: every phase works on its own branch
 
-When a phase is closed, **pause before starting the next phase** and do this, in order:
+From Phase 1 on, phases can run in parallel, on different machines. **No phase commits to `main` directly.**
+
+- At the start of a phase, branch from the latest `origin/main`: `git fetch origin && git switch -c phase-<n>/<short-name> origin/main`. Examples: `phase-1/recognition`, `phase-2/event-packet`, `phase-3/money-check`.
+- Do all build, iteration and fix commits on that branch.
+- `main` changes only when the humans merge a phase's pull request. A phase that depends on another, for example Phase 3 on Phase 2, starts only after that phase's pull request is merged.
+- Phase 7 is the only exception. The `submission` tag goes on `main` after the last pull request is merged (see Phase 7).
+
+### Phase checkpoint: open a pull request, then stop
+
+When a phase is closed, do this, in order:
 
 1. Run the full test suite one more time. It must pass.
 2. Update `docs/PROGRESS.md`: mark the phase as closed and list the medium and low findings left open.
 3. Check that nothing secret is staged (`.env`, keys, databases). `git status` must show only intended files.
 4. Commit what remains with a descriptive subject, for example `Record event packet as closed in progress log`. No phase prefix.
-5. Push to `origin main`.
-6. Confirm the push succeeded, then start the next phase.
+5. Bring the branch up to date: `git fetch origin && git rebase origin/main`. Rerun the full test suite.
+6. Push the branch: `git push -u origin phase-<n>/<short-name>`.
+7. Open a pull request from the branch into `main` and fill in `.github/pull_request_template.md`. Then confirm CI passes on the pull request.
+8. Stop and report the pull request link to the humans. Do not merge it yourself, and do not start the next phase.
 
-Rules for the push:
-- Push **only** at a phase checkpoint, never in the middle of a phase. `main` on GitHub should always hold a closed phase.
-- If the push is rejected because the remote has new commits, run `git pull --rebase origin main`, rerun the full test suite, then push again.
-- If the rebase has conflicts, or the push fails for any other reason (sign-in, permissions), stop and tell the humans. Do not force-push, ever.
-- Do not start the next phase until the push has succeeded.
+Rules:
+- Push the phase branch **only** at the checkpoint, never in the middle of a phase. Never push to `main`.
+- **Rebase conflicts:**
+  - In `docs/PROGRESS.md` or `frontend/src/routes.tsx`, keep both sides.
+  - Anywhere else, stop and tell the humans.
+- If the push or the pull request fails for any other reason (sign-in, permissions, no `gh`), stop and tell the humans.
+- Never force-push.
 
 ---
 
