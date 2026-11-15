@@ -97,7 +97,8 @@
       "params": {
         "whichever_first_rules": [
           "usg-page-deadline-nine-weeks-payment"
-        ]
+        ],
+        "deadline_table_column": "6_week"
       },
       "anchor": "event_date",
       "offset": 6,
@@ -168,6 +169,9 @@
         "airfare",
         "ground_transport"
       ],
+      "params": {
+        "deadline_table_column": "9_week"
+      },
       "anchor": "initial_payment_due_date",
       "offset": 9,
       "unit": "academic_weeks",
