@@ -149,7 +149,7 @@
       "verified": "read",
       "severity": "red",
       "message": "Once the space is confirmed, submit a University Event Permit Application (UEPA). Offices with an interest in the event review it.",
-      "fix_template": "Submit the UEPA as soon as the space is confirmed, and by {due_date} at the latest.",
+      "fix_template": "Submit the UEPA as soon as the space is confirmed; every approval it starts must be in place 2 weeks before the event.",
       "applies_to": "Every event in campus space",
       "triggers": [
         "venue_tes_meeting_room",
@@ -321,7 +321,41 @@
         },
         "due_business_days_after_processing": 5
       },
-      "conflicts_with": null,
+      "conflicts_with": [
+        "tes-outdoor-deposit-section-c2"
+      ],
+      "depends_on": [
+        "usc-business-days-definition"
+      ]
+    },
+    {
+      "id": "tes-outdoor-deposit-section-c2",
+      "domain": "events",
+      "kind": "info",
+      "title": "Outdoor deposit: $200 for student organizations (section C.2)",
+      "owner_office": "Trojan Event Services (TES)",
+      "source": "Trojan Event Services (TES) Terms and Conditions 2026",
+      "source_section": "Terms and Conditions C.2.iii: University Departments",
+      "source_url": "https://trojanevents.usc.edu/wp-content/uploads/2026/06/TES-Terms-and-Conditions-2026.pdf",
+      "source_text": "iii. Outdoor Events: A non‐refundable deposit of $200.00 for Student Organizations and $200.00 for University Departments is due 5 business days after the initial processing of your event request (the “Deposit”).",
+      "effective_date": "2026-06-24",
+      "verified": "read",
+      "severity": "info",
+      "message": "The Terms and Conditions give two outdoor deposits for student organizations: $200 in the University Departments section and $100 in the student organizations section. Plan for $200 and confirm with Trojan Event Services.",
+      "fix_template": null,
+      "applies_to": "Events in outdoor Trojan Event Services venues",
+      "triggers": [
+        "venue_outdoor"
+      ],
+      "params": {
+        "deposit_usd": {
+          "venue_outdoor": 200
+        },
+        "due_business_days_after_processing": 5
+      },
+      "conflicts_with": [
+        "tes-rso-deposits"
+      ],
       "depends_on": [
         "usc-business-days-definition"
       ]
@@ -508,7 +542,7 @@
     {
       "id": "classroom-requests-week-4",
       "domain": "events",
-      "kind": "blocked_period",
+      "kind": "requirement",
       "title": "Classroom requests open in week 4",
       "owner_office": "Department of Classroom Scheduling",
       "source": "Campus Activities: RSO Resources",
@@ -517,9 +551,9 @@
       "source_text": "Classroom Scheduling accepts requests for classroom spaces starting Week 4.",
       "effective_date": "2026-07-10",
       "verified": "read",
-      "severity": "red",
-      "message": "Classroom Scheduling accepts classroom requests only from week 4 of the semester, so a classroom event cannot be booked earlier.",
-      "fix_template": "Hold the event in week 4 or later, or use a Trojan Event Services venue.",
+      "severity": "yellow",
+      "message": "Classroom Scheduling accepts classroom requests starting Week 4. For a classroom event early in the semester, check with Classroom Scheduling that it can still be booked in time.",
+      "fix_template": "Ask Classroom Scheduling (classroom.scheduling@usc.edu) how to book a classroom for this date, or use a Trojan Event Services venue.",
       "applies_to": "An event in a classroom",
       "triggers": [
         "venue_classroom"
@@ -845,6 +879,77 @@
       "conflicts_with": null
     },
     {
+      "id": "alcohol-no-sales",
+      "domain": "events",
+      "kind": "banned",
+      "title": "No selling alcohol, cups, tickets or required donations",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Student Organization Events with Alcohol",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "The selling, either directly or indirectly, of alcoholic beverages (including beer and wine) except under the authority of a California Alcoholic Beverage Control Board license is prohibited. This includes selling cups, mixes, ice, tickets for admission, required donations, etc.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Selling alcohol, directly or indirectly, is prohibited without a California alcohol license. That includes selling cups, mixes, ice, tickets for admission or required donations at an event with alcohol.",
+      "fix_template": "Make the event free to enter, or remove alcohol; a licensed approved vendor sells and serves any alcohol.",
+      "applies_to": "An event with alcohol that sells tickets or collects money",
+      "triggers": [
+        "alcohol",
+        "ticket_sales"
+      ],
+      "trigger_mode": "all",
+      "conflicts_with": null
+    },
+    {
+      "id": "alcohol-end-times",
+      "domain": "events",
+      "kind": "blocked_period",
+      "title": "Events with alcohol end by midnight (Thursday) or 2 a.m. (Friday, Saturday)",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Student Organization Events with Alcohol",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Thursday events with alcohol must end by 12:00 a.m. • Friday and Saturday events with alcohol must end by 2:00 a.m.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "An event with alcohol must end by 12:00 a.m. on a Thursday and by 2:00 a.m. on a Friday or Saturday.",
+      "fix_template": "End the event by {latest_end}.",
+      "applies_to": "An event with alcohol",
+      "triggers": [
+        "alcohol"
+      ],
+      "params": {
+        "latest_end": {
+          "thursday": "00:00",
+          "friday_saturday": "02:00"
+        }
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "alcohol-not-main-focus",
+      "domain": "events",
+      "kind": "banned",
+      "title": "Alcohol may not be the main focus of an event",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Student Organization Events with Alcohol",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Alcohol may not be the main “focus” for any student organization event.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Alcohol may not be the main focus of a club event.",
+      "fix_template": "Make the program, not the drinks, the focus of the event and its advertising.",
+      "applies_to": "An event with alcohol",
+      "triggers": [
+        "alcohol"
+      ],
+      "conflicts_with": null
+    },
+    {
       "id": "alcohol-uepa-two-weeks",
       "domain": "events",
       "kind": "deadline",
@@ -1023,7 +1128,7 @@
       "verified": "read",
       "severity": "office_decides",
       "message": "Risk Management may require liability insurance from co-sponsors, vendors, performers and exhibitors. It decides case by case.",
-      "fix_template": "Ask the Office of Risk Management and Insurance whether insurance is needed, by {due_date}.",
+      "fix_template": "Ask the Office of Risk Management and Insurance whether insurance is needed, as early as you can.",
       "applies_to": "An event with outside vendors, performers, co-sponsors or higher-risk activities",
       "triggers": [
         "outside_vendors",
@@ -1162,7 +1267,7 @@
       "verified": "read",
       "severity": "office_decides",
       "message": "Moderate amplification is generally allowed at Hahn Plaza from noon to 1 p.m., Monday to Friday. Any other time or place is decided case by case by Trojan Event Services.",
-      "fix_template": "Ask Trojan Event Services about amplified sound for this time and place, by {due_date}.",
+      "fix_template": "Ask Trojan Event Services about amplified sound for this time and place, as early as you can.",
       "applies_to": "An outdoor event with amplified sound",
       "triggers": [
         "amplified_sound",
@@ -1338,8 +1443,8 @@
       "effective_date": "2026-06-24",
       "verified": "read",
       "severity": "office_decides",
-      "message": "Events being recorded or photographed need approval from the Campus Filming Office ((213) 740-6951).",
-      "fix_template": "Contact the Campus Filming Office by {due_date}.",
+      "message": "Events being recorded or photographed need approval from the Campus Filming Office.",
+      "fix_template": "Contact the Campus Filming Office before the event; its approval is one of the approvals due 2 weeks before.",
       "applies_to": "An event that is filmed or recorded",
       "triggers": [
         "recording"
@@ -1360,7 +1465,7 @@
       "verified": "read",
       "severity": "office_decides",
       "message": "Events with political leaders, dignitaries or celebrities need clearance from Cultural Relations and University Events.",
-      "fix_template": "Contact Cultural Relations and University Events by {due_date}.",
+      "fix_template": "Contact Cultural Relations and University Events before the event; its clearance is one of the approvals due 2 weeks before.",
       "applies_to": "An event with political leaders, dignitaries or celebrities",
       "triggers": [
         "dignitaries"
@@ -1380,13 +1485,38 @@
       "effective_date": "2026-06-24",
       "verified": "read",
       "severity": "office_decides",
-      "message": "If guests are coming to campus for the event, a parking reservation may be needed, approved by USC Transportation Services.",
-      "fix_template": "Contact USC Transportation Services by {due_date}.",
+      "message": "If guests are coming to campus for the event, section A.6.iii says a parking reservation may be needed, approved by USC Transportation Services; section M says it will be required.",
+      "fix_template": "Contact USC Transportation Services about parking before the event.",
       "applies_to": "An event with guests driving to campus",
       "triggers": [
         "outside_guests_parking"
       ],
-      "conflicts_with": null
+      "conflicts_with": [
+        "parking-reservation-required"
+      ]
+    },
+    {
+      "id": "parking-reservation-required",
+      "domain": "events",
+      "kind": "requirement",
+      "title": "Guest parking needs a reservation (section M)",
+      "owner_office": "USC Transportation Services",
+      "source": "Trojan Event Services (TES) Terms and Conditions 2026",
+      "source_section": "Terms and Conditions M: Parking",
+      "source_url": "https://trojanevents.usc.edu/wp-content/uploads/2026/06/TES-Terms-and-Conditions-2026.pdf",
+      "source_text": "M. Parking: An event being attended by persons coming to the University campus specifically for the event will require a parking reservation and must be approved by USC Transportation Services.",
+      "effective_date": "2026-06-24",
+      "verified": "read",
+      "severity": "red",
+      "message": "Section M of the Terms and Conditions says an event with guests coming to campus for it will require a parking reservation approved by USC Transportation Services. Section A.6.iii says 'may require'; Greenlight applies 'will require' and shows both.",
+      "fix_template": "Make a parking reservation with USC Transportation Services.",
+      "applies_to": "An event with guests driving to campus",
+      "triggers": [
+        "outside_guests_parking"
+      ],
+      "conflicts_with": [
+        "parking-transportation"
+      ]
     },
     {
       "id": "fpm-outdoor-electrical",
@@ -1402,7 +1532,7 @@
       "verified": "read",
       "severity": "office_decides",
       "message": "Outdoor events and events with special electrical or custodial needs must be approved by Facilities Planning and Management; fees may apply.",
-      "fix_template": "Contact Facilities Planning and Management by {due_date}.",
+      "fix_template": "Contact Facilities Planning and Management before the event; its approval is one of the approvals due 2 weeks before.",
       "applies_to": "An outdoor event",
       "triggers": [
         "venue_outdoor"
@@ -1501,6 +1631,53 @@
       "conflicts_with": null
     },
     {
+      "id": "tabling-blocked-days",
+      "domain": "events",
+      "kind": "blocked_period",
+      "title": "No tabling on holidays or official university functions",
+      "owner_office": "Trojan Event Services (TES)",
+      "source": "Trojan Event Services (TES): Trousdale Information Tables",
+      "source_section": "USC Recognized Student Organization (RSO) Tabling Guidelines",
+      "source_url": "https://trojanevents.usc.edu/venues/ronald-tutor-campus-center-meeting-rooms/trousdale-information-tables/",
+      "source_text": "RSO Tabling is not permitted during official university functions or holidays including but not limited to Welcome Week, Orientation, and home football game days, or when there is a reservation that is using all of Trousdale. For example, a Career Fair.",
+      "effective_date": "2026-10-08",
+      "verified": "read",
+      "severity": "red",
+      "message": "Tabling is not allowed on university holidays or during official university functions such as Welcome Week, Orientation, home football game days, or when an event reserves all of Trousdale.",
+      "fix_template": "Choose a weekday that is not a university holiday or an official university function.",
+      "applies_to": "Walk-up tabling",
+      "triggers": [
+        "tabling"
+      ],
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-academic-calendar-2026-27"
+      ],
+      "notes": "Holidays come from the academic calendar; Welcome Week, Orientation, football days and Trousdale-wide reservations are not in Greenlight's data, so the officer checks those dates with Trojan Event Services."
+    },
+    {
+      "id": "tes-no-outdoor-football-days",
+      "domain": "events",
+      "kind": "info",
+      "title": "No outdoor reservations on home football game days",
+      "owner_office": "Trojan Event Services (TES)",
+      "source": "Trojan Event Services (TES): Frequently Asked Questions",
+      "source_section": "Frequently Asked Questions: How do I register to get a tailgate permit?",
+      "source_url": "https://trojanevents.usc.edu/frequently-asked-questions/",
+      "source_text": "Trojan Event Services does not reserve outdoor spaces on home football game days.",
+      "effective_date": "2026-09-17",
+      "verified": "read",
+      "severity": "info",
+      "message": "Trojan Event Services does not reserve outdoor spaces on home football game days. Greenlight has no football schedule; check fall dates with Trojan Event Services.",
+      "fix_template": null,
+      "applies_to": "Outdoor events on a home football game day (fall semester)",
+      "triggers": [
+        "venue_outdoor"
+      ],
+      "conflicts_with": null,
+      "notes": "Shown as information because the football schedule is not in Greenlight's data; the spring semester has no home football games."
+    },
+    {
       "id": "tabling-hours",
       "domain": "events",
       "kind": "blocked_period",
@@ -1544,14 +1721,15 @@
       "effective_date": "2026-10-08",
       "verified": "read",
       "severity": "red",
-      "message": "A club can table at most 2 consecutive days per week and 6 days per month.",
+      "message": "A club can table on at most 2 days a week, and they must be consecutive, and on at most 6 days a month.",
       "fix_template": "Reduce tabling to 2 consecutive days a week and 6 days a month.",
       "applies_to": "Walk-up tabling",
       "triggers": [
         "tabling"
       ],
       "params": {
-        "max_consecutive_days_per_week": 2,
+        "max_days_per_week": 2,
+        "days_in_a_week_must_be_consecutive": true,
         "max_days_per_month": 6
       },
       "conflicts_with": null

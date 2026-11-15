@@ -360,7 +360,7 @@ def test_verification_notes_are_plain_language(ruleset) -> None:  # type: ignore
 def test_confirmed_calendar_makes_calendar_only_rules_certain(ruleset) -> None:  # type: ignore[no-untyped-def]
     """The user confirmed the calendar on 2026-11-14; rules that rest only on it are now certain."""
     assert ruleset.get("usc-academic-calendar-2026-27").verified == "read"
-    for rule_id in ("usg-no-funding-breaks", "social-events-not-study-days-finals", "classroom-requests-week-4"):
+    for rule_id in ("usg-no-funding-breaks", "social-events-not-study-days-finals"):
         assert ruleset.is_certain(rule_id), rule_id
         assert ruleset.display_severity(rule_id) == "red", rule_id
 
@@ -436,3 +436,19 @@ def test_sterno_is_not_banned_with_candles(ruleset) -> None:
     assert open_flame == {"lafd-division-5-permit", "sterno-guidelines"}
     assert ruleset.get("no-candles-flames").triggers == ["candles"]
     assert ruleset.get("sterno-guidelines").severity == "office_decides"
+
+
+def test_due_date_placeholder_only_on_deadline_rules(rules_copy: Path) -> None:
+    """Regression (phase 0 iteration 3, events audit M3): no made-up date behind a non-deadline rule."""
+    _edit(rules_copy, "events.json", lambda d: _rule(d, "campus-filming").update(fix_template="Contact them by {due_date}."))
+    _expect_problem(rules_copy, "campus-filming", "no deadline to compute it from")
+
+
+def test_new_event_rules_from_the_third_audit(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, events audit M1, M2, M4, M5, M6, M7)."""
+    assert ruleset.get("tes-outdoor-deposit-section-c2").conflicts_with == ["tes-rso-deposits"]
+    assert ruleset.get("parking-reservation-required").conflicts_with == ["parking-transportation"]
+    for rule_id in ("alcohol-no-sales", "alcohol-end-times", "alcohol-not-main-focus", "tabling-blocked-days"):
+        assert rule_id in ruleset
+    assert ruleset.get("classroom-requests-week-4").severity == "yellow"
+    assert ruleset.get("tabling-limits").params["days_in_a_week_must_be_consecutive"] is True

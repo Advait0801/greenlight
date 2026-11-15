@@ -570,6 +570,20 @@
             "past_due": false
           },
           {
+            "rule_id": "alcohol-end-times",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "alcohol-not-main-focus",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "alcohol-not-at-dances",
             "status": "blocked",
             "due": null,
@@ -712,6 +726,20 @@
             "past_due": false
           },
           {
+            "rule_id": "alcohol-end-times",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "alcohol-not-main-focus",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "food-approved-provider",
             "status": "check_with_office",
             "due": null,
@@ -850,6 +878,20 @@
             "rule_id": "alcohol-uepa-two-weeks",
             "status": "to_do",
             "due": "2027-02-16",
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "alcohol-end-times",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "alcohol-not-main-focus",
+            "status": "condition",
+            "due": null,
             "violated": false,
             "past_due": false
           },
@@ -1090,6 +1132,13 @@
           },
           {
             "rule_id": "tabling-limits",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "tabling-blocked-days",
             "status": "condition",
             "due": null,
             "violated": false,
@@ -2240,7 +2289,7 @@
           },
           {
             "rule_id": "classroom-requests-week-4",
-            "status": "blocked",
+            "status": "check_with_office",
             "due": null,
             "violated": true,
             "past_due": false,
@@ -2281,7 +2330,7 @@
           },
           {
             "rule_id": "classroom-requests-week-4",
-            "status": "condition",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -3861,6 +3910,13 @@
           },
           {
             "rule_id": "tabling-limits",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "tabling-blocked-days",
             "status": "condition",
             "due": null,
             "violated": false,
