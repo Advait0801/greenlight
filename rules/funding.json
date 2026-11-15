@@ -157,7 +157,8 @@
       "unit": "academic_weeks",
       "direction": "before",
       "conflicts_with": [
-        "usg-faq-deadline-new-vendors-travel"
+        "usg-faq-deadline-new-vendors-travel",
+        "usg-faq-professional-travel-eight-weeks"
       ],
       "depends_on": [
         "usg-academic-week-definition"
@@ -213,13 +214,77 @@
       "effective_date": "2026-10-21",
       "verified": "read",
       "severity": "info",
-      "message": "If the USG deadline is missed, the application is denied automatically. There is no written appeal process.",
+      "message": "The guidelines say an application that misses the USG deadline is denied automatically. USG's FAQ document leaves late Professional/Academic Fund travel requests to the Director's discretion; both are shown.",
       "fix_template": null,
       "applies_to": "Every USG application",
       "triggers": [
         "usg_funding"
       ],
-      "conflicts_with": null
+      "conflicts_with": [
+        "usg-faq-late-travel-director-discretion"
+      ]
+    },
+    {
+      "id": "usg-faq-professional-travel-eight-weeks",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG FAQ: Professional Fund travel 8 weeks before the trip",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding FAQ document (FAQ for Funding Website)",
+      "source_section": "FAQ, Professional and Academic Fund: Why is there an 8 week deadline for travel?",
+      "source_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "source_text": "Travel expense requests (airfare and hotel) must be made at least eight weeks prior to the date of travel",
+      "effective_date": "2026-11-14",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG's FAQ document says Professional/Academic Fund travel requests (airfare and hotel) must be made at least 8 weeks before the travel date. The guidelines say 9 academic weeks before the first payment. Greenlight shows the earliest date and cites both.",
+      "fix_template": "Apply by {due_date}, the earliest of the deadlines.",
+      "applies_to": "A Professional/Academic Fund request with airfare or hotel",
+      "triggers": [
+        "travel",
+        "lodging",
+        "airfare"
+      ],
+      "params": {
+        "fund_rules": [
+          "usg-fund-professional-academic"
+        ]
+      },
+      "anchor": "event_date",
+      "offset": 8,
+      "unit": "weeks",
+      "direction": "before",
+      "conflicts_with": [
+        "usg-deadline-travel"
+      ]
+    },
+    {
+      "id": "usg-faq-late-travel-director-discretion",
+      "domain": "funding",
+      "kind": "info",
+      "title": "USG FAQ: late Professional Fund travel requests are at the Director's discretion",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding FAQ document (FAQ for Funding Website)",
+      "source_section": "FAQ, Professional and Academic Fund: Why is there an 8 week deadline for travel?",
+      "source_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "source_text": "Applications received within this four week deadline, or eight week deadline in the event of air travel requests, will be considered at the discretion of the Director of the Academic Fund.",
+      "effective_date": "2026-11-14",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "USG's FAQ document says late Professional/Academic Fund travel requests are considered at the Director's discretion; the guidelines say a missed deadline means automatic denial.",
+      "fix_template": null,
+      "applies_to": "A late Professional/Academic Fund travel request",
+      "triggers": [
+        "travel"
+      ],
+      "params": {
+        "fund_rules": [
+          "usg-fund-professional-academic"
+        ]
+      },
+      "conflicts_with": [
+        "usg-missed-deadline-denial"
+      ]
     },
     {
       "id": "usg-application-window",
@@ -409,6 +474,33 @@
       "triggers": [
         "usg_funding"
       ],
+      "conflicts_with": null
+    },
+    {
+      "id": "usg-faq-eligibility",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Only recognized clubs that completed the funding module get funding",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding FAQ document (FAQ for Funding Website)",
+      "source_section": "FAQ 2: Who is eligible to receive funding?",
+      "source_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "source_text": "Individuals and Registered Student Organizations that have gone through the re-recognition process with USC Campus Activities and have completed the Funding Guidelines module are eligible to receive funding. Organizations that have not gone through this process will not receive funding.",
+      "effective_date": "2026-11-14",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG funds only clubs that went through recognition with Campus Activities this year and completed the Funding Guidelines module.",
+      "fix_template": "Complete recognition and the USG Funding Guidelines module before applying.",
+      "applies_to": "Every USG application",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "see_also_rules": [
+          "usg-funding-modules",
+          "recognition-application-window"
+        ]
+      },
       "conflicts_with": null
     },
     {
@@ -660,7 +752,8 @@
       "unit": "business_days",
       "direction": "after",
       "conflicts_with": [
-        "usg-incomplete-48-hours"
+        "usg-incomplete-48-hours",
+        "usg-faq-incomplete-three-business-days"
       ],
       "depends_on": [
         "usc-academic-calendar-2026-27",
@@ -691,7 +784,40 @@
       "unit": "hours",
       "direction": "after",
       "conflicts_with": [
-        "usg-incomplete-two-business-days"
+        "usg-incomplete-two-business-days",
+        "usg-faq-incomplete-three-business-days"
+      ]
+    },
+    {
+      "id": "usg-faq-incomplete-three-business-days",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG FAQ: 3 business days to complete a returned application",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding FAQ document (FAQ for Funding Website)",
+      "source_section": "FAQ 16: What happens if I submit an application that is missing information?",
+      "source_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "source_text": "If your application is missing information, the Funding Director will return it to you, and you will have three business days to provide the necessary information before your application is denied.",
+      "effective_date": "2026-11-14",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG's FAQ document says a returned application must be completed within 3 business days; the guidelines say 2 business days (48 hours). Greenlight shows the earliest of these and cites both.",
+      "fix_template": "Send the missing information by {due_date}, the earliest of the deadlines.",
+      "applies_to": "A USG application returned as incomplete",
+      "triggers": [
+        "usg_funding"
+      ],
+      "anchor": "notification_date",
+      "offset": 3,
+      "unit": "business_days",
+      "direction": "after",
+      "conflicts_with": [
+        "usg-incomplete-two-business-days",
+        "usg-incomplete-48-hours"
+      ],
+      "depends_on": [
+        "usc-academic-calendar-2026-27",
+        "usc-business-days-definition"
       ]
     },
     {

@@ -2170,6 +2170,13 @@
             "due": null,
             "violated": false,
             "past_due": false
+          },
+          {
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
           }
         ],
         "source_conflicts": [
@@ -2184,6 +2191,20 @@
             "rules": [
               "usg-incomplete-two-business-days",
               "usg-incomplete-48-hours"
+            ],
+            "applied": "usg-incomplete-48-hours"
+          },
+          {
+            "rules": [
+              "usg-incomplete-two-business-days",
+              "usg-faq-incomplete-three-business-days"
+            ],
+            "applied": "usg-incomplete-two-business-days"
+          },
+          {
+            "rules": [
+              "usg-incomplete-48-hours",
+              "usg-faq-incomplete-three-business-days"
             ],
             "applied": "usg-incomplete-48-hours"
           }
@@ -2358,6 +2379,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-deadline-travel",
             "status": "check_with_office",
             "due": null,
@@ -2368,6 +2396,13 @@
             "rule_id": "usg-faq-deadline-new-vendors-travel",
             "status": "check_with_office",
             "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "usg-faq-professional-travel-eight-weeks",
+            "status": "to_do",
+            "due": "2027-01-07",
             "violated": false,
             "past_due": false
           }
@@ -2393,6 +2428,27 @@
               "usg-faq-deadline-new-vendors-travel"
             ],
             "applied": "usg-deadline-travel"
+          },
+          {
+            "rules": [
+              "usg-incomplete-two-business-days",
+              "usg-faq-incomplete-three-business-days"
+            ],
+            "applied": "usg-incomplete-two-business-days"
+          },
+          {
+            "rules": [
+              "usg-incomplete-48-hours",
+              "usg-faq-incomplete-three-business-days"
+            ],
+            "applied": "usg-incomplete-48-hours"
+          },
+          {
+            "rules": [
+              "usg-deadline-travel",
+              "usg-faq-professional-travel-eight-weeks"
+            ],
+            "applied": null
           }
         ]
       }
@@ -2478,6 +2534,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-deadline-travel",
             "status": "check_with_office",
             "due": null,
@@ -2488,6 +2551,13 @@
             "rule_id": "usg-faq-deadline-new-vendors-travel",
             "status": "check_with_office",
             "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "usg-faq-professional-travel-eight-weeks",
+            "status": "to_do",
+            "due": "2027-02-13",
             "violated": false,
             "past_due": false
           },
@@ -2521,6 +2591,27 @@
               "usg-faq-deadline-new-vendors-travel"
             ],
             "applied": "usg-deadline-travel"
+          },
+          {
+            "rules": [
+              "usg-incomplete-two-business-days",
+              "usg-faq-incomplete-three-business-days"
+            ],
+            "applied": "usg-incomplete-two-business-days"
+          },
+          {
+            "rules": [
+              "usg-incomplete-48-hours",
+              "usg-faq-incomplete-three-business-days"
+            ],
+            "applied": "usg-incomplete-48-hours"
+          },
+          {
+            "rules": [
+              "usg-deadline-travel",
+              "usg-faq-professional-travel-eight-weeks"
+            ],
+            "applied": null
           }
         ]
       }
@@ -2733,6 +2824,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-ineligible-ticketed-events",
             "status": "blocked",
             "due": null,
@@ -2760,6 +2858,20 @@
             "rules": [
               "usg-incomplete-two-business-days",
               "usg-incomplete-48-hours"
+            ],
+            "applied": "usg-incomplete-48-hours"
+          },
+          {
+            "rules": [
+              "usg-incomplete-two-business-days",
+              "usg-faq-incomplete-three-business-days"
+            ],
+            "applied": "usg-incomplete-two-business-days"
+          },
+          {
+            "rules": [
+              "usg-incomplete-48-hours",
+              "usg-faq-incomplete-three-business-days"
             ],
             "applied": "usg-incomplete-48-hours"
           }

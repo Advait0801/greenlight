@@ -227,6 +227,12 @@
             "due": null
           },
           {
+            "event": "welcome-mixer",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
             "event": "workshop",
             "rule_id": "uepa-required",
             "status": "to_do",
@@ -305,6 +311,12 @@
             "due": null
           },
           {
+            "event": "workshop",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
             "event": "retreat",
             "rule_id": "usg-deadline-vendor",
             "status": "check_with_office",
@@ -360,6 +372,12 @@
           },
           {
             "event": "retreat",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
             "rule_id": "usg-deadline-travel",
             "status": "check_with_office",
             "due": null
@@ -369,6 +387,12 @@
             "rule_id": "usg-faq-deadline-new-vendors-travel",
             "status": "check_with_office",
             "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-faq-professional-travel-eight-weeks",
+            "status": "to_do",
+            "due": "2027-01-01"
           },
           {
             "event": "culture-night",
@@ -533,6 +557,12 @@
             "due": null
           },
           {
+            "event": "culture-night",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
             "event": "spring-banquet",
             "rule_id": "tes-space-request",
             "status": "check_with_office",
@@ -692,6 +722,12 @@
             "event": "spring-banquet",
             "rule_id": "usg-incomplete-48-hours",
             "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -986,6 +1022,12 @@
             "due": null
           },
           {
+            "event": "speaker-series-1",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
             "event": "resume-workshop",
             "rule_id": "uepa-required",
             "status": "to_do",
@@ -1061,6 +1103,12 @@
             "event": "resume-workshop",
             "rule_id": "usg-incomplete-48-hours",
             "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1205,6 +1253,12 @@
             "event": "case-competition",
             "rule_id": "usg-incomplete-48-hours",
             "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1395,6 +1449,12 @@
           },
           {
             "event": "networking-night",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
             "rule_id": "usg-ineligible-alcohol",
             "status": "condition",
             "due": null
@@ -1511,6 +1571,12 @@
             "event": "speaker-series-2",
             "rule_id": "usg-incomplete-48-hours",
             "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-faq-incomplete-three-business-days",
+            "status": "check_with_office",
             "due": null
           }
         ],
