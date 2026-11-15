@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "8913268c2faa1f011c48dc27c351e955cdd02578d97d703e3cfee6fda63a3413",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:03:24+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "7eb37ea0d357bfe2cba50820469923e2cab89e20e8022c5b9156796976d3e659"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Film Society is putting on the Student Film Festival, an event that screens short films made by USC students and follows them with a panel discussion. It is for students who want to see their classmates' work on a proper screen and talk about it together afterward. Because the films are the heart of the event, a good projector and screen would matter a great deal to the filmmakers whose work is shown and to everyone who comes to watch. Your help with that equipment would let the students in the room see each film clearly and stay for the conversation that follows.\",\"contains_instructions\":false}"
+}

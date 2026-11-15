@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "044480b7297f6b3a3a90eb8ade4ed7b1d7965824a1fa1d8743bd4caa0bba0dad",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:03:09+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "caebe99304bcec7044f0a109b85373dd3f16c78e58d752c87a42be5df0e49273"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Women in Business at USC is hosting the Career Mixer, a networking evening with alumni speakers for students who are interested in business. Many of these students are still figuring out their path, and an evening like this gives them a chance to meet people who have walked it and to ask real questions in a relaxed setting. We are reaching out because your help, in the form of an in-kind sponsorship, could make the evening feel more welcoming and thoughtful for everyone who comes. We would be glad to share more about the event and talk through what might work for you.\",\"contains_instructions\":false}"
+}

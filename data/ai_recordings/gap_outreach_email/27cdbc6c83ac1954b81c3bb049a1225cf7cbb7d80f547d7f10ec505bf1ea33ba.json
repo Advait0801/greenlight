@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "27cdbc6c83ac1954b81c3bb049a1225cf7cbb7d80f547d7f10ec505bf1ea33ba",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:02:52+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "a2bcc62d4b6071dd62b36d3d82052a544212d36cceca8d7fccb1732121379034"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Filipino American Student Association is hosting Culture Night, an evening of Filipino dance, music and food on McCarthy Quad. The night is open to every USC student, whether they are part of our community or are curious to learn about it. We are reaching out because catered food would help us welcome everyone who comes and share a meal alongside the performances. For students, a shared table is one of the warmest ways to experience Filipino culture, and your help would make that possible. We would be glad to tell you more about the evening and what we hope it offers our fellow students.\",\"contains_instructions\":false}"
+}

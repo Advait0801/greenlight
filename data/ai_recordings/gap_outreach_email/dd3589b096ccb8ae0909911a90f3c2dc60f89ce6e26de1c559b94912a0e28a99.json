@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "dd3589b096ccb8ae0909911a90f3c2dc60f89ce6e26de1c559b94912a0e28a99",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:03:01+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "cd60243a69503d77e4a476cbdc68b28ffb80e23330811c4ef785dcbcc66d8fc9"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Hello! I'm writing on behalf of the Hip Hop Collective at USC about Cypher Night, an open freestyle and dance night for students. It is a relaxed space where anyone can step into the circle, try something new, or simply cheer on their classmates. We are reaching out because drinks for the night would make a real difference to the students who come. Staying hydrated keeps people dancing and rapping longer, and it helps everyone feel welcome and looked after. If this sounds like something you could help with, we would be glad to share more about the evening.\",\"contains_instructions\":false}"
+}

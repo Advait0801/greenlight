@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "a74b60b2e356a03246684a1bd71fd7f457152519a943226d7b816b0fc8a0a71f",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:03:44+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "2602e858f662607c4ce5f75f16dbda5742836a9f142ad4f67b8fad102e2ad54f"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Outdoors Club is hosting Gear Swap, an event where USC students trade used outdoor gear and learn how to plan a trip. It is open to students who are new to the outdoors as well as those who already spend time outside, and it gives them a way to find gear they need without buying new. We are looking for an in-kind sponsorship in the form of tarps and folding tables. Having these on hand would give students covered, organized space to lay out their gear, talk with one another and ask questions about planning a trip. We would be glad to tell you more about the event and answer any questions you have.\",\"contains_instructions\":false}"
+}

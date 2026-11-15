@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "6e74f0c879991f9de8fd8421dec2481e4e4af74befff9fe72c2c8edc76e2e753",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:03:11+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "f78c4450ffeec5de89f36af447149f7b016bc0a71785c61e3600b8c3fbada02a"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"I'm writing on behalf of the USC Chess Club about our Spring Tournament, a one-day open chess tournament for players of all skill levels. Whether someone has played for years or is just learning the moves, they are welcome to sit down and play. We are looking for help with boards and clocks for the day, and having enough equipment would matter to the students who come: it means more people can play at once, and newcomers can try tournament-style chess without having to bring their own gear. Thank you for considering helping us make the day welcoming for everyone.\",\"contains_instructions\":false}"
+}
