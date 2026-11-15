@@ -57,6 +57,9 @@ class Settings(BaseSettings):
 
     rules_dir: Path = REPO_ROOT / "rules"
 
+    # The passcode a USG reviewer types to open the USG screen. Unset: the USG screen is closed (503).
+    usg_reviewer_key: SecretStr | None = None
+
     @field_validator("database_url")
     @classmethod
     def _anchor_sqlite_path(cls, value: str) -> str:

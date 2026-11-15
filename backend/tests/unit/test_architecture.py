@@ -16,7 +16,7 @@ AI_ALLOWED: set[Path] = {
 # Money check (Phase 3): reading quotes and the fund, and drafting the application.
 AI_ALLOWED |= {APP / "services" / "quote_intake.py", APP / "services" / "fund_reading.py", APP / "services" / "application_draft.py"}
 # Phase 5: drafting the gap helper's outreach email.
-AI_ALLOWED |= {APP / "services" / "gap_email.py"}
+AI_ALLOWED |= {APP / "services" / "gap_email.py", APP / "services" / "denial_draft.py"}
 
 
 def _imports(path: Path) -> set[str]:

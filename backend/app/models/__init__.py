@@ -11,6 +11,7 @@ from app.models.documents import Document, LineItem
 from app.models.findings import Finding, FundingOption
 from app.models.plans import Event, Obligation, YearPlan
 from app.models.rules import RuleVersion
+from app.models.usg import SentApplication
 
 __all__ = [
     "AuditLog",
@@ -22,6 +23,7 @@ __all__ = [
     "LineItem",
     "Obligation",
     "RuleVersion",
+    "SentApplication",
     "User",
     "YearPlan",
 ]
