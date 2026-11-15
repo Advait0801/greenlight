@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -33,7 +33,7 @@ class LineItem(TimestampMixin, Base):
     __tablename__ = "line_items"
     __table_args__ = (
         CheckConstraint("quantity >= 0", name="ck_line_items_quantity"),
-        CheckConstraint("confidence >= 0 AND confidence <= 1", name="ck_line_items_confidence"),
+        CheckConstraint("confidence IN ('high', 'medium', 'low')", name="ck_line_items_confidence"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -44,4 +44,6 @@ class LineItem(TimestampMixin, Base):
     amount_cents: Mapped[int] = mapped_column(Integer, nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     category: Mapped[str | None] = mapped_column(String(80))
-    confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    # The same three-level rating the AI layer returns (app.ai.schemas.Confidence); only "high" counts as
+    # sure (app.ai.schemas.is_confident). Stored as the label, so no threshold can let "medium" through.
+    confidence: Mapped[str] = mapped_column(String(6), nullable=False, default="low")

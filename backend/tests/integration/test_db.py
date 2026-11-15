@@ -85,3 +85,29 @@ def test_ai_outputs_go_to_the_audit_log(engine) -> None:  # type: ignore[no-unty
         entry = session.scalars(select(AuditLog)).one()
         assert entry.actor == "ai:claude-sonnet-5-5"
         assert entry.payload["output"] == {"name": "x"}
+
+
+@pytest.mark.parametrize(("confidence", "accepted"), [("high", True), ("medium", True), ("0.9", False)])
+def test_line_item_confidence_is_the_ai_label(engine, confidence: str, accepted: bool) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, code audit L): the database and the AI layer use one confidence
+    scale, so no float threshold can let 'medium' count as sure."""
+    from datetime import date
+
+    from app.models import LineItem
+
+    with Session(engine) as session:
+        club = Club(name="Test Club", level="undergraduate")
+        session.add(club)
+        session.flush()
+        plan = YearPlan(club_id=club.id, period="spring-2027", money_on_hand_cents=0)
+        session.add(plan)
+        session.flush()
+        event = Event(plan_id=plan.id, name="Night", event_date=date(2027, 2, 1), estimated_cost_cents=0)
+        session.add(event)
+        session.flush()
+        session.add(LineItem(event_id=event.id, item="Pizza", amount_cents=100, confidence=confidence))
+        if accepted:
+            session.flush()
+        else:
+            with pytest.raises(IntegrityError):
+                session.flush()
