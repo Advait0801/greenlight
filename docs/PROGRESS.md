@@ -8,6 +8,8 @@ Final reviewers in Phase 7 must **not** read this file.
 
 - **Phase 2 (this branch):** closed 2026-11-15 after three iterations; pull request from `phase-2/event-packet` into `main` for the humans to merge.
 - **Phase:** 0 — Foundation
+
+- **Phase:** 1 — Recognition check (closed on its branch; pull request into main pending the humans' merge). Phase 0 below.
 - **Step:** closed. Iterations 1-4 ran; every blocker and high from iteration 4 is fixed; the humans ended the review loop there (see Decisions, 2026-11-15)
 - **Next action:** paused at the user's request after the Phase 0 push. Phase 1 (recognition check) starts only when the humans say so, under the new process (at most 3 iterations, 1-2 reviewers each)
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
@@ -17,7 +19,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Closed |
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
-| 1 | Recognition check | done | 2 | no (iteration 2: 7 blockers, 4 high, all fixed) | open (branch `phase-1/recognition`) |
+| 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
@@ -102,6 +104,16 @@ Fixed: M1 with no venue, every on-campus venue's steps are listed as "check with
 Left open: M3 most "office decides" items have no contact-by date (no source gives one); L2 "move the date" can suggest a blocked period (the text says to check the new date); L3 an .ics with no dated items is empty (the page disables the button); L4 DPS and GSG appear without full names in rule titles; L5 three more cautious statuses than the test set (ev-23 unsure performers, ev-28); L6 the repository's local .env sets AI_MODE=live (a developer setting, not committed).
 Full test suite: pass (389)
 Gate: iteration 2 (break) next
+
+### Phase 1, iteration 3 — audit; phase closed
+Date/time: 2026-11-15, about 03:50-04:15 PT
+Agent and model: one fresh auditor (general-purpose agent following .claude/agents/auditor.md), Opus 5.5, medium effort
+Report: docs/reviews/phase-1-iter-3-audit.md
+Findings: 0/2/5/4. Clause list: 92 template clauses, 92 clause rules, wording, blanks and conditions match the snapshot; readiness items, numbers and dates match their rules; iteration 2 regression tests exercise the real code.
+Fixed (both highs, each with a regression test that failed before the fix): words added after a fixed cover-page sentence keep it from green; a "no appointed positions" answer is treated as not sure when Article III, Section A names an appointed position, so a missing III.D.8 is not hidden. Also fixed (medium): the constitution route runs the check in a worker thread, so an AI call does not stall the server.
+Left open: see "Open findings after Phase 1".
+Full test suite: pass (449 + 130 adversarial); validate_rules.py OK; run_eval constitutions 21 caught / 0 missed / 0 wrongly flagged; frontend build OK
+Close: Phase 1 closed after the third iteration (PLAN.md section 1)
 
 ### Phase 1, iteration 2 — break
 Date/time: 2026-11-15, about 03:10-03:45 PT
@@ -194,6 +206,16 @@ Medium and low findings left open when Phase 2 closed (details in docs/reviews/p
 - **Office decides:** off campus (no approvals rule) office-decides items still have no contact-by date; passed contact-by dates are not hard blocks (L).
 - **Lows:** ev-28's answer key expects "condition" where the engine (more cautiously) says "check with the office"; the stricter-rule choice and date checks still appear in eval_sets.py's validator; no test parses the .ics with an independent iCalendar library (the verifier did, by hand); hard blocks carry no citation; the "certainly passed" check assumes the first vendor payment is never after the event; /events/parse has no rate limit and logs audit rows with no club; an .ics with no dated items is empty; DPS and GSG appear without full names in some rule titles; the repository's local .env sets AI_MODE=live (developer setting).
 - **Questions for a person (breaker):** should a due date on a holiday or weekend move earlier; does the first-three-weeks rule cover classrooms and off campus; should the packet mention USG's ineligible line items.
+
+## Open findings after Phase 1
+
+Medium and low findings left open when Phase 1 closed (details in docs/reviews/phase-1-iter-*.md):
+- **Medium, question for the spec:** a confident AI "no" with no warning words turns a membership blank green, so for that blank the model is the only defence against a document written to fool it (iterations 2 and 3).
+- **Medium:** blanks with no AI question (for example II.A.3, open-membership opportunities) are scanned for membership barriers only when they mention membership; "after an interview with the board" there shows green.
+- **Medium:** VIII.C.2 (link to the national organization's bylaws) is fixed template text but the rule table makes it conditional on a parent organization; co-01 replaces it with "Not applicable" and passes. A rule-table question for a person, not changed in this phase.
+- **Medium:** keyboard-only use (exit criterion 6) was checked by reading the code, never driven in a browser, and has no test.
+- **Medium:** II.C.5 (dues) is yellow on every constitution because the reader answers "no" only at medium confidence.
+- **Low:** the five "elected or appointed" blanks in III.A.1 accept any word; a second Part with the same number leaves the clause it contradicts green (only the extra-text note turns yellow); scan transcriptions are stored whole in the audit log with no club; club questions and training labels are repeated in the frontend; co-09 VIII.A.2 shown "wording changed" where the key says "contradicts"; a changed cover-page clause shows no "your document says".
 
 ## Phase ownership and branches
 
