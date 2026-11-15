@@ -885,21 +885,23 @@
       "message": "USG pays at most $4,000 of the cost of on-campus venue rental and personnel.",
       "fix_template": "You are asking USG for ${venue_personnel_requested} for venue and personnel. USG covers up to $4,000; ask for ${over} less and cover the rest another way.",
       "applies_to": "The amount asked of USG for on-campus venue rental and personnel",
-      "check": "usg_requested(venue_rental + personnel) <= 4000",
+      "check": "usg_requested(venue_rental + personnel + security) <= 4000",
       "triggers": [
         "venue_rental",
-        "personnel"
+        "personnel",
+        "security"
       ],
       "params": {
         "max_usd": 4000,
         "categories": [
           "venue_rental",
-          "personnel"
+          "personnel",
+          "security"
         ],
         "max_usd_quote": "funding for up to $4,000"
       },
       "conflicts_with": null,
-      "notes": "The cap limits what USG pays, not what the venue costs: a club may pay the rest itself. The guidelines do not say whether the $4,000 is per event or per year; a single request over $4,000 breaks it either way, and Phase 3 should show a total across events as needing a check."
+      "notes": "The cap limits what USG pays, not what the venue costs: a club may pay the rest itself. The guidelines do not say whether the $4,000 is per event or per year; a single request over $4,000 breaks it either way, and Phase 3 should show a total across events as needing a check. Security staffing is personnel (the vocabulary's personnel category includes security staff billed by the university), so it counts toward the $4,000."
     },
     {
       "id": "usg-over-4000-case-by-case",

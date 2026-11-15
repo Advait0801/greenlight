@@ -236,3 +236,13 @@ def test_vendor_check_is_separate_and_always_yellow() -> None:
 
 def test_money_formatting() -> None:
     assert money(0) == "$0.00" and money(570000) == "$5,700.00" and money(1) == "$0.01"
+
+
+def test_security_staffing_counts_toward_the_venue_and_personnel_cap() -> None:
+    """Regression (phase 3 iteration 1, H1): security staffing was left out of the $4,000 sum and shown green."""
+    lines = [_line(1, category="venue_rental", amount_cents=300000, unit_price_cents=300000),
+             _line(2, category="security", amount_cents=150000, unit_price_cents=150000)]
+    report = _check(_request(lines, attachments=["esr"]))
+    assert report.totals.venue_personnel_cents == 450000
+    assert all(_rules(line.findings).get("usg-venue-personnel-cap") == "red" for line in report.lines)
+
