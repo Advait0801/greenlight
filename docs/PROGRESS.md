@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Closed |
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
-| 1 | Recognition check | done | 1 | yes (iteration 1: 0 blockers, 0 high) | open (branch `phase-1/recognition`) |
+| 1 | Recognition check | done | 2 | no (iteration 2: 7 blockers, 4 high, all fixed) | open (branch `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
@@ -102,6 +102,16 @@ Fixed: M1 with no venue, every on-campus venue's steps are listed as "check with
 Left open: M3 most "office decides" items have no contact-by date (no source gives one); L2 "move the date" can suggest a blocked period (the text says to check the new date); L3 an .ics with no dated items is empty (the page disables the button); L4 DPS and GSG appear without full names in rule titles; L5 three more cautious statuses than the test set (ev-23 unsure performers, ev-28); L6 the repository's local .env sets AI_MODE=live (a developer setting, not committed).
 Full test suite: pass (389)
 Gate: iteration 2 (break) next
+
+### Phase 1, iteration 2 — break
+Date/time: 2026-11-15, about 03:10-03:45 PT
+Agent and model: one fresh breaker (general-purpose agent following .claude/agents/breaker.md), Opus 5.5, medium effort
+Report: docs/reviews/phase-1-iter-2-break.md (25 failing cases in backend/tests/adversarial/test_phase1_recognition_break.py)
+Findings: 7/4/5/1
+Fixed (all blockers and highs, each covered by the breaker's tests, now passing): placeholders and filler (TBC, "insert…", lorem ipsum, XX, "to be decided") and blanks that repeat the template's own words are empty; "none" accepted only where the blank allows it, never TBD or brackets; advisor meeting counts that allow fewer are not read as a number; membership barriers written into any blank need a look; only table-of-contents lines are dropped and appendix text is reported; words after a fixed clause keep it from green; a "no" club answer contradicted by the document no longer hides a missing clause; long Parts are checked in linear time; damaged PDF pages are reported. Also fixed (mediums and the low): Windows-1252 text files, "2026-2027" year labels and the other-year note, advisor items open until Dec 1 in the readiness headline, officer titles matched loosely ("Vice-President").
+Left open: M (question for the spec) a confident AI "no" with no warning words turns a membership blank green, so against an injected document the model is the only defence there.
+Full test suite: pass (446 + 130 adversarial); run_eval constitutions 21/0/0
+Gate: not yet, because iteration 3 (audit) has not run
 
 ### Phase 1, iteration 1 — verify
 Date/time: 2026-11-15, about 02:30-03:00 PT
