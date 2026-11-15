@@ -7,7 +7,8 @@ Final reviewers in Phase 7 must **not** read this file.
 ## Current state
 
 - **Phase 0, 1, 2, 3:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
-- **Next action:** Phase 4 (year plan) can start, on `main`.
+- **Phase 4 (year plan):** built on `main` (2026-11-15); iterations next.
+- **Next action:** Phase 4 iteration 1 (verify).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -18,7 +19,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 4 | Year plan | — | 0 | — | open |
+| 4 | Year plan | done (on `main`) | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
@@ -36,6 +37,18 @@ What exists now:
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
 - **Tests**: 318 passing (`pytest`), including 105 adversarial tests from iterations 2 and 4.
+
+## Phase 4 build (2026-11-15, on `main`)
+
+What exists now:
+- **Year planner** (`backend/app/services/year_planner.py`, `app/schemas/plans.py`): club money + events -> calendar, crowded weeks, budget split, funding strategy, problems, "this week". Pure code, recomputed from the whole request every time (nothing derived is stored, so nothing goes stale). Reuses, never re-implements: each event's obligations, dates, blocked periods, ineligible events and passed deadlines come from `build_packet` (Phase 2, which uses the deadline calculator); the fund comes from `match_fund` and caps are read with `limit_cents` and formatted with `money` (Phase 3). New here: sums across events, the 4-a-semester cap (always yellow, user's choice) and the $8,000 yearly cap across events (red when over; unknown received amount is asked, never assumed 0), two funded events on one day, largest requests planned first within both caps, club money split in date order, crowded weeks (5+ dated items).
+- **USG deadline table** (`app/services/usg_deadline_table.py`): reads the hand-transcribed snapshot named by `usg-academic-week-definition`; weekend dates use the Monday's row. Two rules gained `params.deadline_table_column` (`usg-page-deadline-event-date`: 6-week column; `usg-deadline-travel`: 9-week). A table date is always shown as "unconfirmed copy, check with USG" (yellow), next to the certain bound (event minus N calendar weeks). The demo retreat (Feb 26-28) shows the travel deadline: at the latest Dec 25, 2026 (winter recess), table Nov 18, 2026: before the spring semester either way.
+- **API** (`app/api/plans.py`): `POST /plans/plan`, `POST /plans/calendar.ics` (every event's dated items plus table dates marked "Check with USG"; `ics.py` refactored to share the event lines), `GET /plans/demo` (from `data/demo/club.json`, which now states `usg_received_this_year_cents: 0`), `POST /plans/read-events` (one event per line through the Phase 2 reading step; a line it cannot read comes back to fill in by hand; costs are never read).
+- **Frontend**: the year plan is now the home page (`/`); the old status page moved to `/status`. Results first (this week, problems, funding strategy, budget, calendar by month with busy weeks, each event with "Open event packet" and "Open money check", which open those pages pre-filled), then the editable plan (club and money, events, paste a list). Saved in the browser only. Checked at 375 px wide: no horizontal scroll; delete and edit recompute everything.
+- **Evaluator** (`scripts/evaluators/year_plans.py`): 2/2 plans match: calendar 221/221 entries, budget totals exact, problems 12/12 found, 0 extra; every event's split adds up.
+- **Tests**: 681 passing (25 new: `tests/unit/test_year_planner.py`, `tests/integration/test_plans_api.py`).
+- **Shared code changed** (additive): `money_check.py` (public `limit_cents` alias), `ics.py` (shared VEVENT builder, `plan_to_ics`), `rules/funding.json` (two params), `frontend/src/routes.tsx`, `App.tsx` (nav wraps on a phone), `EventPacket.tsx` and `MoneyCheck.tsx` (read navigation state).
+- **Not done:** no recordings for `/plans/read-events` lines beyond the 30 event-set sentences (recorded mode answers "fill in by hand" for anything else).
 
 ## Phase 2 build (2026-11-15, branch `phase-2/event-packet`)
 
