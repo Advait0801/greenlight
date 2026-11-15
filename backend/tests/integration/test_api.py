@@ -123,3 +123,19 @@ def test_health_degrades_when_calendar_and_rules_disagree(rules_copy: Path, monk
     finally:
         monkeypatch.delenv("RULES_DIR")
         clear_caches()
+
+
+def test_start_up_survives_another_worker_storing_the_same_rule_versions(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression (phase 0 iteration 2 L8; test added after iteration 3, code audit M): when two workers
+    start at once, the second one's insert fails on the unique key; the app still starts."""
+    from fastapi.testclient import TestClient
+    from sqlalchemy.exc import IntegrityError
+
+    import app.main as main
+
+    def clash(*_args: object, **_kwargs: object) -> int:
+        raise IntegrityError("INSERT INTO rule_versions", {}, Exception("UNIQUE constraint failed"))
+
+    monkeypatch.setattr(main, "sync_rule_versions", clash)
+    with TestClient(main.create_app()) as started:
+        assert started.get("/health").status_code == 200

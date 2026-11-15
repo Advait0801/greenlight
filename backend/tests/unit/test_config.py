@@ -48,3 +48,12 @@ def test_relative_folders_and_driver_urls_are_anchored() -> None:
     assert settings.rules_dir == REPO_ROOT / "rules"
     assert settings.ai_recordings_dir == REPO_ROOT / "data" / "ai_recordings"
     assert settings.database_url == f"sqlite+pysqlite:///{BACKEND_DIR / 'x.db'}"
+
+
+def test_settings_read_the_repository_env_file() -> None:
+    """Regression (phase 0 iteration 1 M1; test added after iteration 3, code audit M): the app's own
+    settings name the repository's .env, so a port set only there is honoured by `python -m app`."""
+    from app.config import REPO_ROOT
+
+    env_files = Settings.model_config.get("env_file")
+    assert env_files is not None and REPO_ROOT / ".env" in tuple(env_files)  # type: ignore[arg-type]
