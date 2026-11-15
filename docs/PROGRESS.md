@@ -8,7 +8,7 @@ Final reviewers in Phase 7 must **not** read this file.
 
 - **Phase 0, 1, 2, 3:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** built on `main` (2026-11-15); iterations next.
-- **Next action:** Phase 4 iteration 2 (break).
+- **Next action:** Phase 4 iteration 3 (audit).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -19,7 +19,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 4 | Year plan | done (on `main`) | 1 | no (iteration 1: 0 blockers, 1 high, fixed) | open |
+| 4 | Year plan | done (on `main`) | 2 | no (iteration 2: 2 blockers, 3 high, all fixed) | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
@@ -93,6 +93,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 4, iteration 2 — break
+Date/time: 2026-11-15
+Agent and model: breaker (fresh), Opus 5.5, medium effort, on commit dbf5c5e
+Report: docs/reviews/phase-4-iter-2-break.md (8 failing tests in backend/tests/adversarial/test_phase4_iter2_plan_break.py)
+Findings: 2/3/3/2
+Fixed (all covered by the breaker's tests): B1 a July or August summer-session event fell into the next academic year, bypassing the $8,000 cap (academic year now taken from the calendar's terms); B2 summer events and weeks with no row in USG's table were planned as USG money (now left out, yellow); H1 a merged problem kept the first event's severity, hiding a red (now the worst); H2 multi-day and H3 over-$4,000 events lost USG's case-by-case review (now taken from the money check's own findings on the plan's rough cost; multi_day added when an end date is given); M a possibly ticketed event was planned as certain money; M undated requests were in the over-cap figure but not the problem; M "this week" asked to apply to USG for an event the plan had ruled out.
+Left open (questions for the spec): the plan does not ask how many events USG already funded this semester; a USG deadline falling in a mid-semester break (spring recess) is not flagged.
+Full test suite: pass (691, adversarial included); run_eval all sets clean (year_plans 233/0/0)
+Gate: iteration 3 (audit) next
 
 ### Phase 4, iteration 1 — verify
 Date/time: 2026-11-15
