@@ -128,3 +128,24 @@ def test_an_injected_instruction_is_data_and_changes_no_verdict(ruleset) -> None
     parsed = parse_sentence(INJECTION, ruleset=ruleset, client=client)
     assert parsed.sentence_had_instructions and any("did not follow" in note for note in parsed.notes)
     assert parsed.facts.attributes == ["tabling", "item_sales"]
+
+
+@pytest.mark.parametrize(("sentence", "asked"), [
+    ("Culture night on Friday, April 9, 2027 for about 150 people.", set()),
+    ("Culture night on 4/9/2027 for 150 people.", set()),
+    ("Culture night on Friday, Apr 9th, 2027, about 150 people.", set()),
+    ("Culture night on Friday, April 9 for about 150 people.", {"event_date"}),  # the year is the model's
+    ("Culture night on Friday, April 2027 for about 150 people.", {"event_date"}),  # the day is the model's
+    ("Culture night on Friday, May 9, 2027 for about 150 people.", {"event_date"}),  # the month differs
+    ("Culture night on Friday, April 9, 2027 for a big crowd.", {"headcount"}),  # the number is the model's
+    ("Culture night on Friday, April 9, 2027 for 1,150 people.", {"headcount"}),
+])
+def test_date_parts_and_headcount_must_be_written_in_the_sentence(ruleset, sentence, asked) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit M5): values the model reported were used without checking that the
+    sentence states them, so a model-supplied year or headcount could pass as read."""
+    parsed = facts_from_reading(_reading(ruleset), ruleset, sentence)
+    assert asked == {"event_date", "headcount"} & set(parsed.facts.needs_officer_input), parsed.notes
+    if "event_date" not in asked:
+        assert parsed.facts.event_date == date(2027, 4, 9)
+    if "headcount" not in asked:
+        assert parsed.facts.headcount == 150

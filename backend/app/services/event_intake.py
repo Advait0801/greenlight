@@ -9,6 +9,7 @@ it that reads like an instruction is never followed.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import date
 from functools import lru_cache
@@ -181,10 +182,44 @@ def _build_date(parts: DateParts | None, label: str, notes: list[str]) -> tuple[
     return day, True
 
 
-def facts_from_reading(reading: Any, ruleset: RuleSet) -> ParsedEvent:
+MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
+          "november", "december"]
+
+
+def _numbers_in(text: str) -> set[int]:
+    """Every whole number written in digits in the text ("10,000" is 10000; "9th" is 9)."""
+    joined = re.sub(r"(?<=\d),(?=\d{3}\b)", "", text)
+    return {int(match) for match in re.findall(r"(?<![\d.])\d{1,7}(?![\d.]\d)", joined)}
+
+
+def _month_in(month: int, text: str) -> bool:
+    lowered = text.lower()
+    name = MONTHS[month - 1]
+    return bool(re.search(rf"\b({name}|{name[:3]})\b", lowered)) or month in _numbers_in(text)
+
+
+def _parts_in_sentence(parts: DateParts | None, sentence: str) -> bool:
+    """The year, month and day the model reported must all be written in the sentence. The model only copies
+    them; this check makes sure it did not supply any of them itself (CLAUDE.md: never a figure from the model)."""
+    if parts is None or parts.year is None or parts.month is None or parts.day is None:
+        return True
+    numbers = _numbers_in(sentence)
+    return parts.year in numbers and parts.day in numbers and 1 <= parts.month <= 12 and _month_in(parts.month, sentence)
+
+
+def facts_from_reading(reading: Any, ruleset: RuleSet, sentence: str | None = None) -> ParsedEvent:
     """Turn the model's reading into event facts. Only confident values are used; the rest become questions."""
     notes: list[str] = []
     needs: list[InputField] = []
+    if sentence is not None:
+        for label in ("start", "end"):
+            parts = getattr(reading, label)
+            if not _parts_in_sentence(parts, sentence):
+                notes.append(f"Greenlight could not find the {label} date's day, month and year written in your text.")
+                reading = reading.model_copy(update={label: parts.model_copy(update={"confidence": "low"})})
+        if reading.headcount.value is not None and reading.headcount.value not in _numbers_in(sentence):
+            notes.append("Greenlight could not find that headcount written in your text.")
+            reading = reading.model_copy(update={"headcount": reading.headcount.model_copy(update={"confidence": "low"})})
     start, start_sure = _build_date(reading.start, "start", notes)
     end, end_sure = _build_date(reading.end, "end", notes)
     if start is None:
@@ -278,6 +313,6 @@ def parse_sentence(sentence: str, *, as_of: date | None = None, client: ClaudeCl
     except AIError as exc:
         # The error's own text can name server folders or recording keys; the officer gets a plain message.
         raise IntakeError("Greenlight could not read the description just now. Fill in the form instead.") from exc
-    parsed = facts_from_reading(result.output, ruleset)
+    parsed = facts_from_reading(result.output, ruleset, text)
     parsed.ai_result = result
     return parsed
