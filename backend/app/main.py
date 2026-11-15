@@ -1,6 +1,6 @@
 """Greenlight API.
 
-Run from backend/:  uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}
+Run from backend/:  python -m app   (reads BACKEND_PORT and BACKEND_HOST from the shell or .env)
 """
 
 from __future__ import annotations

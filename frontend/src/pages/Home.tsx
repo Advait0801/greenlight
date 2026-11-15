@@ -109,7 +109,7 @@ export function Home() {
               <StatusRow
                 name="AI reading"
                 state="info"
-                label={body.ai_mode === "live" ? "Live" : "Saved responses"}
+                label={body.ai_mode === "live" ? "Live" : body.ai_mode === "record" ? "Live (saving responses)" : "Saved responses"}
                 detail="The AI only reads documents and drafts text. Every date, sum and verdict comes from code."
               />
             </ul>
