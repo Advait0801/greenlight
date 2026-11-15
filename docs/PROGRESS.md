@@ -55,6 +55,11 @@ What exists now:
 
 Add the newest entry at the top.
 
+### Phase 2, after closing — three open mediums fixed at the humans' request
+Date/time: 2026-11-15, about 02:10-02:30 PT
+Fixed (each with a regression test; no fresh reviewer has seen these, so Phase 7 F1 covers them): audit M1 the rule not applied in a source conflict is marked "not applied" and left out of the timeline, the .ics and the hard blocks; audit M4 / verify L2 "move the event" suggestions skip breaks, holidays, study days, finals and the spring 2027 start block, and name the passed USG deadlines a new date cannot settle; audit M5 the year, month, day and headcount the model reports must be written in the sentence, or the officer is asked.
+Full test suite: pass (424, adversarial included); run_eval.py events 30/456/0/0; frontend build OK
+
 ### Phase 2, iteration 3 — audit; phase closed
 Date/time: 2026-11-15, about 01:35-01:50 PT
 Agent and model: auditor (fresh), Opus 5.5, medium effort, on commit cf5b22e
@@ -151,9 +156,7 @@ Medium and low findings left open when Phase 0 closed (details in the iteration 
 ## Open findings after Phase 2
 
 Medium and low findings left open when Phase 2 closed (details in docs/reviews/phase-2-iter-{1,2,3}-*.md):
-- **Conflicts:** the date not applied in a source conflict still shows as a plain "To do" in the timeline and .ics (audit M1); the parking pair and USG payment-vs-event pair give no applied rule although the rule messages say which applies (M2); the outdoor deposit ($100 vs $200) and late-travel conflicts are not event obligations, so never reach the packet (M3).
-- **Fallbacks:** the packet-level "move the event to ..." date ignores passed USG academic-week deadlines and can fall in a blocked period such as winter break (audit M4, verify L2).
-- **Reading step:** the year, day and headcount the model reports are not checked against the sentence text (audit M5).
+- **Conflicts:** the parking pair and USG payment-vs-event pair give no applied rule although the rule messages say which applies (M2); the outdoor deposit ($100 vs $200) and late-travel conflicts are not event obligations, so never reach the packet (M3).
 - **Rule scope:** the LAFD permit fires on any tent, though the source says over 450 sq ft (M6, tent size is not an attribute); the first-three-weeks rule is applied to Trojan Event Services venues only (M7, an open question since Phase 0 M10); final payment leaves out meeting rooms (L); the officer-facing text says the source gives first-three-weeks dates for spring 2027 only, but it also gives fall dates (L).
 - **Office decides:** most items have no contact-by date because no source gives one (verify M3, audit M8); passed contact-by dates are not hard blocks (L).
 - **Lows:** ev-28's answer key expects "condition" where the engine (more cautiously) says "check with the office"; the stricter-rule choice and date checks still appear in eval_sets.py's validator; no test parses the .ics with an independent iCalendar library (the verifier did, by hand); hard blocks carry no citation; the "certainly passed" check assumes the first vendor payment is never after the event; /events/parse has no rate limit and logs audit rows with no club; an .ics with no dated items is empty; DPS and GSG appear without full names in some rule titles; the repository's local .env sets AI_MODE=live (developer setting).
