@@ -17,6 +17,7 @@ from jsonschema import Draft202012Validator
 from app.config import REPO_ROOT
 from app.jsonutil import StrictJSONError, loads_strict
 from app.rules.loader import RuleSet
+from app.services.deadlines import shift
 
 EVAL_DIR = REPO_ROOT / "data" / "eval"
 SETS: dict[str, str] = {
@@ -50,29 +51,8 @@ VERDICT_ORDER = {"green": 0, "yellow": 1, "office_decides": 2, "red": 3}
 
 
 def _back(day: date, offset: int, unit: str) -> date | None:
-    """A 'before' deadline in plain calendar units: the day minus the lead time."""
-    if unit == "days":
-        return day - timedelta(days=offset)
-    if unit == "weeks":
-        return day - timedelta(weeks=offset)
-    if unit == "months":
-        month, year = day.month - offset, day.year
-        while month < 1:
-            month, year = month + 12, year - 1
-        for candidate in range(day.day, 0, -1):
-            try:
-                return date(year, month, candidate)
-            except ValueError:
-                continue
-    if unit == "business_days":
-        # Every Monday to Friday counts, holidays and recess days included (rules/calendar.json business_days):
-        # the earliest date the office could mean, so a deadline is never shown late.
-        while offset > 0:
-            day -= timedelta(days=1)
-            if day.weekday() < 5:
-                offset -= 1
-        return day
-    return None
+    """A 'before' deadline: the deadline calculator's date (app.services.deadlines)."""
+    return shift(day, offset, unit, "before")
 
 
 def _expected_status(ruleset: RuleSet, rule_id: str, violated: bool | None) -> set[str]:
@@ -89,18 +69,8 @@ def _expected_status(ruleset: RuleSet, rule_id: str, violated: bool | None) -> s
 
 
 def _forward(day: date, offset: int, unit: str) -> date | None:
-    """An 'after' deadline: the day plus the time allowed (business days count every weekday)."""
-    if unit == "days":
-        return day + timedelta(days=offset)
-    if unit == "weeks":
-        return day + timedelta(weeks=offset)
-    if unit == "business_days":
-        while offset > 0:
-            day += timedelta(days=1)
-            if day.weekday() < 5:
-                offset -= 1
-        return day
-    return None
+    """An 'after' deadline: the deadline calculator's date (business days count every weekday)."""
+    return shift(day, offset, unit, "after")
 
 
 def _check_obligation(where: str, ruleset: RuleSet, entry: dict[str, Any], start: date | None, as_of: date | None,
