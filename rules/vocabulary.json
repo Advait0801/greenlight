@@ -43,7 +43,8 @@
     "not_open_to_all_students": "An on-campus event not open to all students",
     "private_residence": "Held in a private residence",
     "prize_drawing": "A raffle or prize drawing",
-    "silent_auction": "A silent auction"
+    "silent_auction": "A silent auction",
+    "professional_academic_fund": "A request to USG's Professional/Academic Fund (conferences, competitions, academic travel)"
   },
   "line_item_categories": {
     "food": "Food and non-alcoholic drinks from a caterer or vendor",
@@ -89,7 +90,7 @@
     "sponsor_gives_money": "A sponsor is giving the club money (not goods or services)",
     "sponsor_runs_activation": "A company is coming to campus to market its products or services",
     "uses_brand_ambassadors": "Promotion through brand ambassadors or third-party promoters",
-    "co_host_not_recognized": "A co-host is not a recognized student organization",
+    "co_host_not_recognized": "A co-host is an Unrecognized Student Organization: a group of USC students that the university does not recognize",
     "club_brings_business_as_vendor": "The club is bringing a business to campus as a vendor",
     "vendor_sells_without_permission": "An outside vendor sells on campus without permission from an authorized department",
     "drawing_requires_purchase": "Entering a drawing requires buying a ticket or donating",

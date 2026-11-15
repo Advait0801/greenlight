@@ -1145,6 +1145,20 @@
             "past_due": false
           },
           {
+            "rule_id": "tabling-blocked-university-functions",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "tabling-setup-limits",
+            "status": "to_do",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "fundraising-meeting",
             "status": "to_do",
             "due": "2027-01-27",
@@ -2390,9 +2404,9 @@
     },
     {
       "id": "ev-20",
-      "sentence": "Taking 8 members to a conference in San Francisco from Thursday, March 4 to Saturday, March 6, 2027, flying and staying two nights in a hotel, and asking USG to pay for the flights and hotel.",
+      "sentence": "Taking 8 members to a conference in San Francisco from Thursday, March 4 to Saturday, March 6, 2027, flying and staying two nights in a hotel, and asking USG's Professional/Academic Fund to pay for the flights and hotel.",
       "as_of": "2026-11-15",
-      "purpose": "USG travel: 9 academic weeks; post-event deadlines in business days.",
+      "purpose": "USG travel: 9 academic weeks (stricter than the FAQ's 8 weeks before travel); post-event deadlines in business days.",
       "expected": {
         "event_date": "2027-03-04",
         "end_date": "2027-03-06",
@@ -2402,7 +2416,8 @@
           "travel",
           "lodging",
           "multi_day",
-          "usg_funding"
+          "usg_funding",
+          "professional_academic_fund"
         ],
         "needs_officer_input": [],
         "obligations": [
@@ -2492,8 +2507,8 @@
           },
           {
             "rule_id": "usg-faq-professional-travel-eight-weeks",
-            "status": "to_do",
-            "due": "2027-01-07",
+            "status": "check_with_office",
+            "due": null,
             "violated": false,
             "past_due": false
           }
@@ -2539,7 +2554,7 @@
               "usg-deadline-travel",
               "usg-faq-professional-travel-eight-weeks"
             ],
-            "applied": null
+            "applied": "usg-deadline-travel"
           }
         ]
       }
@@ -2646,13 +2661,6 @@
             "past_due": false
           },
           {
-            "rule_id": "usg-faq-professional-travel-eight-weeks",
-            "status": "to_do",
-            "due": "2027-02-13",
-            "violated": false,
-            "past_due": false
-          },
-          {
             "rule_id": "usg-ineligible-international-travel",
             "status": "blocked",
             "due": null,
@@ -2696,13 +2704,6 @@
               "usg-faq-incomplete-three-business-days"
             ],
             "applied": "usg-incomplete-48-hours"
-          },
-          {
-            "rules": [
-              "usg-deadline-travel",
-              "usg-faq-professional-travel-eight-weeks"
-            ],
-            "applied": null
           }
         ]
       }
@@ -3999,6 +4000,20 @@
           {
             "rule_id": "tabling-blocked-days",
             "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "tabling-blocked-university-functions",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "tabling-setup-limits",
+            "status": "to_do",
             "due": null,
             "violated": false,
             "past_due": false

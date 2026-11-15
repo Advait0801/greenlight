@@ -253,26 +253,30 @@
       "effective_date": "2026-11-14",
       "verified": "read",
       "severity": "red",
-      "message": "USG's FAQ document says Professional/Academic Fund travel requests (airfare and hotel) must be made at least 8 weeks before the travel date. The guidelines say 9 academic weeks before the first payment. Greenlight shows the earliest date and cites both.",
-      "fix_template": "Apply by {due_date}, the earliest of the deadlines.",
+      "message": "USG's FAQ document says Professional/Academic Fund travel requests (airfare and hotel) must be made at least 8 weeks before the travel date. The guidelines say 9 academic weeks before the first payment, which is always earlier; that earlier deadline applies.",
+      "fix_template": "Apply by the guidelines' deadline (9 academic weeks before the first payment). The FAQ's date, {due_date}, is later and is not the deadline.",
       "applies_to": "A Professional/Academic Fund request with airfare or hotel",
       "triggers": [
-        "travel",
-        "lodging",
-        "airfare"
+        "professional_academic_fund",
+        "travel"
       ],
+      "trigger_mode": "all",
       "params": {
         "fund_rules": [
           "usg-fund-professional-academic"
         ]
       },
-      "anchor": "event_date",
+      "anchor": "travel_date",
       "offset": 8,
       "unit": "weeks",
       "direction": "before",
       "conflicts_with": [
         "usg-deadline-travel"
-      ]
+      ],
+      "depends_on": [
+        "usg-academic-week-definition"
+      ],
+      "notes": "8 weeks before travel is never earlier than 9 academic weeks before the first payment, so the guidelines' rule is the stricter one. Its date needs the academic-week definition (the USG deadline table), so until a person confirms that table this rule is shown yellow and its date is never given as the deadline."
     },
     {
       "id": "usg-faq-late-travel-director-discretion",
@@ -291,8 +295,10 @@
       "fix_template": null,
       "applies_to": "A late Professional/Academic Fund travel request",
       "triggers": [
+        "professional_academic_fund",
         "travel"
       ],
+      "trigger_mode": "all",
       "params": {
         "fund_rules": [
           "usg-fund-professional-academic"

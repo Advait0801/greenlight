@@ -63,7 +63,9 @@ def _back(day: date, offset: int, unit: str) -> date | None:
         month, year = day.month - offset, day.year
         while month < 1:
             month, year = month + 12, year - 1
-        return date(year, month, min(day.day, 28)) if day.day > 28 else date(year, month, day.day)
+        # Same day of the month, or the month's last day when it is shorter (May 31 minus 3 months is Feb 28).
+        last = (date(year + (month == 12), month % 12 + 1, 1) - timedelta(days=1)).day
+        return date(year, month, min(day.day, last))
     return None
 
 
@@ -72,7 +74,7 @@ def test_event_due_dates_agree_with_rule_lead_times(sets, ruleset) -> None:  # t
         start = case["expected"]["event_date"]
         for o in case["expected"]["obligations"]:
             rule = ruleset.get(o["rule_id"])
-            if rule.kind != "deadline" or rule.direction != "before" or start is None:
+            if rule.kind != "deadline" or rule.direction != "before" or start is None or rule.anchor != "event_date":
                 continue
             want = _back(date.fromisoformat(start), rule.offset, rule.unit)
             got = date.fromisoformat(o["due"]) if o["due"] else None

@@ -389,12 +389,6 @@
             "due": null
           },
           {
-            "event": "retreat",
-            "rule_id": "usg-faq-professional-travel-eight-weeks",
-            "status": "to_do",
-            "due": "2027-01-01"
-          },
-          {
             "event": "culture-night",
             "rule_id": "tes-space-request",
             "status": "check_with_office",

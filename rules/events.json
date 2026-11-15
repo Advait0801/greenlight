@@ -1649,7 +1649,7 @@
       "id": "tabling-blocked-days",
       "domain": "events",
       "kind": "blocked_period",
-      "title": "No tabling on holidays or official university functions",
+      "title": "No tabling on university holidays",
       "owner_office": "Trojan Event Services (TES)",
       "source": "Trojan Event Services (TES): Trousdale Information Tables",
       "source_section": "USC Recognized Student Organization (RSO) Tabling Guidelines",
@@ -1658,8 +1658,8 @@
       "effective_date": "2026-10-08",
       "verified": "read",
       "severity": "red",
-      "message": "Tabling is not allowed on university holidays or during official university functions such as Welcome Week, Orientation, home football game days, or when an event reserves all of Trousdale.",
-      "fix_template": "Choose a weekday that is not a university holiday or an official university function.",
+      "message": "Tabling is not allowed on university holidays.",
+      "fix_template": "Choose a day that is not a university holiday.",
       "applies_to": "Walk-up tabling",
       "triggers": [
         "tabling"
@@ -1668,7 +1668,50 @@
       "depends_on": [
         "usc-academic-calendar-2026-27"
       ],
-      "notes": "Holidays come from the academic calendar; Welcome Week, Orientation, football days and Trousdale-wide reservations are not in Greenlight's data, so the officer checks those dates with Trojan Event Services."
+      "notes": "Holidays come from the academic calendar. The other blocked days in the same sentence are in tabling-blocked-university-functions."
+    },
+    {
+      "id": "tabling-blocked-university-functions",
+      "domain": "events",
+      "kind": "blocked_period",
+      "title": "No tabling during official university functions (dates not in Greenlight)",
+      "owner_office": "Trojan Event Services (TES)",
+      "source": "Trojan Event Services (TES): Trousdale Information Tables",
+      "source_section": "USC Recognized Student Organization (RSO) Tabling Guidelines",
+      "source_url": "https://trojanevents.usc.edu/venues/ronald-tutor-campus-center-meeting-rooms/trousdale-information-tables/",
+      "source_text": "RSO Tabling is not permitted during official university functions or holidays including but not limited to Welcome Week, Orientation, and home football game days, or when there is a reservation that is using all of Trousdale. For example, a Career Fair.",
+      "effective_date": "2026-10-08",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "Tabling is not allowed during official university functions such as Welcome Week, Orientation and home football game days, or when an event reserves all of Trousdale (for example a Career Fair). Greenlight does not have these dates; check the day with Trojan Event Services.",
+      "fix_template": "Ask Trojan Event Services whether the day is blocked for tabling.",
+      "applies_to": "Walk-up tabling",
+      "triggers": [
+        "tabling"
+      ],
+      "conflicts_with": null,
+      "notes": "Welcome Week, Orientation, football days and Trousdale-wide reservations are not in Greenlight's data, so this rule is never shown as met."
+    },
+    {
+      "id": "tabling-setup-limits",
+      "domain": "events",
+      "kind": "requirement",
+      "title": "Tabling set-up: a table and 2 chairs, no canopy, activations or amplification",
+      "owner_office": "Trojan Event Services (TES)",
+      "source": "Trojan Event Services (TES): Trousdale Information Tables",
+      "source_section": "USC Recognized Student Organization (RSO) Tabling Guidelines",
+      "source_url": "https://trojanevents.usc.edu/venues/ronald-tutor-campus-center-meeting-rooms/trousdale-information-tables/",
+      "source_text": "RSO Tabling set up may only include a table and 2 chairs only. No canopy or tent. There is a limit of 5 tables and 10 chairs to be borrowed from SKS per day. No activations. No amplification.",
+      "effective_date": "2026-10-08",
+      "verified": "read",
+      "severity": "red",
+      "message": "A tabling set-up is a table and 2 chairs only: no canopy or tent, no activations and no amplification.",
+      "fix_template": "Remove the canopy, tent, activation or amplification from the tabling plan.",
+      "applies_to": "Walk-up tabling",
+      "triggers": [
+        "tabling"
+      ],
+      "conflicts_with": null
     },
     {
       "id": "tes-no-outdoor-football-days",

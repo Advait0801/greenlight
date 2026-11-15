@@ -57,6 +57,7 @@ Anchor = Literal[
     "event_date",  # first day of the event
     "event_end_date",  # last day of the event
     "initial_payment_due_date",  # USG: the first payment to a vendor
+    "travel_date",  # USG Professional/Academic Fund: the first day of travel
     "notification_date",  # e.g. notice that an application is incomplete
     "decision_received_date",  # the day the club receives a decision (e.g. on recognition)
 ]

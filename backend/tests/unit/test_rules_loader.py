@@ -581,3 +581,37 @@ def test_recognition_rules_added_after_the_third_audit(ruleset) -> None:  # type
     assert ruleset.get("recognition-appeal").anchor == "decision_received_date"
     flags = {rule.params.get("required_if_flag") for rule in ruleset if rule.kind == "clause"} - {None}
     assert flags == {"has_additional_officers", "has_appointed_positions", "has_parent_organization", "has_school_affiliation"}
+
+
+def test_no_template_words_are_left_between_a_clause_and_the_next_part(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 4, recognition audit blocker): III.F.1 stopped at 'shall be' and left
+    'from ___ to ___.' unchecked. After each clause quote, only blanks and punctuation may come before the
+    next Part, Section, Article or page break (a page-break continuation is in template_text_continued)."""
+    import re
+
+    source = next(s for s in load_manifest(RULES_DIR / "sources").values() if s.id == "constitution-template")
+    body = normalize(snapshot_text(RULES_DIR / "sources", source))
+    boundary = re.compile(r"Part \d+[.:]|Section [A-Z][.:]|ARTICLE [IVX]+\.|\[page \d+\]|APPENDIX")
+    for rule in ruleset:
+        if rule.kind != "clause" or rule.params["clause"].startswith("preamble"):
+            continue
+        end = body.index(rule.source_text) + len(rule.source_text)
+        nxt = boundary.search(body, end)
+        rest = body[end : nxt.start() if nxt else len(body)]
+        assert not re.sub(r"[\s_.,;:]", "", rest), (rule.id, rest[:80])
+
+
+def test_fourth_round_rule_fixes(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 4): the FAQ travel date is never the certain deadline; the tabling
+    blackout is certain only for holidays; the co-host ban is about Unrecognized Student Organizations;
+    the term of office has three blanks; participation is limited to the USC community."""
+    faq = ruleset.get("usg-faq-professional-travel-eight-weeks")
+    assert faq.anchor == "travel_date" and not ruleset.is_certain(faq.id)
+    assert faq.triggers == ["professional_academic_fund", "travel"] and faq.trigger_mode == "all"
+    assert ruleset.display_severity("tabling-blocked-days") == "red"
+    assert ruleset.display_severity("tabling-blocked-university-functions") == "yellow"
+    assert "Unrecognized Student Organization" in ruleset.get("cohost-unrecognized-banned").message
+    term = ruleset.get("clause-iii-f-1").params
+    assert term["clause_type"] == "fixed_and_fill" and term["template_text"].count("{blank}") == 3
+    assert "participation-usc-community-only" in ruleset.get("clause-ii-a-2").params["contradicted_by_rules"]
+    assert "others" not in ruleset.get("voting-members-enrolled-students").message
