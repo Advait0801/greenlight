@@ -270,7 +270,7 @@ def test_missing_snapshot_file_rejects_read_rules(rules_copy: Path) -> None:
 def test_tampered_snapshot_rejects_rules_quoting_it(rules_copy: Path) -> None:
     path = rules_copy / "sources" / "usg-funding-guidelines.txt"
     path.write_text(path.read_text(encoding="utf-8").replace("$35 per person", "$45 per person"), encoding="utf-8")
-    _expect_problem(rules_copy, "usg-food-cap", "not in the snapshot")
+    _expect_problem(rules_copy, "usg-funding-guidelines", "differs from the text_sha256")
 
 
 def test_broken_manifest_is_reported(rules_copy: Path) -> None:
@@ -389,7 +389,7 @@ def test_confirmed_calendar_makes_calendar_only_rules_certain(ruleset) -> None: 
 def test_every_number_in_params_must_be_in_the_quoted_text(rules_copy: Path, file: str, rule_id: str, change) -> None:  # type: ignore[no-untyped-def]
     """Regression (phase 0 iteration 3, code audit H1): not only max_/min_/threshold_ keys are checked."""
     _edit(rules_copy, file, lambda d: change(_rule(d, rule_id)["params"]))
-    _expect_problem(rules_copy, rule_id, "is not a number the quoted source text states")
+    _expect_problem(rules_copy, rule_id, "is not the number its own phrase")
 
 
 def test_deadline_offset_must_be_in_the_quoted_text(rules_copy: Path) -> None:

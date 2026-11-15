@@ -30,6 +30,7 @@ from app.rules.snapshots import (
     text_in_snapshot,
 )
 
+OTHER_RULE_FOLDER_FILES = {"vocabulary.json", "calendar.json"}
 RULE_FILES: dict[str, Domain] = {
     "funding.json": "funding",
     "events.json": "events",
@@ -187,21 +188,131 @@ def _numbers(value: Any, path: str) -> list[tuple[str, int | float]]:
     return []
 
 
+UNIT_WORDS: dict[str, str] = {
+    "hours": r"hours?",
+    "days": r"(?<!business )days?",
+    "business_days": r"business days?",
+    "weeks": r"(?<!academic )weeks?",
+    "academic_weeks": r"academic[ -]weeks?",
+    "months": r"months?",
+}
+DIRECTION_WORDS: dict[str, str] = {
+    "before": r"\b(?:before|prior|in advance|ahead|preceding)\b",
+    "after": r"\b(?:after|following|within|from|of (?:the )?receipt|will have)\b",
+}
+MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
+          "november", "december")
+ISO_DATE = re.compile(r"(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)")
+CLOCK = re.compile(r"(?<![\d:])(\d{2}):(\d{2})(?!\d)")
+NUMBER_STRING = re.compile(r"^\s*[-+]?\d[\d,]*(?:\.\d+)?\s*$")
+
+
+def _number_forms(number: int) -> list[str]:
+    forms = [re.escape(str(number)), re.escape(f"{number:,}"), rf"\({number}\)"]
+    if number in NUMBER_WORDS:
+        forms.append(NUMBER_WORDS[number])
+    if number in TIMES_WORDS:
+        forms.append(TIMES_WORDS[number])
+    return forms
+
+
+def _offset_with_unit(offset: int, unit: str, text: str) -> bool:
+    """True if the text gives this offset in this unit: "two weeks", "60 days", "two (2) business days",
+    "9 academic weeks". A 2 elsewhere in the text does not count for "2 hours"."""
+    number = "|".join(_number_forms(offset))
+    pattern = rf"(?<![\w.,])(?:{number})(?:\s*\(\d+\))?[\s-]*(?:[a-z]+[\s-]+)?{UNIT_WORDS[unit]}\b"
+    return re.search(pattern, text, flags=re.IGNORECASE) is not None
+
+
+def _date_forms(year: str, month: str, day: str) -> list[str]:
+    name = MONTHS[int(month) - 1]
+    d = str(int(day))
+    return [f"{name}{d}", f"{name[:3]}{d}", f"{int(month)}/{d}/"]
+
+
+def _clock_forms(hour: str, minute: str) -> list[str]:
+    h, m = int(hour), minute
+    if (h, m) == (23, "59"):
+        return ["11:59pm"]
+    half = "am" if h < 12 else "pm"
+    twelve = h % 12 or 12
+    forms = [f"{twelve}:{m}{half}"]
+    if m == "00":
+        forms.append(f"{twelve}{half}")
+    if (h, m) == (0, "00"):
+        forms.append("midnight")
+    if (h, m) == (12, "00"):
+        forms.append("noon")
+    return forms
+
+
+def _strings(value: Any, path: str) -> Iterator[tuple[str, str]]:
+    if isinstance(value, str):
+        yield path, value
+    elif isinstance(value, dict):
+        for key, inner in value.items():
+            yield from _strings(inner, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, inner in enumerate(value):
+            yield from _strings(inner, f"{path}[{index}]")
+
+
 def _check_numbers(rule: Rule, where: str, problems: list[str]) -> None:
-    """Limits in params must be positive numbers, and for a rule marked 'read' every number in params
-    and every deadline offset must be a number the quoted source text states."""
+    """Limits in params must be positive numbers, never written as text, and never negative. For a rule
+    marked 'read': every number in params must be stated in its own phrase of the quote (params.<key>_quote),
+    every date and clock time in params must be stated in the quote (unless params.derived explains how it
+    was worked out), and a deadline's offset must be given in the quote in its unit and direction."""
     for key, value in rule.params.items():
-        if key.startswith(LIMIT_PREFIXES) and (
+        if key.startswith(LIMIT_PREFIXES) and not key.endswith("_quote") and (
             isinstance(value, bool) or not isinstance(value, (int, float)) or not value > 0
         ):
             problems.append(f"{where}: params.{key} must be a positive number, got {value!r}")
+    for path, number in _numbers(rule.params, "params"):
+        if number < 0:
+            problems.append(f"{where}: {path} = {number} is negative; no rule limit or count is negative")
+    for path, text in _strings(rule.params, "params"):
+        if NUMBER_STRING.match(text) and not path.endswith(("_quote", ".part", ".clause", ".section")):
+            problems.append(f"{where}: {path} = {text!r} is a number written as text; write it as a JSON number")
     if rule.verified == "read":
-        for path, number in _numbers(rule.params, "params"):
-            if not _number_in_text(number, rule.source_text):
-                problems.append(f"{where}: {path} = {number} is not a number the quoted source text states")
+        quote = normalize(rule.source_text)
+        derived = rule.params.get("derived") or {}
+        for key, value in rule.params.items():
+            if key.endswith(("_quote", "_rules")) or key == "derived":
+                continue
+            numbers = _numbers(value, f"params.{key}")
+            if not numbers:
+                continue
+            phrase = rule.params.get(f"{key}_quote")
+            if phrase is None:
+                problems.append(
+                    f"{where}: params.{key} needs params.{key}_quote, the words of the quote that state it"
+                )
+                continue
+            for path, number in numbers:
+                sub = path[len(f"params.{key}"):].lstrip(".").split(".")[0].split("[")[0]
+                own = phrase.get(sub) if isinstance(phrase, dict) else phrase
+                if not isinstance(own, str) or not _number_in_text(number, normalize(own)):
+                    problems.append(f"{where}: {path} = {number} is not the number its own phrase (params.{key}_quote) states")
+        compact = re.sub(r"[\s.]", "", quote.lower())
+        for path, text in _strings(rule.params, "params"):
+            top = path.removeprefix("params.").split(".")[0].split("[")[0]
+            if top in derived or top == "derived" or path.endswith("_quote") or top.endswith("_quote"):
+                continue
+            for year, month, day in ISO_DATE.findall(text):
+                if not any(form in compact for form in _date_forms(year, month, day)):
+                    problems.append(f"{where}: {path} = {text!r}: the date {year}-{month}-{day} is not stated in the quote")
+            clock = re.sub(r"[+-]\d{2}:\d{2}$", "", text.split("T")[-1]) if ISO_DATE.match(text) else text
+            for hour, minute in CLOCK.findall(ISO_DATE.sub("", clock)):
+                if not any(form in compact for form in _clock_forms(hour, minute)):
+                    problems.append(f"{where}: {path} = {text!r}: the time {hour}:{minute} is not stated in the quote")
     if rule.kind == "deadline" and rule.offset is not None and rule.verified == "read":
-        if not _number_in_text(rule.offset, rule.source_text):
+        quote = normalize(rule.source_text)
+        if not _number_in_text(rule.offset, quote):
             problems.append(f"{where}: offset {rule.offset} is not a number the quoted source text states")
+        elif rule.unit in UNIT_WORDS and not _offset_with_unit(rule.offset, rule.unit, quote):
+            problems.append(f"{where}: the quote does not give {rule.offset} {rule.unit.replace('_', ' ')}; check the offset and unit")
+        if rule.direction in DIRECTION_WORDS and not re.search(DIRECTION_WORDS[rule.direction], quote, flags=re.IGNORECASE):
+            problems.append(f"{where}: the quote does not say the deadline is {rule.direction} its anchor")
     if rule.kind != "deadline" and "{due_date}" in (rule.fix_template or ""):
         problems.append(f"{where}: fix_template mentions {{due_date}} but the rule has no deadline to compute it from")
     definition = UNIT_DEFINITIONS.get(rule.unit or "")
@@ -214,7 +325,7 @@ def _check_numbers(rule: Rule, where: str, problems: list[str]) -> None:
 def _check_params(rule: Rule, where: str, problems: list[str]) -> None:
     for key, value in rule.params.items():
         if key.endswith("_quote"):
-            quotes = value if isinstance(value, list) else [value]
+            quotes = list(value.values()) if isinstance(value, dict) else value if isinstance(value, list) else [value]
             for quote in quotes:
                 if not isinstance(quote, str) or normalize(quote) not in normalize(rule.source_text):
                     problems.append(f"{where}: params.{key} {quote!r} is not part of source_text")
@@ -339,6 +450,14 @@ def load_rules(rules_dir: Path) -> RuleSet:
 
     rules: dict[str, Rule] = {}
     files: dict[str, str] = {}
+    # Every JSON file in rules/ is read or named here; a rule file the loader skipped would hide its rules.
+    known_files = set(RULE_FILES) | OTHER_RULE_FOLDER_FILES
+    for path in sorted(rules_dir.glob("*.json")):
+        if path.name not in known_files:
+            problems.append(
+                f"{path.name}: not a known rule file ({', '.join(sorted(RULE_FILES))}); "
+                "add its domain to RULE_FILES in backend/app/rules/loader.py or move it out of rules/"
+            )
     for file_name, domain in RULE_FILES.items():
         raw_file = _read_json(rules_dir / file_name, problems)
         if raw_file is None:

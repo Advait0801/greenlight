@@ -864,7 +864,8 @@
       ],
       "params": {
         "max_usd_per_year": 8000,
-        "per": "club"
+        "per": "club",
+        "max_usd_per_year_quote": "a maximum of $8,000 from the USG Funding Department per year"
       },
       "conflicts_with": null
     },
@@ -894,7 +895,8 @@
         "categories": [
           "venue_rental",
           "personnel"
-        ]
+        ],
+        "max_usd_quote": "funding for up to $4,000"
       },
       "conflicts_with": null,
       "notes": "The cap limits what USG pays, not what the venue costs: a club may pay the rest itself. The guidelines do not say whether the $4,000 is per event or per year; a single request over $4,000 breaks it either way, and Phase 3 should show a total across events as needing a check."
@@ -920,7 +922,8 @@
         "usg_funding"
       ],
       "params": {
-        "threshold_usd": 4000
+        "threshold_usd": 4000,
+        "threshold_usd_quote": "Events with expenses over $4,000"
       },
       "conflicts_with": null,
       "notes": "The sentence sits under the venue and personnel cap; it is read here as the event's total expenses."
@@ -966,7 +969,8 @@
         "usg_funding"
       ],
       "params": {
-        "utilization_threshold_percent": 50
+        "utilization_threshold_percent": 50,
+        "utilization_threshold_percent_quote": "a utilization rate of 50% or higher"
       },
       "conflicts_with": null
     },
@@ -1281,7 +1285,8 @@
       ],
       "params": {
         "max_usd_per_person": 35,
-        "basis": "expected_attendance"
+        "basis": "expected_attendance",
+        "max_usd_per_person_quote": "should not exceed a $35 per person maximum"
       },
       "conflicts_with": null
     },
@@ -1348,7 +1353,8 @@
         "lodging"
       ],
       "params": {
-        "max_usd_per_night": 400
+        "max_usd_per_night": 400,
+        "max_usd_per_night_quote": "Rooms cannot exceed $400 per night."
       },
       "conflicts_with": null
     },

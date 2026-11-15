@@ -67,7 +67,8 @@
           3,
           6
         ],
-        "range_quote": "generally at least 3-6 weeks in advance"
+        "range_quote": "generally at least 3-6 weeks in advance",
+        "range_weeks_quote": "at least 3-6 weeks in advance"
       },
       "anchor": "event_date",
       "offset": 6,
@@ -130,6 +131,10 @@
         "confirm_window": {
           "start": "2027-01-27",
           "end": "2027-01-31"
+        },
+        "derived": {
+          "first_allowed_date": "the day after January 26, the last day the source names",
+          "confirm_window": "January 27 to 31: 'the first 3 weeks of the January' could run to January 31, so those days are shown as 'check with Trojan Event Services'"
         }
       },
       "conflicts_with": null,
@@ -209,7 +214,8 @@
         "venue_classroom"
       ],
       "params": {
-        "typical_minimum_hours": 48
+        "typical_minimum_hours": 48,
+        "typical_minimum_hours_quote": "typically at least 48 hours"
       },
       "conflicts_with": null
     },
@@ -319,7 +325,13 @@
           "bovard": 300,
           "venue_outdoor": 100
         },
-        "due_business_days_after_processing": 5
+        "due_business_days_after_processing": 5,
+        "deposit_usd_quote": {
+          "trojan_grand_ballroom": "deposit of $300.00 is due 5 business days after the initial processing of your Event Status Report",
+          "bovard": "deposit of $300.00 is due 5 business days after the initial processing of your event request",
+          "venue_outdoor": "deposit of $100.00 is due 5 business days"
+        },
+        "due_business_days_after_processing_quote": "is due 5 business days after the initial processing"
       },
       "conflicts_with": [
         "tes-outdoor-deposit-section-c2"
@@ -351,7 +363,11 @@
         "deposit_usd": {
           "venue_outdoor": 200
         },
-        "due_business_days_after_processing": 5
+        "due_business_days_after_processing": 5,
+        "deposit_usd_quote": {
+          "venue_outdoor": "deposit of $200.00 for Student Organizations"
+        },
+        "due_business_days_after_processing_quote": "is due 5 business days after the initial processing"
       },
       "conflicts_with": [
         "tes-rso-deposits"
@@ -562,7 +578,8 @@
         "venue_classroom"
       ],
       "params": {
-        "requests_open_week": 4
+        "requests_open_week": 4,
+        "requests_open_week_quote": "starting Week 4"
       },
       "conflicts_with": null,
       "depends_on": [
@@ -859,7 +876,8 @@
           "Friday",
           "Saturday"
         ],
-        "service_ends_hours_before_end": 1
+        "service_ends_hours_before_end": 1,
+        "service_ends_hours_before_end_quote": "Alcohol service must end at least one hour before"
       },
       "conflicts_with": null
     },
@@ -1032,7 +1050,8 @@
         "tent"
       ],
       "params": {
-        "tent_area_sqft_over": 450
+        "tent_area_sqft_over": 450,
+        "tent_area_sqft_over_quote": "with an area larger than 450 Sq Ft"
       },
       "conflicts_with": null,
       "notes": "No lead time is published for this permit; it is one of the approvals that must be in place 2 weeks before (approvals-two-weeks). The same FAQ also says USC does not allow candles or flames on campus (no-candles-flames, triggered by candles) and sends Sterno to separate guidelines (sterno-guidelines)."
@@ -1241,7 +1260,9 @@
       ],
       "params": {
         "max_dba": 90,
-        "measured_at_feet": 45
+        "measured_at_feet": 45,
+        "max_dba_quote": "cannot exceed 90 dBA",
+        "measured_at_feet_quote": "measured 45 feet from the source"
       },
       "conflicts_with": null
     },
@@ -1788,7 +1809,9 @@
       "params": {
         "max_days_per_week": 2,
         "days_in_a_week_must_be_consecutive": true,
-        "max_days_per_month": 6
+        "max_days_per_month": 6,
+        "max_days_per_week_quote": "two (2) consecutive days per week",
+        "max_days_per_month_quote": "not exceed six (6) days per month"
       },
       "conflicts_with": null
     }

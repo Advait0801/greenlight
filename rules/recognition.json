@@ -64,7 +64,8 @@
       "fix_template": "Add {missing_count} more student member(s).",
       "applies_to": "Every recognition application",
       "params": {
-        "min_additional_members": 5
+        "min_additional_members": 5,
+        "min_additional_members_quote": "At least five additional student members."
       },
       "conflicts_with": null
     },
@@ -89,7 +90,9 @@
         "min_officers": 5,
         "same_shortfall_rules": [
           "recognition-five-more-members"
-        ]
+        ],
+        "min_students_quote": "at least 10 currently enrolled USC students",
+        "min_officers_quote": "including 5 student officers"
       },
       "conflicts_with": null,
       "notes": "Agrees with recognition-five-more-members (5 officers + 5 more members = 10). One shortfall is reported once, citing both rules."
@@ -221,7 +224,8 @@
         "items_per_officer": 3,
         "officer_rules": [
           "recognition-five-officers"
-        ]
+        ],
+        "items_per_officer_quote": "send their three requirements"
       },
       "conflicts_with": null
     },
@@ -345,7 +349,8 @@
       "fix_template": "Send the appeal by {due_date}.",
       "applies_to": "A denied recognition application",
       "params": {
-        "max_pages": 5
+        "max_pages": 5,
+        "max_pages_quote": "no more than 5 pages"
       },
       "anchor": "decision_received_date",
       "offset": 10,
@@ -483,7 +488,8 @@
       "fix_template": "Set the number of advisor meetings to at least one per semester.",
       "applies_to": "The advisor meetings clause in the constitution",
       "params": {
-        "min_meetings_per_semester": 1
+        "min_meetings_per_semester": 1,
+        "min_meetings_per_semester_quote": "at least once a semester"
       },
       "conflicts_with": null
     },
