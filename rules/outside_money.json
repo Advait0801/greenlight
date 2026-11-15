@@ -203,7 +203,7 @@
       "title": "Donations only through the university",
       "owner_office": "Campus Activities",
       "source": "USC Student Handbook 2026-27 (August 25, 2026)",
-      "source_section": "RSO Recognition Requirements, item 14",
+      "source_section": "Responsibilities of RSOs, item 14",
       "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
       "source_text": "As student organizations recognized by the university, RSOs may solicit and receive tax-deductible contributions through the university (which is exempt from income tax under I.R.C. Section 501(c)(3)). RSOs are required to work with Campus Activities before engaging in any fundraising activities using the university’s tax exempt status (see Sales and Fundraising by RSOs, below).",
       "effective_date": "2026-08-25",
@@ -224,17 +224,18 @@
       "title": "Filing for the club's own tax-exempt status loses recognition",
       "owner_office": "Campus Activities",
       "source": "USC Student Handbook 2026-27 (August 25, 2026)",
-      "source_section": "RSO Recognition Requirements, item 14",
+      "source_section": "Responsibilities of RSOs, item 14",
       "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
       "source_text": "RSOs that file their own application with the IRS or another government agency seeking tax exempt status without the prior approval of Campus Activities will no longer be recognized by the university as a student organization.",
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "red",
       "message": "A club that files for its own tax-exempt status without Campus Activities' approval loses recognition.",
-      "fix_template": "Do not file with the IRS; ask Campus Activities about receiving donations through the university.",
+      "fix_template": "Do not file without Campus Activities' prior approval; ask them about receiving donations through the university.",
       "applies_to": "A plan to register the club as a non-profit",
       "triggers": [
-        "fundraising"
+        "fundraising",
+        "files_own_tax_exemption"
       ],
       "params": {
         "violated_when": "files_own_tax_exemption"
@@ -461,7 +462,8 @@
       "triggers": [
         "sponsorship",
         "fundraising",
-        "ticket_sales"
+        "ticket_sales",
+        "uses_brand_ambassadors"
       ],
       "params": {
         "violated_when": "uses_brand_ambassadors"
@@ -484,6 +486,9 @@
       "message": "A club may collect dues, but paying them can never be required for any level of membership.",
       "fix_template": null,
       "applies_to": "Collecting member dues",
+      "triggers": [
+        "collects_dues"
+      ],
       "conflicts_with": null
     },
     {
@@ -502,6 +507,10 @@
       "message": "Dues cannot be a requirement for joining, for voting membership, or for holding office.",
       "fix_template": "Make dues voluntary.",
       "applies_to": "Membership that requires paying dues",
+      "triggers": [
+        "collects_dues",
+        "dues_required"
+      ],
       "params": {
         "violated_when": "dues_required"
       },
@@ -524,7 +533,7 @@
       "fix_template": "Ask USG (usgfunds@usc.edu) before using another USC source for an event USG also funds.",
       "applies_to": "Using other USC money for an event",
       "triggers": [
-        "usg_funding"
+        "other_usc_funding"
       ],
       "params": {
         "see_also_rules": [

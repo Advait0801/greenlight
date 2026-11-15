@@ -82,7 +82,8 @@
     "online_purchase": "An expense bought online",
     "amazon": "An expense bought on Amazon",
     "conference_registration": "Registration for a conference or event that has a login",
-    "new_club": "The club was first registered with Campus Activities within the last two academic semesters"
+    "new_club": "The club was first registered with Campus Activities within the last two academic semesters",
+    "collects_dues": "The club collects member dues"
   },
   "facts": {
     "sponsor_gives_money": "A sponsor is giving the club money (not goods or services)",
@@ -96,6 +97,7 @@
     "files_own_tax_exemption": "The club plans to file for its own tax-exempt status",
     "dues_required": "Paying dues is required for some level of membership",
     "alcohol_is_main_focus": "Alcohol is the main focus of the event",
-    "prohibited_decoration": "A prohibited decoration is planned (tape, glitter, confetti, fog or bubble machine, candles, pyrotechnics)"
+    "prohibited_decoration": "A prohibited decoration is planned (tape, glitter, confetti, fog or bubble machine, candles, pyrotechnics)",
+    "other_usc_funding": "The event also uses money from another USC source (a department, school or other office)"
   }
 }

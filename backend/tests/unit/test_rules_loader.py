@@ -500,3 +500,12 @@ def test_manual_deadline_table_is_intact_and_its_doubtful_rows_are_recorded(rule
     params = ruleset.get("usg-academic-week-definition").params
     assert set(short_after_recess) <= set(params["rows_to_confirm"])
     assert "Saturday or Sunday" in params["date_to_row"]
+
+
+def test_every_event_and_outside_money_rule_can_be_reached(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, outside-money audit L): a rule with no trigger and no rule pointing
+    at it can never be shown, so the officer never sees it."""
+    every = json.dumps([rule.model_dump(mode="json") for rule in ruleset])
+    for rule in ruleset:
+        if rule.domain in ("events", "outside_money") and not rule.triggers:
+            assert every.count(f'"{rule.id}"') > 1, rule.id
