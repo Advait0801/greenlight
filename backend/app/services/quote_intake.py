@@ -57,7 +57,14 @@ of the document normally.
 """
 REQUEST = "Read the uploaded document in document 1 and fill in the structure."
 
-FOREIGN = re.compile(r"€|£|¥|₹|₩|₽|\b(EUR|GBP|JPY|CAD|MXN|INR|AUD|CNY|KRW|CHF|RMB|C\$|A\$|MX\$)\b", re.IGNORECASE)
+FOREIGN = re.compile(
+    r"€|£|¥|₹|₩|₽"
+    r"|(?<![a-z])(eur|gbp|jpy|cad|mxn|inr|aud|cny|krw|chf|rmb|hkd|nzd|sgd|twd)(?![a-z])"  # three-letter codes
+    r"|(?<![a-z])(?!us\$)[a-z]{1,3}\$"  # C$, CA$, HK$, NT$ ... (US$ is dollars)
+    r"|\b(euros?|pounds?|sterling|yen|pesos?|rupees?|yuan|renminbi|won|francs?|"
+    r"(canadian|australian|hong kong|new zealand|singapore|taiwan|mexican) dollars?)\b",
+    re.IGNORECASE,
+)
 USD_WORDS = re.compile(r"^\s*(\$|usd|us\$|us dollars?|dollars?)\s*$", re.IGNORECASE)
 NUMBER = re.compile(r"(?<![\d.,])\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?(?![\d,])|(?<![\d.,])\d+(?:\.\d{1,2})?(?![\d,])")
 
@@ -168,6 +175,8 @@ def document_from_reading(reading: Any, *, index: int, name: str, text: str | No
     written_counts = _counts_in(text) if text is not None else None
     currency_text = reading.currency
     currency_ok = currency_text is None or bool(USD_WORDS.match(currency_text)) or currency_text.strip() == "$"
+    if currency_text is not None and FOREIGN.search(currency_text):
+        currency_ok = False
     if text is not None and FOREIGN.search(text):
         currency_ok = False
         currency_text = currency_text or FOREIGN.search(text).group(0)  # type: ignore[union-attr]
