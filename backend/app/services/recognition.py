@@ -63,6 +63,14 @@ def check_upload(
         form_layout=document.kind == "pdf" and bool(document.fillable),
     )
     notes = list(report.notes) + _format_notes(ruleset, document)
+    if document.damaged_pages:
+        pages = ", ".join(str(number) for number in document.damaged_pages)
+        notes.insert(0, ReportNote(
+            kind="damaged_pages", verdict=Verdict.YELLOW,
+            message=f"Part of this PDF is damaged: Greenlight could not read page{'s' if len(document.damaged_pages) > 1 else ''} "
+                    f"{pages}. Clauses on those pages may be listed as missing only because they could not be read. "
+                    "Download or export the file again and re-check it.",
+        ))
     overall = report.overall
     if overall is Verdict.GREEN and any(note.verdict is Verdict.YELLOW for note in notes):
         overall = Verdict.YELLOW

@@ -36,6 +36,8 @@ class ReadDocument:
     fillable: bool | None = None
     # Set when code found no usable text: the original bytes and media type, for the AI reader.
     needs_transcription: tuple[bytes, str] | None = None
+    # PDF only: page numbers (from 1) whose text could not be read because that part of the file is damaged.
+    damaged_pages: tuple[int, ...] = ()
 
 
 def readable_characters(text: str) -> int:
@@ -48,7 +50,9 @@ def _clean(text: str) -> str:
 
 
 def _decode(data: bytes) -> str:
-    for encoding in ("utf-8-sig", "utf-16"):
+    # UTF-16 only with its byte-order mark; otherwise UTF-8, then Windows-1252 (Word's "plain text" on Windows).
+    encodings = ("utf-16",) if data.startswith((b"\xff\xfe", b"\xfe\xff")) else ("utf-8-sig", "cp1252")
+    for encoding in encodings:
         try:
             return data.decode(encoding)
         except UnicodeDecodeError:
@@ -101,8 +105,13 @@ def _field_value(annotation: Any) -> str | None:
     return text or None
 
 
+class DamagedPage(Exception):
+    """The page's content could not be decoded."""
+
+
 def _page_lines(page: Any) -> list[str]:
-    """The page's text, line by line, with each filled-in form field placed where it sits on the page."""
+    """The page's text, line by line, with each filled-in form field placed where it sits on the page.
+    Raises DamagedPage when the page's content cannot be decoded, so the loss is reported, not hidden."""
     chunks: list[tuple[float, float, str]] = []  # (y, x, text)
 
     def visit(text: str, _cm: Any, tm: Any, _font: Any, _size: Any) -> None:
@@ -111,8 +120,8 @@ def _page_lines(page: Any) -> list[str]:
 
     try:
         page.extract_text(visitor_text=visit)
-    except Exception:
-        chunks = []
+    except Exception as exc:
+        raise DamagedPage from exc
     fields: list[tuple[float, float, float, str]] = []  # (bottom, top, x, value)
     for ref in page.get("/Annots") or []:
         try:
@@ -158,8 +167,12 @@ def _read_pdf(name: str, data: bytes) -> ReadDocument:
         pages = len(reader.pages)
         fillable = bool(reader.get_fields())
         lines: list[str] = []
-        for page in reader.pages:
-            lines.extend(_page_lines(page))
+        damaged: list[int] = []
+        for number, page in enumerate(reader.pages, start=1):
+            try:
+                lines.extend(_page_lines(page))
+            except DamagedPage:
+                damaged.append(number)
     except UnreadableDocument:
         raise
     except Exception as exc:  # pypdf raises many types on a damaged file
@@ -172,8 +185,8 @@ def _read_pdf(name: str, data: bytes) -> ReadDocument:
     if readable_characters(text) < MIN_READABLE_CHARS:
         # No text layer: a scan or a photo saved as PDF. Only the AI reader can read it.
         return ReadDocument(name=name, kind="pdf", text="", pages=pages, fillable=fillable,
-                            needs_transcription=(data, "application/pdf"))
-    return ReadDocument(name=name, kind="pdf", text=text, pages=pages, fillable=fillable)
+                            needs_transcription=(data, "application/pdf"), damaged_pages=tuple(damaged))
+    return ReadDocument(name=name, kind="pdf", text=text, pages=pages, fillable=fillable, damaged_pages=tuple(damaged))
 
 
 def read_pasted_text(text: str) -> ReadDocument:
