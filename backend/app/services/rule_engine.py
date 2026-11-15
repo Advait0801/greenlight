@@ -45,6 +45,8 @@ DATE_CHECKED = {
     "tabling-hours",
     "classroom-requests-week-4",
 }
+# Date checks that check only part of their rule (the time of day is not known), so a pass is never green.
+PARTLY_CHECKED = {"tabling-hours", "alcohol-thursday-saturday"}
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
@@ -78,7 +80,14 @@ def _in_scope(rule: Rule, present: set[str]) -> bool:
 
 def select_rules(ruleset: RuleSet, present: set[str]) -> list[Rule]:
     """Every rule in scope whose triggers match `present` (the venue and the attributes), in table order."""
-    return [rule for rule in ruleset if _in_scope(rule, present) and _hit(rule, present)]
+    return [rule for rule in ruleset if _in_scope(rule, present) and (_hit(rule, present) or _breaking_fact(ruleset, rule, present))]
+
+
+def _breaking_fact(ruleset: RuleSet, rule: Rule, present: set[str]) -> bool:
+    """A ban also applies when the fact that breaks it (a name from the vocabulary's 'facts' group, such as
+    'alcohol is the main focus') is present on its own: that fact implies the activity the ban is about."""
+    fact = rule.params.get("violated_when")
+    return isinstance(fact, str) and fact in present and fact in ruleset.vocabulary.get("facts", {})
 
 
 def _days(facts: EventFacts) -> list[date]:
@@ -101,7 +110,7 @@ def _date_check(rule: Rule, facts: EventFacts, calendar: AcademicCalendar) -> _D
     days = _days(facts)
     if not days:
         return _DateCheck(None, "The date is not known yet, so Greenlight cannot check it against this rule.")
-    uses_calendar = rule.id not in ("tes-no-events-first-three-weeks", "alcohol-thursday-saturday", "tabling-hours")
+    uses_calendar = rule.id not in ("alcohol-thursday-saturday", "tabling-hours")
     if uses_calendar and not all(calendar.covers(day) for day in days):
         return _DateCheck(None, f"Greenlight's academic calendar ({calendar.title}) does not cover this date; check it with the office.")
 
@@ -116,6 +125,12 @@ def _date_check(rule: Rule, facts: EventFacts, calendar: AcademicCalendar) -> _D
         if window_start and window_end and any(window_start <= day <= window_end for day in days):
             return _DateCheck(False, f"{window_start.strftime('%B')} {window_start.day} to {window_end.day}: 'the first 3 weeks' could "
                               "run to the end of that week; confirm the date with Trojan Event Services.", confirm=True)
+        # The source names dates for spring 2027 only. The first three weeks of any other term are not stated.
+        for day in days:
+            term = calendar.term_for(day)
+            if term is not None and term.id != rule.params.get("term") and day < term.classes_begin + timedelta(weeks=3):
+                return _DateCheck(False, f"{_fmt(day)} is in the first three weeks of {term.name}; the source gives dates for "
+                                  "spring 2027 only, so confirm with Trojan Event Services.", confirm=True)
         return _DateCheck(False)
     if rule.id == "social-events-not-study-days-finals":
         hit = [day for day in days if calendar.is_study_day_or_final_exam(day)]
@@ -251,6 +266,9 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
     for rule in select_rules(ruleset, everything):
         from_possible = rule.id not in certain_rules
         triggered_by = [t for t in rule.triggers if t in everything]
+        fact_name = rule.params.get("violated_when")
+        if isinstance(fact_name, str) and fact_name in everything and fact_name not in triggered_by and _breaking_fact(ruleset, rule, everything):
+            triggered_by.append(fact_name)
         note: str | None = None
         unsure = from_possible
         green = False
@@ -275,7 +293,7 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
             else:
                 violated = check.violated
                 unsure = unsure or check.confirm
-                green = not check.violated and not check.confirm and facts.event_date is not None
+                green = not check.violated and not check.confirm and facts.event_date is not None and rule.id not in PARTLY_CHECKED
         if from_possible:
             names = ", ".join(_describe(ruleset, t) for t in triggered_by if t in possible)
             note = f"Applies if the event has: {names}. Greenlight was not sure, so confirm it." + (f" {note}" if note else "")
@@ -283,8 +301,13 @@ def build_packet(facts: EventFacts, ruleset: RuleSet, calendar: AcademicCalendar
         status = _status(ruleset, rule, violated, unsure=unsure)
         due = deadlines.due_date(rule, start=start, end=end)
         past_due = bool(due and due < as_of)
-        if past_due:
-            note = (note + " " if note else "") + f"This was due on {_fmt(due)}, which has passed."  # type: ignore[arg-type]
+        if due is None and _certainly_passed(rule, start, as_of):
+            past_due = True
+            note = (note + " " if note else "") + (
+                f"Whatever an academic week turns out to be, {rule.offset} of them are at least {rule.offset * 7} days, "
+                "so this deadline has already passed.")
+        if past_due and due is not None:
+            note = (note + " " if note else "") + f"This was due on {_fmt(due)}, which has passed."
         message = rule.message
         fix = _fix(rule)
         finding = _finding(ruleset, rule, status, note or message, fix, green=green and status == "condition", past_due=past_due)
@@ -369,6 +392,18 @@ def _conflicts(ruleset: RuleSet, obligations: list[PacketObligation]) -> list[So
     return out
 
 
+def _certainly_passed(rule: Rule, start: date | None, as_of: date) -> bool:
+    """An academic-week deadline has no date, but an academic week is at least seven calendar days, so the latest it
+    could fall is `offset` weeks before its anchor. Counted from the event, or from the first payment (never after
+    the event), it has certainly passed when even that latest date is before today."""
+    if rule.kind != "deadline" or rule.unit != "academic_weeks" or rule.direction != "before" or start is None or rule.offset is None:
+        return False
+    if (rule.anchor or "event_date") not in ("event_date", "initial_payment_due_date"):
+        return False
+    latest = deadlines.shift(start, rule.offset, "weeks", "before")
+    return latest is not None and latest < as_of
+
+
 def _hard_blocks(facts: EventFacts, as_of: date, obligations: Iterable[PacketObligation]) -> list[str]:
     blocks: list[str] = []
     if facts.event_date is not None and facts.event_date < as_of:
@@ -376,8 +411,10 @@ def _hard_blocks(facts: EventFacts, as_of: date, obligations: Iterable[PacketObl
     for o in obligations:
         if o.status == "blocked":
             blocks.append(f"{o.title}: {o.note or o.message}")
-        elif o.past_due and o.status == "to_do":
-            blocks.append(f"{o.title} was due on {_fmt(o.due)}, which has passed.")  # type: ignore[arg-type]
+        elif o.past_due and o.due is not None and o.status == "to_do":
+            blocks.append(f"{o.title} was due on {_fmt(o.due)}, which has passed.")
+        elif o.past_due and o.due is None:
+            blocks.append(f"{o.title}: {o.note}")
     return blocks
 
 

@@ -76,7 +76,8 @@ def test_no_green_on_unverified_or_unknown_dates(ruleset, calendar) -> None:  # 
 def test_date_checks_that_pass_are_green_only_on_certain_rules(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
     packet = _packet(ruleset, calendar, event_date=date(2027, 2, 25), venue="venue_tes_large", attributes=["alcohol", "social_event"])
     o = _by_id(packet)
-    assert o["alcohol-thursday-saturday"].finding.verdict is Verdict.GREEN
+    # Only the weekday of the alcohol rule is checked (not when service ends), so it is never green.
+    assert o["alcohol-thursday-saturday"].finding is None
     assert o["tes-no-events-first-three-weeks"].finding.verdict is Verdict.GREEN
     for item in packet.obligations:
         if item.finding and item.finding.verdict is Verdict.GREEN:
