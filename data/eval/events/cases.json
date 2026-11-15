@@ -2,7 +2,7 @@
   "set": "events",
   "version": 1,
   "count": 30,
-  "method": "Each sentence was written by hand. Expected attributes are what the sentence states. Expected obligations were chosen by reading each source rule against the event (see data/eval/README.md for the scope); due dates are the event date minus the lead time the source states, in calendar days, weeks or months, or the last day plus business days (Monday to Friday, minus the university holidays in the Registrar's calendar). Deadlines counted in academic weeks have no date because the source does not define an academic week. Status follows the rule's severity and verification: anything resting on an unverified source is check_with_office.",
+  "method": "Each sentence was written by hand. Expected attributes are what the sentence states. Expected obligations were chosen by reading each source rule against the event (see data/eval/README.md for the scope); due dates are the event date minus the lead time the source states, in calendar days, weeks or months, or the last day plus business days (every Monday to Friday, holidays included, which gives the earliest date). Deadlines counted in academic weeks have no date because the source does not define an academic week. Status follows the rule's severity and verification: anything resting on an unverified source is check_with_office.",
   "cases": [
     {
       "id": "ev-01",
