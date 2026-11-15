@@ -19,7 +19,7 @@ class RuleVersion(Base):
     """
 
     __tablename__ = "rules"
-    __table_args__ = (UniqueConstraint("rule_id", "content_sha256", name="uq_rules_rule_content"),)
+    __table_args__ = (UniqueConstraint("rule_id", "version", name="uq_rules_rule_version"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     rule_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)

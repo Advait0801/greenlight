@@ -28,7 +28,12 @@ class YearPlan(TimestampMixin, Base):
 
 class Event(TimestampMixin, Base):
     __tablename__ = "events"
-    __table_args__ = (CheckConstraint("estimated_cost_cents >= 0", name="ck_events_cost"),)
+    __table_args__ = (
+        CheckConstraint("estimated_cost_cents >= 0", name="ck_events_cost"),
+        CheckConstraint(
+            "end_date IS NULL OR event_date IS NULL OR end_date >= event_date", name="ck_events_end_after_start"
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     plan_id: Mapped[int] = mapped_column(ForeignKey("year_plans.id", ondelete="CASCADE"), nullable=False, index=True)
