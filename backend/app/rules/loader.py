@@ -198,6 +198,8 @@ def _check_numbers(rule: Rule, where: str, problems: list[str]) -> None:
     if rule.kind == "deadline" and rule.offset is not None and rule.verified == "read":
         if not _number_in_text(rule.offset, rule.source_text):
             problems.append(f"{where}: offset {rule.offset} is not a number the quoted source text states")
+    if rule.kind != "deadline" and "{due_date}" in (rule.fix_template or ""):
+        problems.append(f"{where}: fix_template mentions {{due_date}} but the rule has no deadline to compute it from")
     definition = UNIT_DEFINITIONS.get(rule.unit or "")
     if definition and definition not in rule.depends_on:
         problems.append(
