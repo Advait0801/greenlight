@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | — | 0 | — | open |
-| 2 | Event packet | done (branch `phase-2/event-packet`) | 0 | — | open |
+| 2 | Event packet | done (branch `phase-2/event-packet`) | 1 | yes (iteration 1: 0 blockers, 0 high) | open |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
@@ -53,6 +53,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 2, iteration 1 — verify
+Date/time: 2026-11-15, about 00:50-01:05 PT
+Agent and model: verifier (fresh), Opus 5.5, medium effort, on commit a5ac5e7
+Report: docs/reviews/phase-2-iter-1-verify.md
+Findings: 0/0/3/6 (all 6 exit criteria pass; 30/30 obligation lists match end to end)
+Fixed: M1 with no venue, every on-campus venue's steps are listed as "check with the office" (they were missing); M2 the evaluator counts a miss as silent unless the packet asks the officer; L1 deadlines after the event are past due once passed; L4 "USG" written out in the fallback texts. Each with a regression test.
+Left open: M3 most "office decides" items have no contact-by date (no source gives one); L2 "move the date" can suggest a blocked period (the text says to check the new date); L3 an .ics with no dated items is empty (the page disables the button); L4 DPS and GSG appear without full names in rule titles; L5 three more cautious statuses than the test set (ev-23 unsure performers, ev-28); L6 the repository's local .env sets AI_MODE=live (a developer setting, not committed).
+Full test suite: pass (389)
+Gate: iteration 2 (break) next
 
 ### Phase 0, iteration 4 — break and audit (six reviewers in parallel); phase closed
 Date/time: 2026-11-15, about 00:00-02:30 PT
