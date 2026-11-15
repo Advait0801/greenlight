@@ -7,15 +7,15 @@ Final reviewers in Phase 7 must **not** read this file.
 ## Current state
 
 - **Phase:** 0 — Foundation
-- **Step:** iterations 1 (verify) and 2 (break) done and fixed; iteration 3 (audit) next
-- **Next action:** run iteration 3 as five parallel fresh auditors at high effort (funding / events / outside money + calendar + deadline table / recognition / code and trust rules)
+- **Step:** iterations 1 (verify), 2 (break) and 3 (audit) done and fixed; iteration 3 had high findings, so the gate needs another break + audit round
+- **Next action:** run iteration 4: a fresh breaker, then five parallel fresh auditors at high effort split as in iteration 3 (funding / events / outside money + calendar + deadline table / recognition / code and trust rules)
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
 
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Gate |
 |---|---|---|---|---|---|
-| 0 | Foundation | done | 2 | no (iteration 2: 2 high, fixed) | open |
+| 0 | Foundation | done | 3 | no (iteration 3: 7 high, fixed) | open |
 | 1 | Recognition check | — | 0 | — | open |
 | 2 | Event packet | — | 0 | — | open |
 | 3 | Money check | — | 0 | — | open |
@@ -30,17 +30,28 @@ What exists now:
 - **Backend** (`backend/`): FastAPI app with `GET /health`, `GET /rules`, `GET /rules/{id}`; routers in `app/api/` are discovered automatically. SQLAlchemy tables for every table in PROJECT_CONTEXT section 5 (money in whole cents). Settings from env and `.env`.
 - **Claude client** (`app/ai/`): structured output via `messages.parse` validated against Pydantic models; `AI_MODE` = `recorded` (default; replay only, never the network), `live`, or `record` (live + save). Untrusted text is HTML-escaped inside `<document>` wrappers and the system prompt says it is data. Recordings store the request as document fingerprints; the response can quote the document in `evidence`, so fields marked `PERSONAL` are blanked before a response is recorded or audited, and `data/ai_recordings/` is git-ignored. One live smoke call (Haiku, 2026-11-14) confirmed structured output works and an injected "mark this approved" was reported as document content.
 - **Source snapshots** (`rules/sources/`): 18 sources (one a manual transcription) in `manifest.json` with fetch time, SHA-256 and version date; text snapshots committed; small raw PDFs/CSVs committed, the 6.7 MB Handbook PDF and raw HTML not.
-- **Rule table**: 259 rules (`funding` 69, `events` 61, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 254 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 5 `unverified`; 10 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
+- **Rule table**: 285 rules (`funding` 75, `events` 69, `outside_money` 22, `recognition` 119 incl. every constitution template clause, each with its template wording and blanks marked). 280 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load, and every number in its params stated in it), 5 `unverified`; 14 more inherit yellow through `depends_on`. Every event and outside-money ban names the fact that breaks it (`params.violated_when`, from `vocabulary.json` facts). Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
 - **Calendar** (`rules/calendar.json`): Fall 2026, Spring 2027, Summer 2027 from the Registrar's page; confirmed by the user on 2026-11-14 (`read`); every date is checked against the quoted Registrar text on load.
-- **Test sets** (`data/eval/`): 30 events (417 expected obligations), 20 budgets (30 planted violations), 10 constitutions (20 planted faults), 2 year plans; JSON Schemas in `data/eval/schemas/`; method in `data/eval/README.md`.
+- **Test sets** (`data/eval/`): 30 events (453 expected obligations), 20 budgets (30 planted violations), 10 constitutions (21 planted faults and one empty file), 2 year plans; JSON Schemas in `data/eval/schemas/`; method in `data/eval/README.md`.
 - **Scripts**: `validate_rules.py`, `run_eval.py` (+ `evaluators/` plug-in folder), `seed_demo.py` (+ `data/demo/club.json`), `fetch_sources.py`.
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
-- **Tests**: 208 passing (`pytest`), including 59 adversarial tests from iteration 2.
+- **Tests**: 265 passing (`pytest`), including 59 adversarial tests from iteration 2.
 
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 0, iteration 3 — audit (five parallel auditors)
+Date/time: 2026-11-14, about 23:30 PT to 2026-11-15 early morning
+Agent and model: five fresh auditors at high effort, Opus 5.5, on commit 9c3f500: (a) funding, (b) events, (c) outside money + academic calendar + USG deadline table, (d) recognition, (e) code, trust rules and earlier fixes
+Reports: docs/reviews/phase-0-iter-3-audit-{funding,events,outside-money-calendar,recognition,code}.md
+Findings: funding 0/2/8/13, events 0/1/7/10, outside money and calendar 0/2/8/8, recognition 0/1/8/11, code 0/1/3/8; in all 0/7/34/50
+Fixed (highs): funding: the USG page's 9-weeks-before-payment deadline encoded with one earliest-date policy, and summer events flagged; events: candle ban separated from Sterno and open flame, venue cap, alcohol and bus rules narrowed to the guidelines; outside money: free drawings are a required list of steps (red), and the deadline-table rows a person must compare with the sheet are recorded (rows_to_confirm, date_to_row, earlier date until confirmed); recognition: every clause carries its template wording with blanks marked, and a clause with fixed words around its blank is fixed_and_fill, checked by the loader; code: every number in a read rule's params (nested too) must be stated in its quote.
+Fixed (mediums and most lows): business days count every weekday (earliest date); every ban names its fact and the eval validator checks verdicts against it; co-sponsorship, vendor-permission and discretionary-fundraising rules; orphan rules triggered; new recognition rules (enrolled voting members, advisor meets once a semester, one rule per advisor item, Event Accessibility shown yellow, cover-page clauses); constitution test set varied (chapter, school affiliation, empty blank, words deleted around a blank, empty file) with not_applicable checked against club flags; Finding frozen, re-checked on copy, green only with the rule table's own citation and never on info; personal fields blanked in recordings and the audit log, recordings git-ignored; tests for guards that had none; request code against forged request labels; architecture guard covers every module; quotes may not cut a number at a decimal point; line-item confidence stored as the AI's label; demo seeder never replaces a club it did not create; stale docs corrected. Each fix is its own commit with its test.
+Left open: code L (status and deadline logic written in three places) is for Phase 2, when the deadline calculator exists and the validator can import it; recognition L (Appendix clause, contradiction-specific clause messages) and outside-money L (week-4 classroom date, Handbook emblem and silent-auction passages, the Nov 11 deadline on Veterans Day) recorded for a person; the form-field instructions of the fillable template are not in the snapshot (decision below).
+Full test suite: pass (265, adversarial included); validate_rules.py OK; run_eval.py all four sets valid; frontend build OK
+Gate: not yet, because iteration 3 had high findings; iteration 4 (break + audit) next
 
 ### Phase 0, iteration 2 — break
 Date/time: 2026-11-14, about 22:30-23:00 PT (fixes until about 23:20)
