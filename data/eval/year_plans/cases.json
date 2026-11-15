@@ -186,6 +186,12 @@
           },
           {
             "event": "welcome-mixer",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
             "due": null
@@ -252,6 +258,12 @@
           },
           {
             "event": "workshop",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
             "due": null
@@ -289,6 +301,12 @@
           {
             "event": "retreat",
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null
           },
@@ -456,6 +474,12 @@
           },
           {
             "event": "culture-night",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
             "due": null
@@ -601,6 +625,12 @@
           {
             "event": "spring-banquet",
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null
           },
@@ -885,6 +915,12 @@
           },
           {
             "event": "speaker-series-1",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
             "due": null
@@ -946,6 +982,12 @@
           {
             "event": "resume-workshop",
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null
           },
@@ -1078,6 +1120,12 @@
           {
             "event": "case-competition",
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null
           },
@@ -1257,6 +1305,12 @@
           },
           {
             "event": "networking-night",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
             "due": null
@@ -1360,6 +1414,12 @@
           {
             "event": "speaker-series-2",
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null
           },

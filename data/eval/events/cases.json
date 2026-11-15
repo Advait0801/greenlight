@@ -2122,6 +2122,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-no-funding-breaks",
             "status": "blocked",
             "due": null,
@@ -2295,6 +2302,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
             "due": null,
@@ -2395,6 +2409,13 @@
           },
           {
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null,
             "violated": false,
@@ -2636,6 +2657,13 @@
           },
           {
             "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "usg-page-deadline-nine-weeks-payment",
             "status": "check_with_office",
             "due": null,
             "violated": false,

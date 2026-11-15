@@ -56,7 +56,7 @@
       "depends_on": [
         "usg-academic-week-definition"
       ],
-      "notes": "The sentence in the guidelines repeats the words 'six academic weeks'; it is quoted exactly as written."
+      "notes": "The sentence in the guidelines repeats the words 'six academic weeks'; it is quoted exactly as written. When sources give different USG deadlines, Greenlight works out each one it can and shows the earliest, citing every source."
     },
     {
       "id": "usg-page-deadline-event-date",
@@ -71,13 +71,18 @@
       "effective_date": "2026-10-30",
       "verified": "read",
       "severity": "red",
-      "message": "The USG web page counts the 6 academic weeks back from the event date; the guidelines count them back from the first payment due date. Greenlight uses whichever deadline comes first and shows both sources.",
-      "fix_template": "Apply by {due_date}, the earlier of the two deadlines.",
+      "message": "USG's web page says to apply 6 academic weeks before the event date, or 9 academic weeks before the first payment is due, whichever comes first. The guidelines count 6 weeks back from the first payment instead. Greenlight shows the earliest of these dates and cites both sources.",
+      "fix_template": "Apply by {due_date}, the earliest of the deadlines.",
       "applies_to": "Any USG application that pays an approved USC vendor",
       "check": "application_date <= event_date - 6 academic weeks",
       "triggers": [
         "usg_funding"
       ],
+      "params": {
+        "whichever_first_rules": [
+          "usg-page-deadline-nine-weeks-payment"
+        ]
+      },
       "anchor": "event_date",
       "offset": 6,
       "unit": "academic_weeks",
@@ -88,6 +93,41 @@
       "depends_on": [
         "usg-academic-week-definition"
       ]
+    },
+    {
+      "id": "usg-page-deadline-nine-weeks-payment",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG web page: 9 academic weeks before the first payment, whichever comes first",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding Department web page",
+      "source_section": "Frequently Asked Questions: When should I submit my application?",
+      "source_url": "https://usg.usc.edu/branches/funding/",
+      "source_text": "Applications must be submitted on Wednesdays by 11:59 PM six academic weeks before the event date when using an approved vendor, and or nine academic weeks before the initial payment due date (whichever comes first) for approved USC Vendors.",
+      "effective_date": "2026-10-30",
+      "verified": "read",
+      "severity": "red",
+      "message": "The same sentence on USG's web page also gives 9 academic weeks before the first payment due date; the earlier of the two dates applies.",
+      "fix_template": "Apply by {due_date}, the earliest of the deadlines.",
+      "applies_to": "Any USG application that pays an approved USC vendor",
+      "check": "application_date <= initial_payment_due_date - 9 academic weeks",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "whichever_first_rules": [
+          "usg-page-deadline-event-date"
+        ]
+      },
+      "anchor": "initial_payment_due_date",
+      "offset": 9,
+      "unit": "academic_weeks",
+      "direction": "before",
+      "conflicts_with": null,
+      "depends_on": [
+        "usg-academic-week-definition"
+      ],
+      "notes": "The page's sentence is garbled ('and or nine academic weeks'); it is read here as a second deadline, with 'whichever comes first' choosing between the two."
     },
     {
       "id": "usg-deadline-travel",
@@ -122,7 +162,7 @@
       "depends_on": [
         "usg-academic-week-definition"
       ],
-      "notes": "Sources disagree: USG's FAQ document says 8 academic weeks before the event date for travel. Greenlight applies the guidelines' 9 weeks (the stricter) and shows both."
+      "notes": "Sources disagree: USG's FAQ document says 8 academic weeks before the event date for travel; the guidelines say 9 weeks before the first payment. When sources give different USG deadlines, Greenlight works out each one it can and shows the earliest, citing every source."
     },
     {
       "id": "usg-faq-deadline-new-vendors-travel",
@@ -137,7 +177,7 @@
       "effective_date": "2026-11-14",
       "verified": "read",
       "severity": "red",
-      "message": "USG's FAQ document says 8 academic weeks before the event date for travel and for new vendors. The 2026-27 guidelines say 9 weeks for travel and do not accept vendors that are not on the list; Greenlight applies the guidelines and shows both.",
+      "message": "USG's FAQ document says 8 academic weeks before the event date for travel and for new vendors. The 2026-27 guidelines say 9 weeks before the first payment for travel, and do not accept vendors that are not on the list. Greenlight shows the earliest deadline, treats a vendor not on the list as not accepted, and cites both.",
       "fix_template": "Apply by {due_date}, the earlier of the deadlines.",
       "applies_to": "A USG application with travel or a vendor not on the list",
       "check": "application_date <= event_date - 8 academic weeks",

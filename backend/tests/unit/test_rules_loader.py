@@ -385,3 +385,21 @@ def test_deadline_offset_must_be_in_the_quoted_text(rules_copy: Path) -> None:
     """Regression (phase 0 iteration 3, code audit M2): removing the offset check must fail a test."""
     _edit(rules_copy, "events.json", lambda d: _rule(d, "minors-registration").update(offset=61))
     _expect_problem(rules_copy, "minors-registration", "offset 61 is not a number the quoted source text states")
+
+
+def test_usg_deadline_rules_pin_their_anchors_and_offsets(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, funding audit H1 and test gap): every USG deadline the sources
+    give is encoded with its own anchor and offset, and the page's two deadlines are linked."""
+    expected = {
+        "usg-deadline-vendor": ("initial_payment_due_date", 6, "academic_weeks"),
+        "usg-deadline-travel": ("initial_payment_due_date", 9, "academic_weeks"),
+        "usg-page-deadline-event-date": ("event_date", 6, "academic_weeks"),
+        "usg-page-deadline-nine-weeks-payment": ("initial_payment_due_date", 9, "academic_weeks"),
+        "usg-faq-deadline-new-vendors-travel": ("event_date", 8, "academic_weeks"),
+    }
+    for rule_id, (anchor, offset, unit) in expected.items():
+        rule = ruleset.get(rule_id)
+        assert (rule.anchor, rule.offset, rule.unit, rule.direction) == (anchor, offset, unit, "before"), rule_id
+    assert ruleset.get("usg-page-deadline-event-date").params["whichever_first_rules"] == ["usg-page-deadline-nine-weeks-payment"]
+    assert ruleset.get("usg-deadline-vendor").conflicts_with == ["usg-page-deadline-event-date"]
+    assert set(ruleset.get("usg-faq-deadline-new-vendors-travel").conflicts_with or []) == {"usg-deadline-travel", "usg-approved-vendor"}
