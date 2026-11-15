@@ -243,3 +243,32 @@ def test_source_disagreement_clause_is_yellow(ruleset: Any) -> None:
 def test_eval_texts_exist() -> None:
     assert all((EVAL / case["file"]).is_file() for case in CASES.values())
     assert Path(EVAL / "texts").is_dir()
+
+
+# Regression tests for the phase 1 iteration 3 audit.
+
+
+@pytest.mark.parametrize("addition", [
+    "All RSO functions and programs must operate in accordance with the USC Notice of Non-Discrimination, except that "
+    "membership is limited to men.",
+    "but the bylaws may not supersede this constitution. However, our bylaws supersede this constitution.",
+])
+def test_words_added_to_a_cover_page_clause_keep_it_from_green(ruleset: Any, addition: str) -> None:
+    original = ("All RSO functions and programs must operate in accordance with the USC Notice of Non-Discrimination."
+                if "Non-Discrimination," in addition else "but the bylaws may not supersede this constitution.")
+    assert original in CLEAN
+    report = check_constitution(CLEAN.replace(original, addition, 1), ruleset, CLUB)
+    rule_id = "clause-preamble-non-discrimination" if "men" in addition else "clause-preamble-bylaws"
+    result = next(r for r in report.clauses if r.rule_id == rule_id)
+    assert result.state != "present" and result.verdict is not Verdict.GREEN
+    assert report.overall is not Verdict.GREEN
+
+
+def test_appointed_position_in_officer_titles_keeps_iii_d_8_required(ruleset: Any) -> None:
+    """The officer answered "no appointed positions", but Article III, Section A names one; a missing III.D.8
+    must not be hidden as "not required"."""
+    lines = [line for line in CLEAN.split("\n") if not line.startswith("Part 8. For appointed positions")]
+    report = check_constitution("\n".join(lines), ruleset, {**CLUB, "has_appointed_positions": False})
+    result = next(r for r in report.clauses if r.rule_id == "clause-iii-d-8")
+    assert result.state == "missing"
+    assert "answer_disputed" in {note.kind for note in report.notes}

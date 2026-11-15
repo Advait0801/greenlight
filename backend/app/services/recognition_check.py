@@ -45,6 +45,10 @@ STATE_VERDICTS: dict[State, Verdict | None] = {
 BLANK = "{blank}"
 BLANK_SHOWN = "________"
 CLUB_FLAGS = ("has_parent_organization", "has_school_affiliation", "has_additional_officers", "has_appointed_positions")
+# Where the document itself states a club fact, outside the clauses that depend on it.
+FLAG_EVIDENCE: dict[str, tuple[tuple[str, ...], re.Pattern[str]]] = {
+    "has_appointed_positions": (("clause-iii-a-1", "clause-iii-a-2"), re.compile(r"\bappointed\b", re.IGNORECASE)),
+}
 CLUB_FLAG_QUESTIONS = {
     "has_parent_organization": "Is the club a chapter of a national or parent organization?",
     "has_school_affiliation": "Is the club affiliated with a USC school, department or program?",
@@ -710,6 +714,26 @@ def _assign(clauses: list[Clause], chunks: list[Chunk]) -> dict[str, Chunk | Non
     return assigned
 
 
+def _cover_page_additions(clauses: list[Clause], lines: list[str], comparisons: dict[str, Comparison]) -> None:
+    """Words added after a fixed cover-page sentence ("... Non-Discrimination, except that ...") change what it says.
+    The cover page has no Part headings, so each fixed sentence runs until the next one (or Article I)."""
+    region = " ".join(lines)
+    squeezed, index = _despace_indexed(region)
+    found: list[tuple[int, int, Clause]] = []
+    for clause in clauses:
+        if clause.article is None and BLANK not in clause.template and comparisons[clause.rule.id].state == "present":
+            start = squeezed.find(clause.segments[0])
+            if start >= 0:
+                found.append((start, start + len(clause.segments[0]), clause))
+    found.sort(key=lambda item: item[0])
+    for number, (_, end, clause) in enumerate(found):
+        stop = found[number + 1][0] if number + 1 < len(found) else len(squeezed)
+        if stop > end:
+            added = region[index[end - 1] + 1: index[stop - 1] + 1].strip(" .,;:")
+            comparisons[clause.rule.id] = Comparison("needs_look", "extra_after", document_text=clause.template,
+                                                     extra_lines=[added], added_words=[added])
+
+
 def _preamble(clause: Clause, lines: list[str], fixed_starts: list[str]) -> Comparison:
     """Cover-page clauses have no Part heading; they are looked for in the text before Article I."""
     if BLANK in clause.template:
@@ -775,6 +799,7 @@ def check_constitution(
         else:
             chunk = assigned.get(clause.rule.id)
             comparisons[clause.rule.id] = compare(clause, chunk.lines) if chunk is not None else Comparison("missing", "absent")
+    _cover_page_additions(clauses, structure.preamble, comparisons)
     # A "no" from the officer does not hide a clause when the document itself fills in a clause that depends on
     # the same fact (for example Article VI.B names a national organization): the fact is then treated as unknown.
     disputed = sorted({
@@ -784,6 +809,12 @@ def check_constitution(
         # Only when the "no" would hide a clause that is not there.
         and any(other.rule.params.get("required_if_flag") == clause.rule.params["required_if_flag"]
                 and comparisons[other.rule.id].state != "present" for other in clauses)
+    } | {
+        # The same when another clause states the fact (Article III, Section A names an appointed position).
+        flag for flag, (rule_ids, pattern) in FLAG_EVIDENCE.items()
+        if club.get(flag) is False
+        and any(pattern.search(" ".join(comparisons[rule_id].blanks)) for rule_id in rule_ids if rule_id in comparisons)
+        and any(c.rule.params.get("required_if_flag") == flag and comparisons[c.rule.id].state != "present" for c in clauses)
     })
     club = {**club, **{flag: None for flag in disputed}}
 
