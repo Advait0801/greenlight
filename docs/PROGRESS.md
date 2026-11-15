@@ -6,10 +6,10 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
-- **Phase 2 (this branch):** closed 2026-11-15 after three iterations; pull request from `phase-2/event-packet` into `main` for the humans to merge.
-- **Phase:** 0 — Foundation
-- **Step:** closed. Iterations 1-4 ran; every blocker and high from iteration 4 is fixed; the humans ended the review loop there (see Decisions, 2026-11-15)
-- **Next action:** paused at the user's request after the Phase 0 push. Phase 1 (recognition check) starts only when the humans say so, under the new process (at most 3 iterations, 1-2 reviewers each)
+- **Phase 0:** closed 2026-11-15 (Foundation).
+- **Phase 2:** closed 2026-11-15 after three iterations; merged into `main` (pull request from `phase-2/event-packet`).
+- **Phase 1:** closed 2026-11-15 after three iterations; pull request from `phase-1/recognition` into `main` for the humans to merge.
+- **Next action:** the humans merge the Phase 1 pull request; Phase 3 (money check) can start once Phase 2 is on `main` (it is).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Closed |
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
-| 1 | Recognition check | — | 0 | — | open |
+| 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
@@ -50,6 +50,19 @@ What exists now:
 - **Evaluator** (`scripts/evaluators/events.py`): end to end on recorded readings 30/30 obligation lists match, 0 missed, 0 wrongly flagged; engine on the test set's attributes 30/30 with every due date, past-due flag and conflict; one deliberate status difference (ev-28: with no date, every date check is "check with the office", not "rule to keep").
 - **Shared code changed** (backward compatible): `app/eval_sets.py` (`_back`/`_forward` call the calculator), `tests/unit/test_architecture.py` (`event_intake.py` allowed to use the AI client), `frontend/src/routes.tsx` (one entry).
 - **Tests**: 386 passing.
+
+## Phase 1 build (2026-11-15)
+
+Branch `phase-1/recognition`. What exists now:
+- **Reading uploads** (`backend/app/services/recognition_document.py`): pasted text, TXT (UTF-8/UTF-16), DOCX (python-docx), PDF (pypdf; the real template, flagged encrypted with an empty password, opens; typed form-field answers are placed on the page by position). A PDF with no text layer or an image goes to the AI reader for transcription. Empty, too short, damaged, password-protected, `.doc` and mislabelled files give a clear message and no verdict.
+- **Clause check** (`recognition_check.py`, pure code): every `clause` rule in `rules/recognition.json` is located by Article, Section and Part (renumbered parts and one-paragraph pastes handled; page headers, the table of contents and the appendix ignored) and compared letter for letter with the template's fixed words around each blank. States: present, missing (absent, blank empty, a placeholder such as N/A or TBD, or "not applicable" on a required clause), weak (fixed words changed, with the missing and added words named), contradicts, needs a human look, not applicable (only when the officer says the club fact is false; unknown counts as required). Text outside the template is listed for the officer. Notes for another year's template, a fragment, instruction-like text, a non-fillable PDF and transcribed scans. Advisor meetings below the minimum are counted in code. Green only through `finding_for`, so clause III.B.1 (sources disagree on trainings) is yellow.
+- **AI reader** (`recognition_intake.py`): fixed yes/no questions built from the rule table ("does this wording require an interview / dues / another membership…") about the membership blanks; the document is an `UntrustedDocument` under a fixed name. A "yes" is a conflict only when confident and its quoted evidence is in the document; anything else is yellow; a confident "no" is overruled to yellow by warning words (GPA, interview, dues…). The reader can never make a clause present. Off or failing reader means yellow. Transcription of scans: nothing from it is ever green. Recordings for the 9 synthetic test constitutions committed in `data/ai_recordings/constitution-answers/` (read by a person first, as `.gitignore` asks).
+- **Readiness tracker** (`recognition_readiness.py`): 5 officers × (named + 3 documents), member minimum (5 more, 10 in all), advisor items due Dec 1, documents, key dates and days left from the rules; rules shown yellow (Clery course, Event Accessibility, EngageSC acceptance) are never ticked green. Nothing stored server-side.
+- **Routes** (`backend/app/api/recognition.py`): `POST /constitution/check` (file or text, four optional yes/no club facts), `GET`/`POST /recognition/readiness`. AI outputs go to the audit log.
+- **Page** (`frontend/src/pages/Recognition*.tsx`, route `/recognition`): upload or paste, club questions with "Not sure", report grouped by article with icon and text badges, template wording and source on every clause, readiness checklist (ticks saved in the browser only).
+- **Evaluator** (`scripts/evaluators/constitutions.py`): 21/21 planted faults found, 0 missed, 0 wrongly flagged; one found with a different state (co-09 VIII.A.2 shown "wording changed", key says "contradicts").
+- **Tests**: 421 passing (103 new). Shared change: `tests/unit/test_architecture.py` allows `app/services/recognition_intake.py` to import the AI client.
+- Known limit: II.C.5 (dues) stays yellow on every constitution because the reader answers "no" only at medium confidence.
 
 ## Iteration log
 
@@ -89,6 +102,36 @@ Fixed: M1 with no venue, every on-campus venue's steps are listed as "check with
 Left open: M3 most "office decides" items have no contact-by date (no source gives one); L2 "move the date" can suggest a blocked period (the text says to check the new date); L3 an .ics with no dated items is empty (the page disables the button); L4 DPS and GSG appear without full names in rule titles; L5 three more cautious statuses than the test set (ev-23 unsure performers, ev-28); L6 the repository's local .env sets AI_MODE=live (a developer setting, not committed).
 Full test suite: pass (389)
 Gate: iteration 2 (break) next
+
+### Phase 1, iteration 3 — audit; phase closed
+Date/time: 2026-11-15, about 03:50-04:15 PT
+Agent and model: one fresh auditor (general-purpose agent following .claude/agents/auditor.md), Opus 5.5, medium effort
+Report: docs/reviews/phase-1-iter-3-audit.md
+Findings: 0/2/5/4. Clause list: 92 template clauses, 92 clause rules, wording, blanks and conditions match the snapshot; readiness items, numbers and dates match their rules; iteration 2 regression tests exercise the real code.
+Fixed (both highs, each with a regression test that failed before the fix): words added after a fixed cover-page sentence keep it from green; a "no appointed positions" answer is treated as not sure when Article III, Section A names an appointed position, so a missing III.D.8 is not hidden. Also fixed (medium): the constitution route runs the check in a worker thread, so an AI call does not stall the server.
+Left open: see "Open findings after Phase 1".
+Full test suite: pass (449 + 130 adversarial); validate_rules.py OK; run_eval constitutions 21 caught / 0 missed / 0 wrongly flagged; frontend build OK
+Close: Phase 1 closed after the third iteration (PLAN.md section 1)
+
+### Phase 1, iteration 2 — break
+Date/time: 2026-11-15, about 03:10-03:45 PT
+Agent and model: one fresh breaker (general-purpose agent following .claude/agents/breaker.md), Opus 5.5, medium effort
+Report: docs/reviews/phase-1-iter-2-break.md (25 failing cases in backend/tests/adversarial/test_phase1_recognition_break.py)
+Findings: 7/4/5/1
+Fixed (all blockers and highs, each covered by the breaker's tests, now passing): placeholders and filler (TBC, "insert…", lorem ipsum, XX, "to be decided") and blanks that repeat the template's own words are empty; "none" accepted only where the blank allows it, never TBD or brackets; advisor meeting counts that allow fewer are not read as a number; membership barriers written into any blank need a look; only table-of-contents lines are dropped and appendix text is reported; words after a fixed clause keep it from green; a "no" club answer contradicted by the document no longer hides a missing clause; long Parts are checked in linear time; damaged PDF pages are reported. Also fixed (mediums and the low): Windows-1252 text files, "2026-2027" year labels and the other-year note, advisor items open until Dec 1 in the readiness headline, officer titles matched loosely ("Vice-President").
+Left open: M (question for the spec) a confident AI "no" with no warning words turns a membership blank green, so against an injected document the model is the only defence there.
+Full test suite: pass (446 + 130 adversarial); run_eval constitutions 21/0/0
+Gate: not yet, because iteration 3 (audit) has not run
+
+### Phase 1, iteration 1 — verify
+Date/time: 2026-11-15, about 02:30-03:00 PT
+Agent and model: one fresh verifier (general-purpose agent following .claude/agents/verifier.md, which this session could not load by name), Opus 5.5, medium effort
+Report: docs/reviews/phase-1-iter-1-verify.md
+Findings: 0/0/1/6 (all 6 exit criteria pass; keyboard use checked by reading the code)
+Fixed: the upload form no longer says the file is not kept (the audit log keeps the AI reader's quotes); the hard-coded closing date on the page is gone (the readiness checklist shows it with its source); focus moves to the "could not check this file" message.
+Left open: M keyboard use not driven in a real browser; L extra text on the cover page not listed; L co-09 VIII.A.2 shown "wording changed" not "contradicts"; L a changed cover-page clause shows no "your document says".
+Full test suite: pass (421 + 105 adversarial)
+Gate: not yet, because iterations 2 (break) and 3 (audit) have not run
 
 ### Phase 0, iteration 4 — break and audit (six reviewers in parallel); phase closed
 Date/time: 2026-11-15, about 00:00-02:30 PT
@@ -161,6 +204,16 @@ Medium and low findings left open when Phase 2 closed (details in docs/reviews/p
 - **Office decides:** off campus (no approvals rule) office-decides items still have no contact-by date; passed contact-by dates are not hard blocks (L).
 - **Lows:** ev-28's answer key expects "condition" where the engine (more cautiously) says "check with the office"; the stricter-rule choice and date checks still appear in eval_sets.py's validator; no test parses the .ics with an independent iCalendar library (the verifier did, by hand); hard blocks carry no citation; the "certainly passed" check assumes the first vendor payment is never after the event; /events/parse has no rate limit and logs audit rows with no club; an .ics with no dated items is empty; DPS and GSG appear without full names in some rule titles; the repository's local .env sets AI_MODE=live (developer setting).
 - **Questions for a person (breaker):** should a due date on a holiday or weekend move earlier; does the first-three-weeks rule cover classrooms and off campus; should the packet mention USG's ineligible line items.
+
+## Open findings after Phase 1
+
+Medium and low findings left open when Phase 1 closed (details in docs/reviews/phase-1-iter-*.md):
+- **Medium, question for the spec:** a confident AI "no" with no warning words turns a membership blank green, so for that blank the model is the only defence against a document written to fool it (iterations 2 and 3).
+- **Medium:** blanks with no AI question (for example II.A.3, open-membership opportunities) are scanned for membership barriers only when they mention membership; "after an interview with the board" there shows green.
+- **Medium:** VIII.C.2 (link to the national organization's bylaws) is fixed template text but the rule table makes it conditional on a parent organization; co-01 replaces it with "Not applicable" and passes. A rule-table question for a person, not changed in this phase.
+- **Medium:** keyboard-only use (exit criterion 6) was checked by reading the code, never driven in a browser, and has no test.
+- **Medium:** II.C.5 (dues) is yellow on every constitution because the reader answers "no" only at medium confidence.
+- **Low:** the five "elected or appointed" blanks in III.A.1 accept any word; a second Part with the same number leaves the clause it contradicts green (only the extra-text note turns yellow); scan transcriptions are stored whole in the audit log with no club; club questions and training labels are repeated in the frontend; co-09 VIII.A.2 shown "wording changed" where the key says "contradicts"; a changed cover-page clause shows no "your document says".
 
 ## Phase ownership and branches
 
