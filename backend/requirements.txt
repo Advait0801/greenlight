@@ -10,6 +10,7 @@ python-multipart==0.0.33      # file uploads (Phases 1 and 3)
 pydantic==2.14.3
 pydantic-settings==2.16.3
 sqlalchemy==2.1.8
+psycopg[binary]==3.3.9         # Postgres driver for the deployed database (DATABASE_URL=postgresql://...)
 jsonschema==4.26.0            # test-set schemas in data/eval/schemas/
 
 # Claude API

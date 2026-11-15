@@ -63,6 +63,10 @@ class Settings(BaseSettings):
     @field_validator("database_url")
     @classmethod
     def _anchor_sqlite_path(cls, value: str) -> str:
+        # Hosts such as Replit give a plain postgres:// or postgresql:// URL; SQLAlchemy needs the driver named.
+        for prefix in ("postgres://", "postgresql://"):
+            if value.startswith(prefix):
+                return "postgresql+psycopg://" + value[len(prefix):]
         scheme, sep, rest = value.partition(":///")
         if not sep or not (scheme == "sqlite" or scheme.startswith("sqlite+")) or rest.startswith("/"):
             return value  # not SQLite, or already absolute (sqlite:////abs/path)

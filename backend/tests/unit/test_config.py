@@ -14,9 +14,16 @@ def test_relative_sqlite_path_is_anchored_to_backend() -> None:
     assert settings.database_url == f"sqlite:///{BACKEND_DIR / 'greenlight.db'}"
 
 
-@pytest.mark.parametrize("url", ["sqlite:////tmp/abs.db", "sqlite:///:memory:", "sqlite://", "postgresql://u@h/db"])
+@pytest.mark.parametrize("url", ["sqlite:////tmp/abs.db", "sqlite:///:memory:", "sqlite://", "postgresql+psycopg://u@h/db"])
 def test_other_database_urls_are_left_alone(url: str) -> None:
     assert Settings(_env_file=None, database_url=url).database_url == url  # type: ignore[call-arg]
+
+
+@pytest.mark.parametrize("url", ["postgres://u:p@h:5432/db?sslmode=require", "postgresql://u:p@h:5432/db?sslmode=require"])
+def test_plain_postgres_urls_use_the_installed_driver(url: str) -> None:
+    """Replit gives DATABASE_URL as postgres:// or postgresql://; the app's driver is psycopg 3."""
+    settings = Settings(_env_file=None, database_url=url)  # type: ignore[call-arg]
+    assert settings.database_url == "postgresql+psycopg://u:p@h:5432/db?sslmode=require"
 
 
 def test_ports_come_from_the_env_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
