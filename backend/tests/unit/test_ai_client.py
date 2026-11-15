@@ -207,3 +207,35 @@ def test_binary_documents_are_labelled_as_data() -> None:
     assert blocks[0]["text"].startswith('<document index="1" name="quote&quot;.pdf"')
     assert blocks[1]["type"] == "document"
     assert blocks[2]["text"] == "</document>"
+
+
+def test_personal_fields_are_not_kept_in_recordings_or_the_audit_log(tmp_path: Path) -> None:
+    """Regression (phase 0 iteration 3, code audit M): `evidence` quotes the document, so a traveller's
+    name read from an upload would be saved verbatim. Fields marked PERSONAL are blanked first."""
+    from typing import Annotated
+
+    from app.ai.schemas import PERSONAL
+
+    class Traveller(BaseModel):
+        name: Annotated[ExtractedField[str], PERSONAL]
+        headcount: ExtractedField[int]
+
+    answer = json.dumps({
+        "name": {"value": "Jordan Example", "confidence": "high", "evidence": "traveller: Jordan Example"},
+        "headcount": {"value": 4, "confidence": "high", "evidence": "4 travellers"},
+    })
+
+    def run(mode: AIMode, sdk: Any) -> Any:
+        return make(tmp_path, mode, sdk=sdk, key="k").extract(
+            task="selftest-traveller", instructions="Read the traveller.", request="Fill in the structure.",
+            documents=[UntrustedDocument(name="t.txt", text="traveller: Jordan Example, 4 travellers")],
+            output_type=Traveller,
+        )
+
+    live = run(AIMode.RECORD, FakeSDK(text=answer))
+    assert live.output.name.value == "Jordan Example"  # the caller still gets the answer
+    assert "Jordan" not in json.dumps(live.audit_payload())
+    saved = next((tmp_path / "rec" / "selftest-traveller").glob("*.json")).read_text()
+    assert "Jordan" not in saved
+    replay = run(AIMode.RECORDED, ExplodingSDK())
+    assert replay.output.name.value is None and replay.output.headcount.value == 4

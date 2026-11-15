@@ -22,6 +22,7 @@ from typing import Any, Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ValidationError
 
+from app.ai.schemas import without_personal_data
 from app.ai.untrusted import BASE_SYSTEM_PROMPT, UntrustedDocument, build_user_content
 from app.config import AIMode, Settings, get_settings
 from app.jsonutil import StrictJSONError, loads_strict
@@ -64,14 +65,15 @@ class AIResult(Generic[OutputT]):
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def audit_payload(self) -> dict[str, Any]:
-        """What goes in the audit log: the model's output, not the user's documents."""
+        """What goes in the audit log: the model's output with personal fields blanked. Other fields keep
+        their `evidence`, which quotes the document, so the log is private to the club."""
         return {
             "task": self.task,
             "model": self.model,
             "mode": self.mode.value,
             "request_key": self.request_key,
             "stop_reason": self.stop_reason,
-            "output": json.loads(self.raw_text),
+            "output": without_personal_data(self.output).model_dump(mode="json") if isinstance(self.output, BaseModel) else json.loads(self.raw_text),
         }
 
 
@@ -124,10 +126,11 @@ class ClaudeClient:
             raw_text, stop_reason, model = self._replay(prepared)
         else:
             raw_text, stop_reason, model = self._call_live(prepared, max_tokens)
-            if mode is AIMode.RECORD:
-                self.save_recording(prepared, raw_text, stop_reason=stop_reason, model=model)
 
         output = self._validate(prepared, raw_text, stop_reason)
+        if mode is AIMode.RECORD:
+            # Personal fields are blanked in the saved copy; a replay shows them as not read.
+            self.save_recording(prepared, without_personal_data(output).model_dump_json(), stop_reason=stop_reason, model=model)
         return AIResult(
             output=output,
             task=task,
@@ -184,7 +187,9 @@ class ClaudeClient:
     def save_recording(
         self, prepared: PreparedRequest, raw_text: str, *, stop_reason: str | None = "end_turn", model: str | None = None
     ) -> Path:
-        """Save a response for replay. Stores fingerprints of the documents, never their content."""
+        """Save a response for replay. The request is stored as fingerprints of the documents, not the
+        documents; the response can still quote them in `evidence` (personal fields are blanked by the
+        caller). Recordings are git-ignored; commit only ones made from the synthetic demo and test data."""
         path = self.recording_path(prepared)
         path.parent.mkdir(parents=True, exist_ok=True)
         record = {

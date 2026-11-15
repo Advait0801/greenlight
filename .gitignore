@@ -19,6 +19,9 @@ htmlcov/
 *.db
 *.sqlite3
 uploads/
+# AI recordings can quote uploaded files (the `evidence` fields). Commit only recordings made from the
+# synthetic demo and test data, after a person has read them (git add -f).
+data/ai_recordings/
 
 # Node
 node_modules/
