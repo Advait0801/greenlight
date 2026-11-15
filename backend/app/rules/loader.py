@@ -149,6 +149,7 @@ NUMBER_WORDS = {
     9: "nine", 10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
     16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
 }
+TIMES_WORDS = {1: "once", 2: "twice"}  # "at least once a semester"
 LIMIT_PREFIXES = ("max_", "min_", "threshold_")
 
 
@@ -164,6 +165,8 @@ def _number_in_text(number: int | float, text: str) -> bool:
         forms = [str(value), f"{value:,}", f"{value}.00", f"{value:,}.00"]
         if value in NUMBER_WORDS:
             forms.append(NUMBER_WORDS[value])
+        if value in TIMES_WORDS:
+            forms.append(TIMES_WORDS[value])
     for form in forms:
         pattern = rf"(?<![\w.,]){re.escape(form)}(?![\w]|[.,]\d)" if form[0].isdigit() else rf"\b{re.escape(form)}\b"
         if re.search(pattern, text, flags=re.IGNORECASE):

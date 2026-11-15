@@ -549,3 +549,24 @@ def test_clause_quote_must_pin_one_passage(rules_copy: Path) -> None:
         params={**_rule(d, "clause-ii-e-4")["params"], "template_text": "{blank} at a regular or special meeting shall be sufficient to withdraw membership."},
     ))
     _expect_problem(rules_copy, "clause-ii-e-4", "occurs more than once")
+
+
+def test_recognition_rules_added_after_the_third_audit(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, recognition audit M and L)."""
+    assert "voting-members-enrolled-students" in ruleset.get("clause-ii-a-1").params["contradicted_by_rules"]
+    assert "dues-required-banned" in ruleset.get("clause-ii-c-5").params["contradicted_by_rules"]
+    assert ruleset.get("clause-vii-b-2").params["contradicted_by_rules"] == ["advisor-meets-once-a-semester"]
+    assert ruleset.get("advisor-meets-once-a-semester").params["min_meetings_per_semester"] == 1
+    assert ruleset.get("clause-preamble-bylaws").params["clause_type"] == "fixed"
+    assert ruleset.get("clause-preamble-responsibility").params["clause_type"] == "fixed"
+    for item in ruleset.get("recognition-advisor-deadline").params["item_rules"]:
+        assert ruleset.get(item).params["deadline_rules"] == ["recognition-advisor-deadline"]
+    clery = ruleset.get("advisor-clery-training")
+    assert clery.severity == "yellow" and clery.kind == "requirement" and "deadline_rules" not in clery.params
+    accessibility = ruleset.get("recognition-event-accessibility-training")
+    assert accessibility.severity == "yellow"
+    assert "recognition-event-accessibility-training" in (ruleset.get("recognition-officer-trainings").conflicts_with or [])
+    assert ruleset.get("recognition-officer-trainings").params["completed_by_rules"] == ["recognition-application-window"]
+    assert ruleset.get("recognition-appeal").anchor == "decision_received_date"
+    flags = {rule.params.get("required_if_flag") for rule in ruleset if rule.kind == "clause"} - {None}
+    assert flags == {"has_additional_officers", "has_appointed_positions", "has_parent_organization", "has_school_affiliation"}

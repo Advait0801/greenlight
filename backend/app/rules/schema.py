@@ -58,7 +58,7 @@ Anchor = Literal[
     "event_end_date",  # last day of the event
     "initial_payment_due_date",  # USG: the first payment to a vendor
     "notification_date",  # e.g. notice that an application is incomplete
-    "decision_date",  # e.g. a recognition decision
+    "decision_received_date",  # the day the club receives a decision (e.g. on recognition)
 ]
 Direction = Literal["before", "after"]
 

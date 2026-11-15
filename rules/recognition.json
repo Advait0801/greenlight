@@ -86,9 +86,13 @@
       "applies_to": "Every recognition application",
       "params": {
         "min_students": 10,
-        "min_officers": 5
+        "min_officers": 5,
+        "same_shortfall_rules": [
+          "recognition-five-more-members"
+        ]
       },
-      "conflicts_with": null
+      "conflicts_with": null,
+      "notes": "Agrees with recognition-five-more-members (5 officers + 5 more members = 10). One shortfall is reported once, citing both rules."
     },
     {
       "id": "recognition-accept-positions",
@@ -157,7 +161,7 @@
       "effective_date": "2026-11-12",
       "verified": "read",
       "severity": "red",
-      "message": "Each of the five officers signs the 2026-27 Commitment to Community form (by DocuSign) and sends it to the officer submitting the application.",
+      "message": "Each of the five officers completes the Commitment to Community form and sends it to the officer submitting the application.",
       "fix_template": "{officer} still needs to sign the Commitment to Community form.",
       "applies_to": "Every recognition application",
       "conflicts_with": null
@@ -175,7 +179,7 @@
       "effective_date": "2026-11-12",
       "verified": "read",
       "severity": "red",
-      "message": "Each of the five officers completes Hazing Prevention 101 and the RSO Officer Learning Path between July 1, 2026 and the application deadline. Older certificates are not accepted.",
+      "message": "Each of the five officers completes Hazing Prevention 101 and the RSO Officer Learning Path between July 1, 2026 and the application deadline.",
       "fix_template": "{officer} still needs {training}.",
       "applies_to": "Every recognition application",
       "params": {
@@ -183,12 +187,19 @@
           "Hazing Prevention 101: Student Edition 2026-2027",
           "RSO Officer Learning Path"
         ],
-        "completed_on_or_after": "2026-07-01"
+        "completed_on_or_after": "2026-07-01",
+        "completed_by_rules": [
+          "recognition-application-window"
+        ],
+        "template_only_training_rules": [
+          "recognition-event-accessibility-training"
+        ]
       },
       "conflicts_with": [
-        "clause-iii-b-1"
+        "clause-iii-b-1",
+        "recognition-event-accessibility-training"
       ],
-      "notes": "Sources disagree: the constitution template (Article III, Section B, Part 1) names Hazing Prevention, Event Accessibility and RSO Officer Training modules. Greenlight lists every training either source names and asks the officer to confirm with Campus Activities."
+      "notes": "Sources disagree: the constitution template (Article III, Section B, Part 1) also names an Event Accessibility module, which the recognition page does not list. Greenlight lists it as a separate item (recognition-event-accessibility-training), shown yellow, and asks the officer to confirm with Campus Activities."
     },
     {
       "id": "recognition-three-items-per-officer",
@@ -250,11 +261,16 @@
       "effective_date": "2026-11-12",
       "verified": "read",
       "severity": "red",
-      "message": "The advisor's own requirements (training certificate and Commitment to Community, by Google Form) are due December 1, 2026.",
+      "message": "The advisor's own requirements are due December 1, 2026.",
       "fix_template": "Remind the advisor to submit their requirements by December 1, 2026.",
       "applies_to": "Every recognition application",
       "params": {
-        "due_on": "2026-12-01"
+        "due_on": "2026-12-01",
+        "item_rules": [
+          "advisor-accepts-position",
+          "advisor-training-certificate",
+          "advisor-commitment-to-community"
+        ]
       },
       "conflicts_with": null
     },
@@ -331,7 +347,7 @@
       "params": {
         "max_pages": 5
       },
-      "anchor": "decision_date",
+      "anchor": "decision_received_date",
       "offset": 10,
       "unit": "business_days",
       "direction": "after",
@@ -415,10 +431,157 @@
       "conflicts_with": null
     },
     {
+      "id": "voting-members-enrolled-students",
+      "domain": "recognition",
+      "kind": "banned",
+      "title": "Only currently enrolled USC students may vote",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Recognition Requirements",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Limit its voting membership to currently enrolled USC students.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Only currently enrolled USC students can be voting members; alumni, staff, faculty and others may be non-voting members.",
+      "fix_template": "Limit voting membership to currently enrolled USC students.",
+      "applies_to": "Voting membership criteria in the constitution",
+      "conflicts_with": null
+    },
+    {
+      "id": "advisor-meets-once-a-semester",
+      "domain": "recognition",
+      "kind": "requirement",
+      "title": "The advisor meets with the club at least once a semester",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Recognition Process",
+      "source_section": "Advisor Requirements: General Requirements",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-recognition-process/",
+      "source_text": "Advisors must agree to the duties outlined in the RSO’s constitution (meet with the RSO at least once a semester, maintain open lines of communication and awareness of organizational activities, act as a liaison to connect students with university resources).",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "red",
+      "message": "The advisor agrees to meet with the club at least once a semester.",
+      "fix_template": "Set the number of advisor meetings to at least one per semester.",
+      "applies_to": "The advisor meetings clause in the constitution",
+      "params": {
+        "min_meetings_per_semester": 1
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "advisor-accepts-position",
+      "domain": "recognition",
+      "kind": "requirement",
+      "title": "The advisor accepts the position on EngageSC",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Recognition Process",
+      "source_section": "Advisor Requirements: General Requirements",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-recognition-process/",
+      "source_text": "Advisors must accept their position on EngageSC.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "red",
+      "message": "The advisor accepts the advisor position on EngageSC (the email comes from mailer@campusgroups.com).",
+      "fix_template": "Ask the advisor to accept the position on EngageSC.",
+      "applies_to": "Every recognition application",
+      "params": {
+        "deadline_rules": [
+          "recognition-advisor-deadline"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "advisor-training-certificate",
+      "domain": "recognition",
+      "kind": "requirement",
+      "title": "The advisor submits the RSO Advisor Training certificate",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Recognition Process",
+      "source_section": "Advisor Requirements: RSO Advisor Training on Reach360",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-recognition-process/",
+      "source_text": "Download the PDF of the certificate and submit via Advisor Requirements Google Form along with your Commitment to Community form.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "red",
+      "message": "The advisor completes RSO Advisor Training on Reach360 and submits the certificate through the Advisor Requirements Google Form.",
+      "fix_template": "Ask the advisor to submit the RSO Advisor Training certificate.",
+      "applies_to": "Every recognition application",
+      "params": {
+        "deadline_rules": [
+          "recognition-advisor-deadline"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "advisor-commitment-to-community",
+      "domain": "recognition",
+      "kind": "requirement",
+      "title": "The advisor submits the Commitment to Community form",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Recognition Process",
+      "source_section": "Advisor Requirements: Docusigned Commitment to Community Form",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-recognition-process/",
+      "source_text": "Download the PDF of the form and submit via Advisor Requirements Google Form along with your RSO Advisor Training certificate.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "red",
+      "message": "The advisor signs the Commitment to Community form and submits it through the Advisor Requirements Google Form.",
+      "fix_template": "Ask the advisor to submit the Commitment to Community form.",
+      "applies_to": "Every recognition application",
+      "params": {
+        "deadline_rules": [
+          "recognition-advisor-deadline"
+        ]
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "advisor-clery-training",
+      "domain": "recognition",
+      "kind": "requirement",
+      "title": "The advisor completes the Clery Act training (date to come)",
+      "owner_office": "Campus Activities",
+      "source": "Campus Activities: RSO Recognition Process",
+      "source_section": "Advisor Requirements: Clery Act",
+      "source_url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-recognition-process/",
+      "source_text": "All RSO advisors serve as Campus Security Authorities under the Clery Act and complete a Trojan Learn course related to these responsibilities annually. Updates and a deadline to complete the Clery Act training requirement will be sent to all advisors soon. Campus Activities staff confirm completion via report from Trojan Learn, so you will not need to submit a certificate.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "The advisor completes the Clery Act course on Trojan Learn each year. Campus Activities confirms it from a report; the deadline has not been announced yet.",
+      "fix_template": "Ask the advisor to check their Trojan Learn transcript for this year's Clery Act course.",
+      "applies_to": "Every recognition application",
+      "conflicts_with": null,
+      "notes": "The source says a deadline 'will be sent to all advisors soon', so no due date is shown."
+    },
+    {
+      "id": "recognition-event-accessibility-training",
+      "domain": "recognition",
+      "kind": "requirement",
+      "title": "Event Accessibility module: named only in the template",
+      "owner_office": "Campus Activities",
+      "source": "2026-27 RSO Constitution Template (Campus Activities)",
+      "source_section": "Article III, Section B, Part 1",
+      "source_url": "https://campusactivities.usc.edu/wp-content/uploads/2026/11/2026-27-RSO-Constitution-Template-1.pdf",
+      "source_text": "Part 1. All officers must complete the annual requirements for recognition status, including Hazing Prevention, Event Accessibility, and RSO Officer Training modules.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "The constitution template also names an Event Accessibility module, which the recognition page does not list. Confirm with Campus Activities whether officers must complete it.",
+      "fix_template": "Ask Campus Activities whether the Event Accessibility module is required this year.",
+      "applies_to": "Every recognition application",
+      "conflicts_with": [
+        "recognition-officer-trainings"
+      ]
+    },
+    {
       "id": "clause-preamble-name",
       "domain": "recognition",
       "kind": "clause",
-      "title": "Name of the organization (cover page)",
+      "title": "Name of the organization",
       "owner_office": "Campus Activities",
       "source": "2026-27 RSO Constitution Template (Campus Activities)",
       "source_section": "Cover page",
@@ -427,7 +590,7 @@
       "effective_date": "2026-11-12",
       "verified": "read",
       "severity": "red",
-      "message": "Cover page (Name of the organization (cover page)) must be filled in.",
+      "message": "Cover page (Name of the organization) must be filled in.",
       "fix_template": "Fill in {label}: {what_to_add}",
       "applies_to": "A constitution for 2026-27 recognition",
       "check": "blank filled in",
@@ -438,6 +601,33 @@
         "part": null,
         "clause_type": "fill_in",
         "template_text": "Name of RSO {blank}"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "clause-preamble-responsibility",
+      "domain": "recognition",
+      "kind": "clause",
+      "title": "Recognition falls within Campus Activities",
+      "owner_office": "Campus Activities",
+      "source": "2026-27 RSO Constitution Template (Campus Activities)",
+      "source_section": "Cover page",
+      "source_url": "https://campusactivities.usc.edu/wp-content/uploads/2026/11/2026-27-RSO-Constitution-Template-1.pdf",
+      "source_text": "The responsibility for recognition of student organizations falls within Campus Activities in USC Student Life.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "red",
+      "message": "Cover page (Recognition falls within Campus Activities) must appear with the template's wording unchanged.",
+      "fix_template": "Restore the template wording: \"{template_text}\"",
+      "applies_to": "A constitution for 2026-27 recognition",
+      "check": "present and unaltered",
+      "params": {
+        "clause": "preamble-responsibility",
+        "article": "Cover page",
+        "section": null,
+        "part": null,
+        "clause_type": "fixed",
+        "template_text": "The responsibility for recognition of student organizations falls within Campus Activities in USC Student Life."
       },
       "conflicts_with": null
     },
@@ -465,6 +655,33 @@
         "part": null,
         "clause_type": "fixed",
         "template_text": "All RSO functions and programs must operate in accordance with the USC Notice of Non-Discrimination."
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "clause-preamble-bylaws",
+      "domain": "recognition",
+      "kind": "clause",
+      "title": "Bylaws may not supersede the constitution",
+      "owner_office": "Campus Activities",
+      "source": "2026-27 RSO Constitution Template (Campus Activities)",
+      "source_section": "Cover page",
+      "source_url": "https://campusactivities.usc.edu/wp-content/uploads/2026/11/2026-27-RSO-Constitution-Template-1.pdf",
+      "source_text": "This constitution outlines the structure, purpose, and operational guidelines of the organization listed above. Detailed operational information may be included in a separate bylaws document, but the bylaws may not supersede this constitution.",
+      "effective_date": "2026-11-12",
+      "verified": "read",
+      "severity": "red",
+      "message": "Cover page (Bylaws may not supersede the constitution) must appear with the template's wording unchanged.",
+      "fix_template": "Restore the template wording: \"{template_text}\"",
+      "applies_to": "A constitution for 2026-27 recognition",
+      "check": "present and unaltered",
+      "params": {
+        "clause": "preamble-bylaws",
+        "article": "Cover page",
+        "section": null,
+        "part": null,
+        "clause_type": "fixed",
+        "template_text": "This constitution outlines the structure, purpose, and operational guidelines of the organization listed above. Detailed operational information may be included in a separate bylaws document, but the bylaws may not supersede this constitution."
       },
       "conflicts_with": null
     },
@@ -604,11 +821,12 @@
           "open-membership-no-academic-limits",
           "open-membership-no-barriers",
           "open-membership-no-other-org",
-          "dues-required-banned"
+          "dues-required-banned",
+          "voting-members-enrolled-students"
         ]
       },
       "conflicts_with": null,
-      "notes": "The criteria must not limit membership by academics, use interviews, applications or assessments, require another membership, or require dues."
+      "notes": "The criteria must not limit membership by academics, use interviews, applications or assessments, require another membership, or require dues, and only currently enrolled USC students may vote."
     },
     {
       "id": "clause-ii-a-2",
@@ -915,7 +1133,10 @@
         "part": "5",
         "clause_type": "fixed_and_fill",
         "template_text": "Part 5. Dues: Members may be asked to pay dues in the amount of {blank} per semester. Member dues will be used for: {blank}",
-        "none_is_acceptable": true
+        "none_is_acceptable": true,
+        "contradicted_by_rules": [
+          "dues-required-banned"
+        ]
       },
       "conflicts_with": null,
       "notes": "A club that collects no dues may say so; the blank must not be left empty."
@@ -1190,7 +1411,8 @@
         "part": "2",
         "clause_type": "fixed_and_fill",
         "template_text": "Part 2. In addition to the required positions, {blank} also has the following officer positions: {blank}",
-        "required_if": "the club has officer positions beyond the five required ones"
+        "required_if": "the club has officer positions beyond the five required ones",
+        "required_if_flag": "has_additional_officers"
       },
       "conflicts_with": null
     },
@@ -1383,7 +1605,8 @@
         "part": "7",
         "clause_type": "fill_in",
         "template_text": "Part 7. Duties of Additional Positions: {blank}",
-        "required_if": "the club has officer positions beyond the five required ones"
+        "required_if": "the club has officer positions beyond the five required ones",
+        "required_if_flag": "has_additional_officers"
       },
       "conflicts_with": null
     },
@@ -1681,7 +1904,8 @@
         "part": "8",
         "clause_type": "fill_in",
         "template_text": "Part 8. For appointed positions, the following criteria and procedure will be followed: {blank}",
-        "required_if": "any officer position is appointed"
+        "required_if": "any officer position is appointed",
+        "required_if_flag": "has_appointed_positions"
       },
       "conflicts_with": null
     },
@@ -2384,7 +2608,8 @@
         "part": "1",
         "clause_type": "fixed_and_fill",
         "template_text": "Part 1. {blank} is the USC chapter of {blank}",
-        "required_if": "the club is a chapter of a parent or national organization"
+        "required_if": "the club is a chapter of a parent or national organization",
+        "required_if_flag": "has_parent_organization"
       },
       "conflicts_with": null
     },
@@ -2412,7 +2637,8 @@
         "part": "2",
         "clause_type": "fixed_and_fill",
         "template_text": "Part 2. Where {blank} guidelines, regulations, or policies differ from those of USC, USC's policies, regulations, and guidelines take precedence.",
-        "required_if": "the club is a chapter of a parent or national organization"
+        "required_if": "the club is a chapter of a parent or national organization",
+        "required_if_flag": "has_parent_organization"
       },
       "conflicts_with": null
     },
@@ -2440,7 +2666,8 @@
         "part": "1",
         "clause_type": "fixed_and_fill",
         "template_text": "Part 1. {blank} is affiliated with {blank}",
-        "required_if": "the club is affiliated with a USC school, department or program"
+        "required_if": "the club is affiliated with a USC school, department or program",
+        "required_if_flag": "has_school_affiliation"
       },
       "conflicts_with": null
     },
@@ -2468,7 +2695,8 @@
         "part": "2",
         "clause_type": "fixed_and_fill",
         "template_text": "Part 2. Where {blank} guidelines, regulations, or policies differ from those of USC, USC's policies, regulations, and guidelines take precedence.",
-        "required_if": "the club is affiliated with a USC school, department or program"
+        "required_if": "the club is affiliated with a USC school, department or program",
+        "required_if_flag": "has_school_affiliation"
       },
       "conflicts_with": null
     },
@@ -2603,7 +2831,10 @@
         "section": "B",
         "part": "2",
         "clause_type": "fixed_and_fill",
-        "template_text": "Part 2. Officers should meet with the advisor {blank} times per semester."
+        "template_text": "Part 2. Officers should meet with the advisor {blank} times per semester.",
+        "contradicted_by_rules": [
+          "advisor-meets-once-a-semester"
+        ]
       },
       "conflicts_with": null
     },
@@ -2876,7 +3107,8 @@
         "part": "2",
         "clause_type": "fixed",
         "template_text": "Part 2. Groups affiliated with a national organization must provide a link or other information on their EngageSC page indicating where the affiliated national organization’s bylaws can be found.",
-        "required_if": "the club is affiliated with a national organization"
+        "required_if": "the club is affiliated with a national organization",
+        "required_if_flag": "has_parent_organization"
       },
       "conflicts_with": null
     }
