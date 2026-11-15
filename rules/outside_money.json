@@ -109,7 +109,7 @@
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "info",
-      "message": "Clubs co-sponsor events with other student organizations, departments and outside agencies; the co-sponsorship conditions apply, a co-host that is not a recognized student organization is not allowed, and every co-host is named in the permit application.",
+      "message": "Clubs co-sponsor events with other student organizations, departments and outside agencies; the co-sponsorship conditions apply, co-hosting with an Unrecognized Student Organization (a group of USC students the university does not recognize) is not allowed, and every co-host is named in the permit application.",
       "fix_template": null,
       "applies_to": "Sharing an event and its costs with another club",
       "triggers": [
@@ -137,8 +137,8 @@
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "red",
-      "message": "Co-hosting with a group that is not a recognized student organization is strictly prohibited.",
-      "fix_template": "Co-host only with a recognized student organization.",
+      "message": "Co-hosting with an Unrecognized Student Organization (a group of USC students that the university does not recognize) is strictly prohibited. Departments and outside agencies may co-sponsor under the co-sponsorship conditions.",
+      "fix_template": "Remove the unrecognized student group as a co-host.",
       "applies_to": "A co-hosted event",
       "triggers": [
         "co_hosts"
