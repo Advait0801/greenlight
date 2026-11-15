@@ -7,6 +7,7 @@ own word, and the report says so.
 
 from __future__ import annotations
 
+import re
 from datetime import date, datetime
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -136,7 +137,12 @@ def readiness(ruleset: RuleSet, given: ReadinessInput, as_of: date | None = None
         )
 
     positions: list[str] = list(ruleset.get("recognition-five-officers").params["required_positions"])
-    by_position = {" ".join(officer.position.lower().split()): officer for officer in given.officers}
+    by_position: dict[str, OfficerStatus] = {}
+    for officer in given.officers:
+        key = " ".join(re.sub(r"[^a-z]+", " ", officer.position.lower()).split())
+        key = {"vp": "vice president", "programming": "programming chair", "program chair": "programming chair"}.get(key, key)
+        if key not in by_position:  # a repeated position never overrides the first entry
+            by_position[key] = officer
     trainings: list[str] = list(ruleset.get("recognition-officer-trainings").params["trainings"])
     groups: list[ReadinessGroup] = []
     named = 0
@@ -211,9 +217,18 @@ def readiness(ruleset: RuleSet, given: ReadinessInput, as_of: date | None = None
     summary = {state: sum(1 for entry in every if entry.state == state) for state in STATE_LABELS}
     to_do, check = summary["to_do"], summary["check"]
     overall = Verdict.RED if to_do else Verdict.YELLOW if check else Verdict.GREEN
-    if closed and to_do:
+    advisor_open = sum(1 for entry in every if entry.state == "to_do" and entry.due == advisor_due)
+    student_open = to_do - advisor_open
+    if closed and student_open:
         message = (f"The application closed on {closes.strftime('%B %-d, %Y')} and late applications are not accepted. "
-                   f"{to_do} item{'s were' if to_do != 1 else ' was'} still open.")
+                   f"{student_open} item{'s were' if student_open != 1 else ' was'} still open.")
+    elif closed and advisor_open and as_of <= advisor_due:
+        left = (advisor_due - as_of).days
+        message = (f"{advisor_open} advisor item{'s are' if advisor_open != 1 else ' is'} still to do. They are due "
+                   f"{advisor_due.strftime('%B %-d, %Y')}" + (f", in {left} day{'s' if left != 1 else ''}." if left else ", today."))
+    elif closed and advisor_open:
+        message = (f"The advisor's requirements were due {advisor_due.strftime('%B %-d, %Y')}. "
+                   f"{advisor_open} advisor item{'s were' if advisor_open != 1 else ' was'} still open.")
     elif to_do:
         left = (closes - as_of).days
         message = (f"{to_do} item{'s' if to_do != 1 else ''} still to do. The application closes "
