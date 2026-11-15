@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "87a625381d0ea8f39880beb0d0b50bd1b83b1a2a4c594636efad0b962574078f",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:48+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "be1b307db2ac6028368baeec3282a44d31c3761817d92ab8fefeee9f4652a28e"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Sunset Snacks Co.\",\"confidence\":\"high\",\"evidence\":\"Sunset Snacks Co. quote: popcorn and cotton candy service for 200, $1,200.00\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"popcorn and cotton candy service for 200\",\"category\":\"food\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$1,200.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"popcorn and cotton candy service for 200, $1,200.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

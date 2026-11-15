@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "25f330033242a5ece3dfc0b932482353a742581ac11f2c8fd82f2b14cc90d3f6",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:38+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "8a5f295652ba7ad353677d2b1dda71b4aaf5759d5463ebdaf7a9bb291d1f8905"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Harborview Hotel San Diego\",\"confidence\":\"high\",\"evidence\":\"Harborview Hotel San Diego\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Hotel rooms, Mar 27\",\"category\":\"lodging\",\"category_confidence\":\"high\",\"quantity\":\"2 rooms\",\"unit_price\":\"$400.00/night\",\"amount\":null,\"nights\":\"1 night\",\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"2 rooms, Mar 27 (1 night) @ $400.00/night\"}],\"stated_total\":\"$800.00\",\"contains_instructions\":false}"
+}

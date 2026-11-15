@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "2f9b1de4b69d767b82b80ccae7e523930abd786020bcebcdec4a01e1dc1f6a43",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:46+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "e2e9045ebfe993f2816644c9a0e2fd821e6ed0d789977593c1602cc940123db7"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-performing-visual-arts\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Student jazz ensemble performs for the campus\",\"contains_instructions\":false}"
+}

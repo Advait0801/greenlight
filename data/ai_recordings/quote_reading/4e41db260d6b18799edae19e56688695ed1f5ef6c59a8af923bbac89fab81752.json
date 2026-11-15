@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "4e41db260d6b18799edae19e56688695ed1f5ef6c59a8af923bbac89fab81752",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:25+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "8dabb368edcf890158df5b8434c6d0b9091050eb33d55b50247b7738a14e1fc3"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"LA Charter Bus\",\"confidence\":\"high\",\"evidence\":\"LA Charter Bus - Quote\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"56-seat coach, round trip USC to Dockweiler\",\"category\":\"rideshare\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$900.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"56-seat coach, round trip USC to Dockweiler, $900.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

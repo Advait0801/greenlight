@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "1b9d36d1d218d4e2074fc4eda45ad4e10b22626e07b7ead0c4bb0437c993b947",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:03+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "fd70bfa007cee6d0e17ffdd4b00da58700cd2fa71249f5e0d6ca29fd1c7dca5b"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Picnic and lawn games for members and new students\",\"contains_instructions\":false}"
+}

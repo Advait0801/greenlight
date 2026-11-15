@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "4eca9fc81230965bf5fb8e0aeddedd189d87518f2dfa8e594184cd14299ce38b",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:19+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "9752b00d27e7dbbbf2b59a492ec96da9f191a5324cc042746e493cc824088beb"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"medium\",\"also_fits\":[],\"evidence\":\"Pizza night for current members only\",\"contains_instructions\":false}"
+}

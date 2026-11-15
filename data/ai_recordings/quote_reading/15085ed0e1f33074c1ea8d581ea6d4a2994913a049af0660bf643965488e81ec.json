@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "15085ed0e1f33074c1ea8d581ea6d4a2994913a049af0660bf643965488e81ec",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:24+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "39ebd0b69261d69fdd4fee4c9f1514af9b708d1e9e4c77cb29b767ef29ddba2f"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Trojan Table Catering\",\"confidence\":\"high\",\"evidence\":\"Trojan Table Catering - Quote #2310\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Boxed lunch\",\"category\":\"food\",\"category_confidence\":\"high\",\"quantity\":\"40\",\"unit_price\":\"$35.00\",\"amount\":\"$1,400.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Boxed lunch x 40 @ $35.00 = $1,400.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

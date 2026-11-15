@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "00100a44ac87c9071b6a13ffbc2879784d134f67751b9c5546ed912769027b56",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:32+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "d9ba42cb96c193056a69730ba7529ce1e74b20fe67b5b45464c409987764c49b"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Social evening for members and new students\",\"contains_instructions\":false}"
+}

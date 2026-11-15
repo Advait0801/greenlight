@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "a75e5ef4ca23d3c8e0f8ee0ffbe559032c7d68b764de91584f8a61f5fdc443fb",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:28+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "d29d0a1b1e0b3c6e8dde5959ff6237c9ca7337695797bc0e17faea23d77fbea1"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Campus Print Shop\",\"confidence\":\"high\",\"evidence\":\"Campus Print Shop - Quote #551\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Large-format prints\",\"category\":\"printing\",\"category_confidence\":\"medium\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$400.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Large-format prints: $400.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

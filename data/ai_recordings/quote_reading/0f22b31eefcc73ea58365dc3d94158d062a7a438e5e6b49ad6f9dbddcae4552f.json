@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "0f22b31eefcc73ea58365dc3d94158d062a7a438e5e6b49ad6f9dbddcae4552f",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:18+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "b83b5e8edad295607401e23934ab401ba8cbe596d1ed0bf0f77e82dcc92beb2e"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Trojan Table Catering\",\"confidence\":\"high\",\"evidence\":\"Trojan Table Catering - Quote #2291\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Buffet dinner\",\"category\":\"food\",\"category_confidence\":\"high\",\"quantity\":\"150\",\"unit_price\":\"$38.00\",\"amount\":\"$5,700.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Buffet dinner, 150 guests @ $38.00 = $5,700.00\"}],\"stated_total\":\"$5,700.00\",\"contains_instructions\":false}"
+}

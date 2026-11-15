@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "a3b4e392c42a2ef6f6bca5b51f681aee86e3817c2bf7075052c299f0419d3cfe",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:22+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "cfdda1d34526597c0ed73103ce2db929bd7b3d0eb80c1337469d593c5921886f"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-professional-academic\",\"confidence\":\"medium\",\"also_fits\":[\"usg-fund-social-recreation-startup\"],\"evidence\":\"Officer planning retreat in Big Bear\",\"contains_instructions\":false}"
+}

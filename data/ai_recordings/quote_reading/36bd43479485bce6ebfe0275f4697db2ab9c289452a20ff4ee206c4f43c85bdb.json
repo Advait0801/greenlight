@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "36bd43479485bce6ebfe0275f4697db2ab9c289452a20ff4ee206c4f43c85bdb",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:06+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "0ef1853c86005bd47ee396d3ca59f417aec96fbdbc5a94b82c28708e5a8ce6e5"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Trojan Table Catering\",\"confidence\":\"high\",\"evidence\":\"Trojan Table Catering - Quote #2420\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Dinner service\",\"category\":\"food\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$500.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Dinner service: $500.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "2cba2ca56505fff9113957676595c66ae5e6df613e7e475d9d5ac64d68d9b61f",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:25+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "b4f98776d6c8bcbfe8c2f0dc47fd7160c1ec5c7649c5f2b7641a19473ec4b226"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-professional-academic\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Workshop with an industry speaker on product management careers\",\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "551bf749590b77ac85ace61831d989e82da4f12a660b8481ad73d610644a1eaa",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:07+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "3e904c8234db2f4b42d6604df3813afaf195d2b40f3fda5489fb965369b189cb"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"low\",\"also_fits\":[],\"evidence\":\"Mystery Dinner; Themed dinner event\",\"contains_instructions\":false}"
+}

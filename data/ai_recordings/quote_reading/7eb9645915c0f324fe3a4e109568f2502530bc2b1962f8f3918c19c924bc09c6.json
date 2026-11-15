@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "7eb9645915c0f324fe3a4e109568f2502530bc2b1962f8f3918c19c924bc09c6",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:22+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "457c5ad93fed0d9a03a57c1ca7b753b49b72c5c8476d92ba6eb70be78157f623"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Airbnb\",\"confidence\":\"high\",\"evidence\":\"Airbnb reservation: cabin for 12 guests, Feb 20-21, total $600.00\"},\"document_kind\":\"other\",\"currency\":\"$\",\"lines\":[{\"item\":\"Cabin for 12 guests, Feb 20-21\",\"category\":\"peer_to_peer\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$600.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Airbnb reservation: cabin for 12 guests, Feb 20-21, total $600.00\"}],\"stated_total\":\"$600.00\",\"contains_instructions\":false}"
+}

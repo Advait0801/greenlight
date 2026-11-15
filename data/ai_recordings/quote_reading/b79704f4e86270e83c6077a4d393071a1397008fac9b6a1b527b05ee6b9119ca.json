@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "b79704f4e86270e83c6077a4d393071a1397008fac9b6a1b527b05ee6b9119ca",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:55+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "438464e5823e3c95653de70d1f997ceda4213b95106874de6ff851f7348e71a4"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":false,\"legibility\":\"low\",\"vendor\":{\"value\":\"Local Print Co.\",\"confidence\":\"low\",\"evidence\":\"(no quote attached for Local Print Co.)\"},\"document_kind\":\"other\",\"currency\":null,\"lines\":[],\"stated_total\":null,\"contains_instructions\":false}"
+}

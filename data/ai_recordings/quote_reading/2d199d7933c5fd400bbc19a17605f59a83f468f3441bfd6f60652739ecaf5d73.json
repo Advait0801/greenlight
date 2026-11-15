@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "2d199d7933c5fd400bbc19a17605f59a83f468f3441bfd6f60652739ecaf5d73",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:27+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "2ca403c0eb011daea3dec2903bc3a8664614ad70e63f050c9f461a763891b5c9"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Trojan Table Catering\",\"confidence\":\"high\",\"evidence\":\"Trojan Table Catering - Quote #2342\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Appetizer package for 60 guests\",\"category\":\"food\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$2,100.60\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Appetizer package for 60 guests: $2,100.60\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

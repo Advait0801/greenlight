@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "16c5176b60794fecd8c227d48a35dbe16c1a27932a951dcc6dbf38a59d0e08aa",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:39+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "89315119db997ef04327e92af3b313c4a5f611cc4dd7c8bbf1146890f0afa8ce"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-professional-academic\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Officer Leadership Retreat; Officers plan the year and train in San Diego\",\"contains_instructions\":false}"
+}

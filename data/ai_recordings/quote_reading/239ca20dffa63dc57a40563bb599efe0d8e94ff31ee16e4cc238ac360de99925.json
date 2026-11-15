@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "239ca20dffa63dc57a40563bb599efe0d8e94ff31ee16e4cc238ac360de99925",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:42+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "22869766f101d9b26d462a0e1011d7896817a88a59b510c9d56baceeddb4f66f"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Trojan Event Services\",\"confidence\":\"high\",\"evidence\":\"Trojan Event Services - Event Status Report estimate\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Bovard rental\",\"category\":\"venue_rental\",\"category_confidence\":\"medium\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$3,200.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Bovard rental $3,200.00\"},{\"item\":\"Staffing\",\"category\":\"personnel\",\"category_confidence\":\"medium\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$1,100.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Staffing $1,100.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

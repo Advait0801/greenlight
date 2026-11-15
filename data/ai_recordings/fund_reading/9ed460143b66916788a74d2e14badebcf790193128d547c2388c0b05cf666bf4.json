@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "9ed460143b66916788a74d2e14badebcf790193128d547c2388c0b05cf666bf4",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:26+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "208d97b521c8c9d562532ebbe67cc41bc69ad0e95d8aa653e6efcc9c824efb92"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-philanthropy\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Hands-on cleanup at Dockweiler State Beach\",\"contains_instructions\":false}"
+}

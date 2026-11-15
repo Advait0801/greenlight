@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "c112ddec4bcf8a40eeaa44471e2a3258cd6f78bad2050e61a1b141a6faa9d048",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:57+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "653cfe3df1acfce9fdc98029dd71db44e762203da421f1d356ecfb1b64186b9a"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"low\",\"also_fits\":[\"usg-fund-professional-academic\"],\"evidence\":\"Group study session with snacks provided by members\",\"contains_instructions\":false}"
+}

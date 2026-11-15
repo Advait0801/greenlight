@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "4a93b7a4fe9f4b3f6a8021aa6c76d2b044eede3c136b55359ca807ece9229677",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:53+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "4ecb8d88feaa5efb26b9aa9cbd86b0493fc7cb983678f9e86d6a1509cc3340ff"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"New club introduces itself and recruits members\",\"contains_instructions\":false}"
+}

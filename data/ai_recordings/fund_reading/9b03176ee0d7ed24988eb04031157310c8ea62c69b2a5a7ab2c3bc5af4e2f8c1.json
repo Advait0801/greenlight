@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "9b03176ee0d7ed24988eb04031157310c8ea62c69b2a5a7ab2c3bc5af4e2f8c1",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:16+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "9125a4fc007dd2bf37b667b94872e27342086b37aca1d518ad8aad572928ed06"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"medium\",\"also_fits\":[\"usg-fund-performing-visual-arts\"],\"evidence\":\"Free tote bags handed out to promote the club\",\"contains_instructions\":false}"
+}

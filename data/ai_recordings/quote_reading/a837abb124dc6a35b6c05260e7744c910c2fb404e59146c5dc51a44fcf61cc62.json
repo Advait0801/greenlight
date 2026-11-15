@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "a837abb124dc6a35b6c05260e7744c910c2fb404e59146c5dc51a44fcf61cc62",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:45:52+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "8f0eef2896dc26f80f6adf68587457053b80faa57ab33785c587e5fd9414ba66"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Custom Jerseys Inc\",\"confidence\":\"high\",\"evidence\":\"Custom Jerseys Inc - 10 jerseys @ $60.00 = $600.00\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"jerseys\",\"category\":\"durable_goods\",\"category_confidence\":\"medium\",\"quantity\":\"10\",\"unit_price\":\"$60.00\",\"amount\":\"$600.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"10 jerseys @ $60.00 = $600.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

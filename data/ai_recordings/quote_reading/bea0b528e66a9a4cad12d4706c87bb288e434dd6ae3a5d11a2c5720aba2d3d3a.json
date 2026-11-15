@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "bea0b528e66a9a4cad12d4706c87bb288e434dd6ae3a5d11a2c5720aba2d3d3a",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:18+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "fa70ac90b812f61cb4425e34a89329f1f1d552aad45a483638885686886e74a2"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Slice House\",\"confidence\":\"high\",\"evidence\":\"Slice House - Order #8812\"},\"document_kind\":\"online_cart\",\"currency\":\"$\",\"lines\":[{\"item\":\"Large pizza\",\"category\":\"food\",\"category_confidence\":\"high\",\"quantity\":\"20\",\"unit_price\":\"$15.00\",\"amount\":\"$300.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Large pizza x 20 @ $15.00 = $300.00\"}],\"stated_total\":null,\"contains_instructions\":false}"
+}

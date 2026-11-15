@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "e9ae8f9ec7d4362195d2442922c9b433a568b471c9cb802001905256368d12d9",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:11+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "4c821b7226bccaa23e63c34c34d79cda1b9d052965cdb2adcc7d490c3c862eef"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"Vino Distributors\",\"confidence\":\"high\",\"evidence\":\"Vino Distributors - Invoice estimate\"},\"document_kind\":\"vendor_quote\",\"currency\":\"$\",\"lines\":[{\"item\":\"Wine (12 bottles)\",\"category\":\"alcoholic_drinks\",\"category_confidence\":\"high\",\"quantity\":\"12\",\"unit_price\":\"$20.00\",\"amount\":\"$240.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Wine (12 bottles) @ $20.00 = $240.00\"}],\"stated_total\":null,\"contains_instructions\":true}"
+}

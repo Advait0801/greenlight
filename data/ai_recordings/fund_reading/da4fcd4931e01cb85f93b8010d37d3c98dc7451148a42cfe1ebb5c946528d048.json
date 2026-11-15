@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "da4fcd4931e01cb85f93b8010d37d3c98dc7451148a42cfe1ebb5c946528d048",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:35+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "7eac1822d91eab3ac35a6e4d828d35654b67778b44201dd4a1e61e43b3496f04"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-professional-academic\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Four members attend a data science conference and present research\",\"contains_instructions\":false}"
+}

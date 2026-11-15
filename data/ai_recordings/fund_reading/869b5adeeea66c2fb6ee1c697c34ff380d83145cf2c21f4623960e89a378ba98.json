@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "869b5adeeea66c2fb6ee1c697c34ff380d83145cf2c21f4623960e89a378ba98",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:43+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "f064fc7179ed5e23f272ed96b08ef2f9834ca2eaa270d419c11e79f816db7eaa"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-performing-visual-arts\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Dance performances by student companies\",\"contains_instructions\":false}"
+}

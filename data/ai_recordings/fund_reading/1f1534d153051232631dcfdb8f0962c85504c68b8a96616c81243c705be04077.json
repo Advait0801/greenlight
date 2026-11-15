@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "1f1534d153051232631dcfdb8f0962c85504c68b8a96616c81243c705be04077",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:21+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "17a058f90d0356968413e0a3477cab498aed3d06314182a7e641460d58d93e21"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"medium\",\"also_fits\":[\"usg-fund-performing-visual-arts\"],\"evidence\":\"Cultural celebration with food, music and dance performances\",\"contains_instructions\":false}"
+}

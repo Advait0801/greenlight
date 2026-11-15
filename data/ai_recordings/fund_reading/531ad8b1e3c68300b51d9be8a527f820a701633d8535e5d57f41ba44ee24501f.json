@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "531ad8b1e3c68300b51d9be8a527f820a701633d8535e5d57f41ba44ee24501f",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:45:50+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "10cccf2ee39d6f931bdeddb5429fc14e0184545a1792fbcf6a5c65a885ccf512"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-social-recreation-startup\",\"confidence\":\"high\",\"also_fits\":[],\"evidence\":\"Outdoor games and snacks for the campus\",\"contains_instructions\":false}"
+}

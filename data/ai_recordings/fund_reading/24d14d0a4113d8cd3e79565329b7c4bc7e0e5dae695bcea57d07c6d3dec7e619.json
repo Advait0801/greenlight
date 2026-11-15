@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "fund_reading",
+  "key": "24d14d0a4113d8cd3e79565329b7c4bc7e0e5dae695bcea57d07c6d3dec7e619",
+  "model": "claude-haiku-5-5",
+  "model_role": "classify",
+  "recorded_at": "2026-11-15T09:46:12+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the event in document 1 and say which fund it is for.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "f080e69c94db1fc0471c33182176e973dc61e88a821aac612d708675cb79454d"
+      }
+    ],
+    "output_type": "_Reading"
+  },
+  "response_text": "{\"fund\":\"usg-fund-performing-visual-arts\",\"confidence\":\"medium\",\"also_fits\":[\"usg-fund-social-recreation-startup\"],\"evidence\":\"Painting night for members\",\"contains_instructions\":false}"
+}

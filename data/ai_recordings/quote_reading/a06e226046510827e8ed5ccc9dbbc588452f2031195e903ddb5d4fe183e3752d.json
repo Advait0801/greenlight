@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "quote_reading",
+  "key": "a06e226046510827e8ed5ccc9dbbc588452f2031195e903ddb5d4fe183e3752d",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T09:46:15+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the uploaded document in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "quote",
+        "media_type": "text/plain",
+        "fingerprint": "9e887404db679708dcad2e38399941a9963f90556d9118acc0e3805c72fb0645"
+      }
+    ],
+    "output_type": "QuoteReading"
+  },
+  "response_text": "{\"readable\":true,\"legibility\":\"high\",\"vendor\":{\"value\":\"PrintHub Online\",\"confidence\":\"high\",\"evidence\":\"PrintHub Online - Cart\"},\"document_kind\":\"online_cart\",\"currency\":\"$\",\"lines\":[{\"item\":\"Printed tote bag\",\"category\":\"promotional_items\",\"category_confidence\":\"medium\",\"quantity\":\"100\",\"unit_price\":\"$6.00\",\"amount\":\"$600.00\",\"nights\":null,\"is_fee\":false,\"confidence\":\"high\",\"evidence\":\"Printed tote bag x 100 @ $6.00 = $600.00\"},{\"item\":\"Service fee\",\"category\":\"other\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$48.00\",\"nights\":null,\"is_fee\":true,\"confidence\":\"high\",\"evidence\":\"Service fee: $48.00\"},{\"item\":\"Shipping\",\"category\":\"other\",\"category_confidence\":\"high\",\"quantity\":null,\"unit_price\":null,\"amount\":\"$25.00\",\"nights\":null,\"is_fee\":true,\"confidence\":\"high\",\"evidence\":\"Shipping: $25.00\"}],\"stated_total\":\"$673.00\",\"contains_instructions\":false}"
+}
