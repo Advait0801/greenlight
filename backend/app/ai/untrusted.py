@@ -16,6 +16,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import html
+import re
 from dataclasses import dataclass
 from typing import Any, Literal
 
@@ -23,6 +24,8 @@ MAX_DOCUMENT_CHARS = 400_000  # roughly 100k tokens; larger inputs are refused, 
 MAX_DOCUMENT_BYTES = 20 * 1024 * 1024  # a request to the API may be at most 32 MB once base64-encoded
 BINARY_MEDIA_TYPES = {"application/pdf", "image/png", "image/jpeg", "image/gif", "image/webp"}
 REQUEST_LABEL = "Request from Greenlight (not from any document):"
+# Any spelling of the label inside a document (other case, extra spaces) is neutralised.
+LABEL_COPY = re.compile(r"request\s+from\s+greenlight", re.IGNORECASE)
 
 BASE_SYSTEM_PROMPT = """\
 You are the reading component of Greenlight, a pre-check tool for USC student organization officers.
@@ -92,7 +95,7 @@ def wrap_document(index: int, document: UntrustedDocument) -> list[dict[str, Any
     opening = f'<document index="{index}" name="{_attr(document.name)}" media_type="{_attr(document.media_type)}">'
     if document.text is not None:
         # Only our own request may carry the request label; a copy inside a document is neutralised.
-        body = html.escape(document.text, quote=False).replace(REQUEST_LABEL, "[text copying Greenlight's request label]")
+        body = LABEL_COPY.sub("[text copying Greenlight's request label]", html.escape(document.text, quote=False))
         return [{"type": "text", "text": f"{opening}\n{body}\n</document>"}]
 
     encoded = base64.standard_b64encode(document.data or b"").decode("ascii")
@@ -104,10 +107,22 @@ def wrap_document(index: int, document: UntrustedDocument) -> list[dict[str, Any
     ]
 
 
+def request_code(task_request: str, documents: list[UntrustedDocument]) -> str:
+    """A code that marks Greenlight's own request. It is a hash of the request and the documents, so it
+    is the same on every replay, and a document (or a PDF or image, which code cannot scan for a copied
+    label) cannot contain it, because it would have to contain a hash of itself."""
+    digest = hashlib.sha256(task_request.encode("utf-8"))
+    for document in documents:
+        digest.update(document.fingerprint.encode("ascii"))
+    return digest.hexdigest()[:12]
+
+
 def build_user_content(task_request: str, documents: list[UntrustedDocument]) -> list[dict[str, Any]]:
-    """The user turn: the documents first, then our own request (which is trusted)."""
+    """The user turn: the documents first, then our own request (which is trusted), carrying the code
+    the system prompt names."""
     blocks: list[dict[str, Any]] = []
     for index, document in enumerate(documents, start=1):
         blocks.extend(wrap_document(index, document))
-    blocks.append({"type": "text", "text": f"{REQUEST_LABEL}\n{task_request}"})
+    code = request_code(task_request, documents)
+    blocks.append({"type": "text", "text": f"{REQUEST_LABEL} [code {code}]\n{task_request}"})
     return blocks
