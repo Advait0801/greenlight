@@ -1,0 +1,14 @@
+modules = ["web", "python-3.12", "nodejs-20", "postgresql-16"]
+run = ["bash", "-c", "bash scripts/deploy/build.sh && bash scripts/deploy/start.sh"]
+
+[nix]
+channel = "stable-25_05"
+
+[deployment]
+deploymentTarget = "autoscale"
+build = ["bash", "scripts/deploy/build.sh"]
+run = ["bash", "scripts/deploy/start.sh"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80

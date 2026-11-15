@@ -42,3 +42,6 @@ Thumbs.db
 .cache/
 .upm/
 
+
+# Deployment build (scripts/deploy/build.sh)
+.venv-deploy/
