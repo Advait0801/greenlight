@@ -28,7 +28,8 @@ class SinglePageApp(StaticFiles):
         try:
             return await super().get_response(path, scope)
         except StarletteHTTPException as exc:
-            if exc.status_code != 404:
+            # A missing built file (e.g. an old bundle after a redeploy) is a plain 404, not the page (phase 6 iteration 2).
+            if exc.status_code != 404 or path.startswith("assets/"):
                 raise
             return await super().get_response("index.html", scope)
 
