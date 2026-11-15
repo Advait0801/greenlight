@@ -122,6 +122,10 @@ def _limit_cents(rule: Rule, key: str) -> int:
     return int(round(float(value) * 100))
 
 
+# Public name for other engines (the year planner) that read a cap from the same rule params.
+limit_cents = _limit_cents
+
+
 def _category_label(ruleset: RuleSet, category: str | None) -> str | None:
     if category is None:
         return None
