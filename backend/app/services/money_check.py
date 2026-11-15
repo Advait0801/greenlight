@@ -449,7 +449,7 @@ def check_budget(request: MoneyCheckRequest, ruleset: RuleSet, calendar: Academi
                 food_pp_text = f"about {money(food_total // attendance)}"
             if over > 0:
                 min_people = _ceil_div(food_total, food_cap)
-                shown = money(_ceil_div(food_total, attendance)) if not exact else money(food_total // attendance)
+                shown = money(food_total // attendance) if exact else f"more than {money(food_cap)}"
                 message = (f"{shown} per person; the cap is {money(food_cap)} (over by {money(over)} for {attendance} people)."
                            if exact else
                            f"{money(food_total)} for {attendance} people is more than {money(food_cap)} per person "

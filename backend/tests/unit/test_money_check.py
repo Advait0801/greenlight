@@ -246,3 +246,10 @@ def test_security_staffing_counts_toward_the_venue_and_personnel_cap() -> None:
     assert report.totals.venue_personnel_cents == 450000
     assert all(_rules(line.findings).get("usg-venue-personnel-cap") == "red" for line in report.lines)
 
+
+def test_food_fix_never_shows_a_rounded_per_person_figure() -> None:
+    """Regression (phase 3 iteration 1, H2): $105.01 for 3 people was shown as '$35.01 per person' in the fix."""
+    report = _check(_request([_line(amount_cents=10501, unit_price_cents=10501)], expected_attendance=3))
+    finding = next(f.finding for f in report.lines[0].findings if f.finding.rule_id == "usg-food-cap")
+    assert "35.01" not in (finding.fix or "") and "35.01" not in finding.message
+    assert "more than $35.00" in (finding.fix or "") and "$0.01" in (finding.fix or "")
