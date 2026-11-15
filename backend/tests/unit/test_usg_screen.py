@@ -53,3 +53,23 @@ def test_a_clean_opening_is_kept(tmp_path: Path) -> None:
     chosen = [r for r in reasons(_report()) if r.rule_id == "usg-food-cap"]
     draft = draft_denial("FASA", "Culture Night", chosen, client=_client(tmp_path, chosen, "Thank you. The food cost is over the cap."))
     assert "Thank you. The food cost is over the cap." in draft.text
+
+
+def test_a_green_line_from_a_vendor_not_on_the_list_is_not_green_on_the_usg_screen() -> None:
+    # Final review F3: the reviewer saw "Meets the rule" for vendors not on USG's list, with no vendor note beside it.
+    from datetime import datetime
+    from types import SimpleNamespace
+
+    from app.services.usg_screen import detail
+
+    report = _report()
+    line = report["lines"][0]
+    line["verdict"] = "green"
+    line["vendor_check"] = {**(line.get("vendor_check") or {}), "status": "not_on_list"}
+    row = SimpleNamespace(id=1, reference="G-1", club_name="Club", event_name="Culture Night", event_date=None,
+                          sent_at=datetime(2026, 11, 15), denial_status="none", report=report, denial_rule_ids=[],
+                          denial_draft=None, denial_approved_text=None, denial_approved_by=None)
+    shown = detail(row)  # type: ignore[arg-type]
+    assert shown.lines[0]["verdict"] == "yellow" and shown.lines[0]["verdict_label"] != "Meets the rule"
+    line["vendor_check"]["status"] = "on_list"
+    assert detail(row).lines[0]["verdict"] == "green"  # type: ignore[arg-type]

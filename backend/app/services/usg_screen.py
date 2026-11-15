@@ -122,12 +122,19 @@ def queue_item(row: SentApplication) -> QueueItem:
                      counts={k: int(v) for k, v in report.get("counts", {}).items()}, denial_status=row.denial_status)
 
 
+def _line_verdict(line: dict[str, Any]) -> str:
+    """The screen has no vendor panel, so a green line from a vendor not shown on USG's list needs a look (final review F3)."""
+    if line["verdict"] == Verdict.GREEN.value and (line.get("vendor_check") or {}).get("status") != "on_list":
+        return Verdict.YELLOW.value
+    return str(line["verdict"])
+
+
 def detail(row: SentApplication) -> ApplicationDetail:
     item = queue_item(row)
     report = row.report
     lines = [{"line": line["line"], "item": line.get("item", ""), "vendor": line.get("vendor", ""),
               "category_label": line.get("category_label"), "amount_text": _money(int(line.get("amount_cents", 0))),
-              "verdict": line["verdict"], "verdict_label": line.get("verdict_label", "")}
+              "verdict": _line_verdict(line), "verdict_label": VERDICT_LABELS[Verdict(_line_verdict(line))]}
              for line in report.get("lines", [])]
     return ApplicationDetail(**item.model_dump(), fund_name=(report.get("fund") or {}).get("fund_name"), lines=lines,
                              reasons=reasons(report), denial_rule_ids=list(row.denial_rule_ids or []),
