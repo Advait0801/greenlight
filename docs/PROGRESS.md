@@ -8,7 +8,8 @@ Final reviewers in Phase 7 must **not** read this file.
 
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
-- **Next action:** Phase 5 (supporting features and the USG screen) can start, on `main`.
+- **Phase 5 (supporting features and the USG screen):** built on `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut). Review iterations under way.
+- **Next action:** Phase 5 iteration 1 (verify).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -20,7 +21,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 5 | Supporting features and USG screen | — | 0 | — | open |
+| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
@@ -37,6 +38,14 @@ What exists now:
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
 - **Tests**: 318 passing (`pytest`), including 105 adversarial tests from iterations 2 and 4.
+
+## Phase 5 build (2026-11-15, on `main`)
+
+- **Funding gap helper** (`app/services/gap_helper.py`, code only; `app/services/gap_email.py`, drafting; `POST /gap/options`, `/gap/email`, `/gap/email/approve`; page `/money/gap`, opened from each year plan event with a shortfall). The eight allowed options come from `rules/outside_money.json`; each carries its rule, its conditions and its lead time, taken from the Phase 2 packet engine by adding the option's activity (sponsorship, co_hosts, fundraising, ticket_sales, prize_drawing, collects_dues, other_usc_funding) to the event. "Other USC funds" is a yellow finding; ticket sales are yellow when the event also asks USG. The banned ways (cash sponsor, paid raffle, brand ambassadors, sponsorship activation, own tax-exempt status) are listed with the rule and what to do instead; a code scan of the officer's note puts any it mentions first. The email: the model writes one paragraph; code writes the greeting, the officer's ask (dropped if it asks for money or a banned option), the terms USC sets and the close, and replaces the paragraph if it mentions money or anything banned or carries a figure the officer did not write. 20 varied prompts in `backend/tests/data/gap_prompts.json`, recorded in `data/ai_recordings/gap_outreach_email/`.
+- **USG screen** (`app/services/usg_screen.py`, code only; `app/services/denial_draft.py`, drafting; `app/api/usg.py`; page `/usg`; a "Send to the USG screen" step on the money check). A club sends one checked budget with explicit consent (`consent: true`); the server re-runs the money check and keeps no uploaded documents; the club gets a reference and a token (only its hash is stored) to read its status or withdraw. Reviewer routes need `X-Reviewer-Key` matching `USG_REVIEWER_KEY` (closed with 503 when unset or shorter than 12 characters). Reasons a reviewer may cite are the stored report's own red, yellow and office-decides findings; code writes each with its rule text, source and fix, the model words only the opening (numbers filtered). The club sees a reason only after a reviewer approves the edited text with their name (audit log). The chart counts red rules once per sent, not withdrawn, application, naming no club.
+- **Handover packet** (`app/services/handover.py`, code only; `POST /handover`, `/handover/approve`; page `/handover`). From the year plan saved in the browser and the applications the club sent (each read with the club's own token): one editable packet each for President, Treasurer and Events lead (events held and ahead, budget per event, sent applications, vendors, approved USG reasons, next dated steps) and next year's starting plan (same events 52 weeks later, money blank).
+- **Cut:** post-event helper and rule-change alert (see Decisions).
+- Tests: 768 passed (adversarial included); validate_rules OK; run_eval clean; frontend build OK. Browser check not run by the orchestrator (the app's limit on dev servers per folder was reached by other sessions); the verifier drives the pages.
 
 ## Phase 4 build (2026-11-15, on `main`)
 
@@ -374,3 +383,6 @@ Record any change of scope or departure from PROJECT_CONTEXT here, with the reas
 - **Branch-and-PR workflow (2026-11-15, the humans' decision).** From Phase 1 on, every phase works on its own branch (`phase-<n>/<short-name>`) cut from the latest `origin/main` and never commits to `main`. At its checkpoint it rebases on `origin/main`, pushes the branch and opens a pull request into `main`; the humans merge it. Phases 1 and 2 run in parallel: Phase 1 on a teammate's laptop (`phase-1/recognition`), Phase 2 here (`phase-2/event-packet`). PLAN.md (Branches, Phase checkpoint), CLAUDE.md and CONTRIBUTING.md updated.
 - **Effort and reviewer count (2026-11-15, the humans' decision).** Phase sessions and all sub-agents run at medium effort, not high. Each iteration uses exactly one fresh reviewer sub-agent, so a phase has three in all. The orchestrator does not review its own work. PLAN.md section 1 and CLAUDE.md updated.
 - **Push closed phases straight to main (2026-11-15, the user's decision, confirmed directly in the Phase 3 session).** Only one person works on the repository now, so phases work on `main`: no phase branches and no pull requests. At the checkpoint: full suite, PROGRESS.md, `git pull --rebase origin main`, rerun the suite, `git push origin main`, confirm CI on `main`; never force-push. PLAN.md (Checkpoint row, Branches, Phase checkpoint), CLAUDE.md (Conventions, Working with sub-agents) and CONTRIBUTING.md (Branches and commits) updated. Phase 3 was built on `phase-3/money-check` and lands on `main` by fast-forward.
+- **Phase 5 cuts (2026-11-15, orchestrator, under PLAN.md's cut order and the managing session's brief).** The post-event helper (item 4) and the rule-change alert (item 5) are cut so that Phases 6 and 7 fit before the 11:00 AM deadline. The USG fund-balance figure (PROJECT_CONTEXT 4I, "entered by USG") is not built either; PLAN.md lists it in the cut order. `RuleVersion` still records every rule version, so the rule-change alert can be built later from it.
+- **USG screen storage (Phase 5).** Sent applications live in their own table, `usg_sent_applications`, rather than in `findings.shared_with_usg`: a sent application is a snapshot of one checked budget with its report, a club token hash and the reviewer's approved reason. `findings.shared_with_usg` stays unused. There are no accounts: a club proves ownership with the token it got when sending; a reviewer with the `USG_REVIEWER_KEY` passcode (set it in Replit secrets in Phase 6).
+- **Handover "saved history" (Phase 5).** Greenlight stores no club plan on the server (a club's data is private to the club): the year plan is saved in the officer's browser. The handover packet is built from that saved plan and from the applications the club sent to the USG screen, read back with its token.
