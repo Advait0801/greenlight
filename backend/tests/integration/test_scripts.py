@@ -130,3 +130,26 @@ def test_seed_demo_never_deletes_a_real_club_with_the_same_name(tmp_path: Path) 
     with engine.connect() as connection:
         assert connection.execute(text("select count(*) from users where email = 'real@usc.edu'")).scalar() == 1
     engine.dispose()
+
+
+def test_seed_demo_never_deletes_a_same_named_club_with_no_users(tmp_path: Path) -> None:
+    """Regression (phase 0 iteration 3, code audit L): a real club with a plan but no users yet is kept."""
+    from sqlalchemy import create_engine, text
+
+    from app.db import init_db
+
+    db = tmp_path / "shared.db"
+    engine = create_engine(f"sqlite:///{db}")
+    init_db(engine)
+    demo_name = json.loads((REPO_ROOT / "data" / "demo" / "club.json").read_text())["club"]["name"]
+    with engine.begin() as connection:
+        connection.execute(text("insert into clubs (name, level, created_at, updated_at) values (:n, 'undergraduate', current_timestamp, current_timestamp)"), {"n": demo_name})
+        connection.execute(text("insert into year_plans (club_id, period, money_on_hand_cents, expected_income_cents, unavailable_dates, created_at, updated_at) values (1, '2026-27', 0, 0, '[]', current_timestamp, current_timestamp)"))
+    engine.dispose()
+    result = run(str(SCRIPTS / "seed_demo.py"), env={"DATABASE_URL": f"sqlite:///{db}"})
+    assert result.returncode != 0
+    assert "refusing to replace it" in result.stderr
+    engine = create_engine(f"sqlite:///{db}")
+    with engine.connect() as connection:
+        assert connection.execute(text("select count(*) from year_plans")).scalar() == 1
+    engine.dispose()

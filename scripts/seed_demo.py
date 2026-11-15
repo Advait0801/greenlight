@@ -4,8 +4,9 @@ Usage (from the repository root, backend dependencies installed):
 
     python scripts/seed_demo.py
 
-Safe to run more than once: the demo club (matched by name) and its demo users are replaced,
-so the result is always one copy of the demo data. Nothing else in the database is touched.
+Safe to run more than once: the demo club this script created (same name, and every user one of
+the demo users) and its demo users are replaced, so the result is always one copy of the demo data.
+A club with the same name that the script did not create is never touched; the script stops instead.
 """
 
 from __future__ import annotations
@@ -37,9 +38,11 @@ def seed(session: Session, demo: dict[str, Any]) -> dict[str, int]:
     existing = session.scalars(select(Club).where(Club.name == club_data["name"])).all()
     for club in existing:
         members = set(session.scalars(select(User.email).where(User.club_id == club.id)).all())
-        if members - demo_emails:
+        # Only a club this script made (every user a demo user, and at least one) is replaced. A club with
+        # the same name but other users, or with no users yet, is someone else's.
+        if not members or members - demo_emails:
             raise SystemExit(
-                f"A club named '{club.name}' with real users already exists; refusing to replace it. "
+                f"A club named '{club.name}' that this script did not create already exists; refusing to replace it. "
                 "Rename the demo club in data/demo/club.json or remove that club yourself."
             )
         plan_ids = session.scalars(select(YearPlan.id).where(YearPlan.club_id == club.id)).all()
