@@ -16,7 +16,7 @@ export function App() {
         <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-4">
           <p className="text-xl font-bold tracking-tight">Greenlight</p>
           <nav aria-label="Main">
-            <ul className="flex gap-4">
+            <ul className="flex flex-wrap gap-x-4 gap-y-1">
               {routes
                 .filter((route) => route.label)
                 .map((route) => (
