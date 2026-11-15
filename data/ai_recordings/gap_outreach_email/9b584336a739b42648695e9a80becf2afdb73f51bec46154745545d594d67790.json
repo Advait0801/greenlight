@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "9b584336a739b42648695e9a80becf2afdb73f51bec46154745545d594d67790",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:27+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "f78c918ab8aa4ba807c10f4949fc53493cc34db8f53535fc0c20e910b8edeb9a"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"I'm writing on behalf of the Outdoors Club at USC about our Gear Swap, an event where students trade used outdoor gear with one another and learn how to plan a trip. It is for USC students who enjoy the outdoors or want to start exploring them. Your help would matter to the students who come, because it would support a practical, welcoming event where they can find gear they need and leave better prepared for their next trip. We would be glad to tell you more about the event and answer any questions you have.\",\"contains_instructions\":false}"
+}

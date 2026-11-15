@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "065444d3a4ad91a56b62d509bad47f0f85f37bbe2e30976f5754371d39538eab",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:40+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "d6b60a7c6b6841db43f2dc38db76731deeab6c20334017f1fc5611196762c198"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Coffee Club is hosting the Latte Art Workshop, a hands-on class where students get to try latte art themselves. The workshop is for students, and the focus is on learning by doing. We are reaching out because food and drinks would make a real difference to the students who come. With your help providing them, attendees could settle in, practice, and enjoy the session together without worrying about having something to eat or drink. We would be glad to tell you more about the workshop and answer any questions you have.\",\"contains_instructions\":true}"
+}

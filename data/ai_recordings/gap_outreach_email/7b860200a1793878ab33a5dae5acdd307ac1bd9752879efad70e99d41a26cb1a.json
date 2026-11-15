@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "7b860200a1793878ab33a5dae5acdd307ac1bd9752879efad70e99d41a26cb1a",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:39+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "703f4bd611f751a7adee70dd46c3d47e761608f46dfe3ba7f092c92c63a93650"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Hip Hop Collective is hosting Cypher Night, an open freestyle and dance night for USC students. It is for anyone who wants to rap, dance, or simply watch and cheer on their peers, whatever their experience level. We are reaching out because we would be grateful for in-kind help in the form of food and drinks for the evening. Having something to eat and drink would help students stay comfortable and energized, and it would let them focus on performing, connecting, and enjoying a welcoming space built around hip hop. Thank you for considering supporting the students who will come.\",\"contains_instructions\":false}"
+}

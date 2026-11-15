@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useLocation } from "react-router-dom";
 
 import { VENUE_LABELS, type VenueType } from "../api/events";
-import { approveEmail, draftEmail, gapOptions, type EmailKind, type GapReport, type GapRequest } from "../api/gap";
+import { ASK_LABELS, approveEmail, draftEmail, gapOptions, type AskKind, type EmailKind, type GapReport, type GapRequest } from "../api/gap";
 import { toCents } from "../api/money";
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
@@ -28,7 +28,7 @@ export function GapHelper() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState("");
   const [emailKind, setEmailKind] = useState<EmailKind>("in_kind_sponsor");
-  const [email, setEmail] = useState({ club_name: "", recipient: "", description: "", ask: "" });
+  const [email, setEmail] = useState<{ club_name: string; recipient: string; description: string; ask: AskKind[] }>({ club_name: "", recipient: "", description: "", ask: [] });
   const [subject, setSubject] = useState("");
   const [draft, setDraft] = useState("");
   const [draftNotes, setDraftNotes] = useState<string[]>([]);
@@ -131,7 +131,7 @@ export function GapHelper() {
               {report.options.map((o) => (
                 <li key={o.id} className="rounded-md border border-stone-300 bg-white p-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <StatusBadge state={o.status === "allowed" ? "info" : "yellow"} label={o.status_label} />
+                    <StatusBadge state={o.status === "allowed" ? "info" : o.status === "office_decides" ? "office_decides" : "yellow"} label={o.status_label} />
                     <span className="font-semibold">{o.title}</span>
                   </div>
                   <p className="mt-1">{o.message}</p>
@@ -180,7 +180,20 @@ export function GapHelper() {
               </label>
               <label className="block">Your club's name<input className={input} value={email.club_name} onChange={(e) => setEmail({ ...email, club_name: e.target.value })} /></label>
               <label className="block">Who it is to<input className={input} value={email.recipient} onChange={(e) => setEmail({ ...email, recipient: e.target.value })} /></label>
-              <label className="block">What you would like (goods or services)<input className={input} value={email.ask} onChange={(e) => setEmail({ ...email, ask: e.target.value })} /></label>
+              {emailKind === "in_kind_sponsor" ? (
+                <fieldset className="sm:col-span-2">
+                  <legend>What you would like (in kind only; add details when you edit the draft)</legend>
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                    {(Object.keys(ASK_LABELS) as AskKind[]).map((k) => (
+                      <label key={k} className="flex items-center gap-2">
+                        <input type="checkbox" className="h-5 w-5" checked={email.ask.includes(k)}
+                          onChange={(e) => setEmail({ ...email, ask: e.target.checked ? [...email.ask, k] : email.ask.filter((x) => x !== k) })} />
+                        {ASK_LABELS[k]}
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              ) : null}
               <label className="block sm:col-span-2">About the event, in your words<textarea rows={2} className={input} value={email.description} onChange={(e) => setEmail({ ...email, description: e.target.value })} /></label>
             </div>
             <button type="button" onClick={makeEmail} disabled={busy !== ""} className="mt-2 rounded bg-cardinal px-4 py-2 font-medium text-white disabled:opacity-50">

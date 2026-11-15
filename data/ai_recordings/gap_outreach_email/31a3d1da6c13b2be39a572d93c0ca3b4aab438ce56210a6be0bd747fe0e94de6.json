@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "31a3d1da6c13b2be39a572d93c0ca3b4aab438ce56210a6be0bd747fe0e94de6",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:07+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "360dd18f3336c66fcfa52c24d89e737d6539bc212406cd83a373906333668d60"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Gaming Guild is hosting our LAN Party, an overnight gaming event in a campus hall that is open to all students. Whether someone plays every day or has never joined a game night, they are welcome to come, meet other students and spend an evening playing together. We are reaching out because equipment or supplies, lent or given in kind, would make a real difference to the students who attend, helping the night run smoothly and letting more people take part comfortably. If this sounds like something you could help with, we would be glad to tell you more about the event.\",\"contains_instructions\":false}"
+}

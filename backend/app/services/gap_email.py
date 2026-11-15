@@ -1,11 +1,10 @@
 """Outreach email for the funding gap helper (PROJECT_CONTEXT 4E). The model writes one paragraph about the event;
-code writes the greeting, the officer's own ask, the terms USC sets and the closing, and replaces the paragraph if it
+code writes the greeting, the help asked for (from a fixed list), the terms USC sets and the closing, and replaces the paragraph if it
 asks for money or a banned option or carries a figure the officer did not write. A person edits and approves the
 email; Greenlight never sends it."""
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, Literal
@@ -19,7 +18,15 @@ from app.rules import RuleSet
 from app.services.gap_helper import MAX_NOTE_CHARS, email_is_clean, figures_ok, ideas_in_note, name_is_clean
 
 EmailKind = Literal["in_kind_sponsor", "co_host"]
-_ASK_FIGURES = re.compile(r"\d|\b(hundreds?|thousands?|grand|bucks|usd|k)\b", re.IGNORECASE)
+AskKind = Literal["food", "products", "venue", "equipment", "services"]
+# In-kind help only (sponsorship-in-kind: "food, products, a venue"); never a payment, a bill or a fee.
+ASK_KINDS: dict[str, str] = {
+    "food": "food and drinks for the event",
+    "products": "products to give to attendees",
+    "venue": "a venue or space for the event",
+    "equipment": "equipment or supplies, lent or given in kind",
+    "services": "a service provided in kind, such as printing or photography",
+}
 EMAIL_TASK = "gap_outreach_email"
 EMAIL_INSTRUCTIONS = """\
 You help a USC student club officer write one paragraph of an outreach email for a club event. You write only from
@@ -47,8 +54,9 @@ class EmailRequest(BaseModel):
     event_name: str = Field(default="", max_length=200)
     event_date: date | None = None
     description: str = Field(default="", max_length=MAX_NOTE_CHARS)
-    # What the club would like, in the officer's words (for an in-kind sponsor: goods or services).
-    ask: str = Field(default="", max_length=500)
+    # What the club would like, chosen from a fixed list of in-kind help (phase 5 iteration 3: a free-text ask let
+    # "cover our venue fee" or "reimburse our food costs" into the email). The officer adds detail by editing the draft.
+    ask: list[AskKind] = Field(default_factory=list, max_length=len(ASK_KINDS))
 
 
 class _Paragraph(BaseModel):
@@ -105,12 +113,7 @@ def draft_email(request: EmailRequest, ruleset: RuleSet, *, client: ClaudeClient
         names[label] = value or placeholder
     club, event = names["club name"], names["event name"]
     recipient = names["recipient"] or ("the team" if request.kind == "in_kind_sponsor" else "fellow officers")
-    ask = request.ask.strip()
-    # The ask goes into the email word for word, so it carries no figure at all and nothing the email filter refuses.
-    if ask and (not email_is_clean(ask) or ideas_in_note(ask) or _ASK_FIGURES.search(ask)):
-        notes.append("Your 'what we would like' line mentions money or a topic Greenlight keeps out of outreach emails, so it left it "
-                     "out. Ask for goods or services instead.")
-        ask = ""
+    ask = "; ".join(ASK_KINDS[k] for k in dict.fromkeys(request.ask)) if request.kind == "in_kind_sponsor" else ""
     details = (f"Club: {club}\nEvent name: {event}\nDescription: {request.description}\nKind of help: "
                f"{_kind_text(request.kind)}\nWhat the club would like: {ask or '(not given)'}")
     fallback = (f"We are planning {event}, an event run by {club} for USC students. We would be glad to talk about how "

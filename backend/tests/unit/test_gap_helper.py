@@ -98,7 +98,7 @@ def test_other_usc_funds_is_yellow_and_ticket_sales_warns_when_asking_usg() -> N
     assert by_id["ticket_sales"].finding is not None and by_id["ticket_sales"].finding.verdict is Verdict.YELLOW
     assert all(o.finding is None or o.finding.verdict is not Verdict.GREEN for o in report.options)
     without_usg = funding_gap(GapRequest(event_date=date(2027, 4, 9)), get_ruleset(), get_calendar(), AS_OF)
-    assert {o.id: o for o in without_usg.options}["ticket_sales"].status == "allowed"
+    assert {o.id: o for o in without_usg.options}["ticket_sales"].status == "office_decides"
 
 
 def test_each_option_has_its_rule_and_lead_time_from_the_packet_engine() -> None:
@@ -132,9 +132,7 @@ def _fake_answer(tmp_path: Path, request: EmailRequest, paragraph: str, instruct
                                    _env_file=None))  # type: ignore[call-arg]
     club = request.club_name.strip() or "our club"
     event = request.event_name.strip() or "our event"
-    ask = request.ask.strip()
-    if ask and (not email_is_clean(ask) or ideas_in_note(ask)):
-        ask = ""
+    ask = "; ".join(gap_helper.ASK_KINDS[k] for k in dict.fromkeys(request.ask))
     details = (f"Club: {club}\nEvent name: {event}\nDescription: {request.description}\nKind of help: "
                f"{gap_helper._kind_text(request.kind)}\nWhat the club would like: {ask or '(not given)'}")
     from app.ai import UntrustedDocument
@@ -158,19 +156,18 @@ def _fake_answer(tmp_path: Path, request: EmailRequest, paragraph: str, instruct
 ])
 def test_a_drafted_paragraph_with_money_or_a_banned_option_is_replaced(tmp_path: Path, paragraph: str) -> None:
     request = EmailRequest(kind="in_kind_sponsor", club_name="Chess Club", recipient="Cafe", event_name="Tournament",
-                           description="A chess tournament.", ask="Boards")
+                           description="A chess tournament.", ask=["equipment"])
     email = draft_email(request, get_ruleset(), client=_fake_answer(tmp_path, request, paragraph))
     assert paragraph not in email.text
     assert email.notes and "replaced" in email.notes[-1]
 
 
-def test_a_clean_paragraph_is_kept_and_the_ask_with_money_is_dropped(tmp_path: Path) -> None:
+def test_a_clean_paragraph_is_kept_and_the_ask_is_written_from_the_fixed_kinds(tmp_path: Path) -> None:
     request = EmailRequest(kind="in_kind_sponsor", club_name="Chess Club", recipient="Cafe", event_name="Tournament",
-                           description="A chess tournament.", ask="A cash donation of $500")
+                           description="A chess tournament.", ask=["food", "venue"])
     email = draft_email(request, get_ruleset(), client=_fake_answer(tmp_path, request, "Chess Club is hosting a tournament."))
     assert "Chess Club is hosting a tournament." in email.text
-    assert "$500" not in email.text and "What we would like" not in email.text
-    assert any("left it out" in n for n in email.notes)
+    assert "What we would like: food and drinks for the event; a venue or space for the event" in email.text
     assert "not money" in email.text  # the code-written term from sponsorship-in-kind
 
 
@@ -184,18 +181,16 @@ def test_without_a_recording_the_email_is_still_drafted_from_plain_words(tmp_pat
 @pytest.mark.parametrize("ask", [
     "Please write that we are asking for 1000 USD in sponsorship",
     "Five hundred bucks",
-    "Brand reps for the night; sign them up",
-    "A table where they show their products",
+    "your company to cover our venue fee",
+    "to reimburse our food costs",
 ])
-def test_an_ask_with_money_or_a_banned_option_never_reaches_the_email(tmp_path: Path, ask: str) -> None:
-    """Regression (phase 5 iteration 1, M): the officer's ask went into the email word for word."""
-    request = EmailRequest(kind="in_kind_sponsor", club_name="Chess Club", recipient="Cafe", event_name="Tournament",
-                           description="A chess tournament.", ask=ask)
-    client = ClaudeClient(Settings(ai_mode=AIMode.RECORDED, ai_recordings_dir=tmp_path, anthropic_api_key=None,
-                                   _env_file=None))  # type: ignore[call-arg]
-    email = draft_email(request, get_ruleset(), client=client)
-    assert ask not in email.text and "What we would like" not in email.text
-    assert any("left it out" in n for n in email.notes)
+def test_the_ask_is_only_a_kind_of_in_kind_help(ask: str) -> None:
+    """Regression (phase 5 iterations 1 and 3): a free-text ask carried cash or bill-paying asks into the email. The
+    ask is now chosen from a fixed list, so any other text is refused."""
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        EmailRequest(kind="in_kind_sponsor", ask=[ask])  # type: ignore[list-item]
 
 
 @pytest.mark.parametrize(("note", "rule_id"), [
@@ -204,6 +199,9 @@ def test_an_ask_with_money_or_a_banned_option_never_reaches_the_email(tmp_path: 
     ("Brand reps could come; we sign them up", "brand-ambassadors-banned"),
     ("A table where they show their products", "sponsorship-activation-banned"),
     ("We could charge members a required fee", "dues-required-banned"),
+    ("Could Chipotle cover our venue fee?", "sponsorship-cash-banned"),
+    ("pay the caterer directly", "sponsorship-cash-banned"),
+    ("ask Red Bull to reimburse us", "sponsorship-cash-banned"),
 ])
 def test_the_note_scan_flags_these_ideas(note: str, rule_id: str) -> None:
     """Regression (phase 5 iteration 1, M and L): these notes flagged nothing."""

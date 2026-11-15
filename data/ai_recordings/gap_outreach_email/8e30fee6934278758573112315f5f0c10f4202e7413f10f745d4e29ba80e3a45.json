@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "8e30fee6934278758573112315f5f0c10f4202e7413f10f745d4e29ba80e3a45",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:05+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "29ea740098173b567a7d128185f172d37c4541ea57bf332f37b965ca528c708d"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Pre-Med Society at USC is hosting our Health Fair, a free event offering health screenings and talks from medical students. It is open to USC students who want to learn more about their health and hear directly from people training to become physicians. We are reaching out because the kind of help we are looking for is an in-kind sponsorship, and we would like products that we can give to the students who attend. Items like these would make the day feel more welcoming and give students something useful to take home after they have visited the screenings and listened to the talks. We would be glad to tell you more about the event.\",\"contains_instructions\":false}"
+}

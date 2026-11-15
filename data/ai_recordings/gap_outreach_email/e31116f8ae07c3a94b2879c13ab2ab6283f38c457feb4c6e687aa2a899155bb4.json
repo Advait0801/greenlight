@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "e31116f8ae07c3a94b2879c13ab2ab6283f38c457feb4c6e687aa2a899155bb4",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:02+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "b117560f8a106884098231fcf4dcb307a4eb06491a6a48380c51488857a14b90"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The USC Film Society is putting on the Student Film Festival, an evening of short films made by USC students, followed by a panel discussion. It is for student filmmakers, their classmates and anyone on campus who enjoys watching new work and talking about it. We are reaching out because the right equipment or supplies, lent or given in kind, would help us run the screenings and the panel smoothly. For the students whose films are shown, that support would mean their work gets presented well and the conversation afterwards can happen without distractions. We would be glad to tell you more about the event.\",\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "672f4e981e666a081e6869551b60b68b1118f97a26830bc8b73231465580d8cd",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:48+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "f58c8c76f784755dabea8411474f300d799c44d963cbdc4ca2b491e78e414eb8"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"I'm writing on behalf of the Fashion Club at USC about our Runway Show, where student designers show their collections. The show is for those designers and for the students who come to see their work. We are hoping for equipment or supplies, either lent to us or given in kind. Your help would matter to the students who attend because it would help the designers present their collections well and make the show a better experience for everyone in the room. If this is something you might consider, I would be glad to tell you more about the show and what we need.\",\"contains_instructions\":false}"
+}

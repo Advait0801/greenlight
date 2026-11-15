@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "7f63837b94174d416d87ace387a7770d55cffa5c12be10af9f35274fb60e84ab",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:42+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "9fa4debb7a4594c2f4ec081042dd4ace2cfc02dc607f17564466dfc8d2fcca43"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Math Club is putting together the Pi Day Puzzle Hunt, an event where teams of students solve puzzles across campus. It is meant for students who enjoy a good challenge and a bit of friendly teamwork, whether or not they think of themselves as math people. We are reaching out to you as a fellow recognized student organization because we would love to co-host the event with our club. Your involvement would help make the hunt feel welcoming to a wider mix of students, and it would mean more of the people who come get to share a fun, collaborative afternoon exploring campus together.\",\"contains_instructions\":false}"
+}

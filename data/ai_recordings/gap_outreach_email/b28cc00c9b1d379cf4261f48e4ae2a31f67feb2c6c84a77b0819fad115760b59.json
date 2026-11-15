@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "b28cc00c9b1d379cf4261f48e4ae2a31f67feb2c6c84a77b0819fad115760b59",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:45+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "35c2f361ee868f769d47a008e508bba55cacac294b01704ed6a99247efbb6218"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Korean Student Association is organizing the Lunar New Year Festival, a shared celebration with food, games and performances from both of our clubs. We are writing to you as a fellow recognized student organization because we would be glad to have you alongside us as a co-host. For the students who come, a festival planned by two clubs together means more voices in the performances, more to enjoy and a chance to celebrate with a wider part of our campus community. Your involvement would help make the day feel shared rather than something one club put on alone. We would be happy to talk through the event with you.\",\"contains_instructions\":false}"
+}

@@ -6,6 +6,14 @@ import { postJson, type Finding, type VenueType } from "./events";
 export type OptionId =
   | "in_kind_sponsor" | "co_host" | "fundraiser" | "donations" | "ticket_sales" | "free_drawing" | "voluntary_dues" | "other_usc_funds";
 export type EmailKind = "in_kind_sponsor" | "co_host";
+export type AskKind = "food" | "products" | "venue" | "equipment" | "services";
+export const ASK_LABELS: Record<AskKind, string> = {
+  food: "Food and drinks",
+  products: "Products to give to attendees",
+  venue: "A venue or space",
+  equipment: "Equipment or supplies",
+  services: "A service, such as printing or photography",
+};
 
 export interface GapRequest {
   event_name: string;
@@ -32,7 +40,7 @@ export interface OptionStep {
 export interface GapOption {
   id: OptionId;
   title: string;
-  status: "allowed" | "check_first";
+  status: "allowed" | "check_first" | "office_decides";
   status_label: string;
   message: string;
   citation: Citation;
@@ -70,7 +78,7 @@ export interface EmailRequest {
   event_name: string;
   event_date: string | null;
   description: string;
-  ask: string;
+  ask: AskKind[];
 }
 
 export interface EmailDraft {

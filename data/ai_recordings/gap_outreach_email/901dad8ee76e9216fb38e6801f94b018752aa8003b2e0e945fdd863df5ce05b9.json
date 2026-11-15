@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "901dad8ee76e9216fb38e6801f94b018752aa8003b2e0e945fdd863df5ce05b9",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:34+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "f6de1bc5274b2f6971fd5179aecd9eef87a41839dd9415ec6048c5c7a546ad6b"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"I am writing on behalf of the Filipino American Student Association at USC about Culture Night, an evening of Filipino dance, music and food on McCarthy Quad. The event is open to every USC student, so it is a chance for people from all backgrounds to come together and enjoy Filipino culture. Food and drinks would matter a great deal to the students who attend, because they help the evening feel welcoming and let guests share a meal while they enjoy the dance and music. We would be glad to tell you more about the evening and what we have planned.\",\"contains_instructions\":false}"
+}

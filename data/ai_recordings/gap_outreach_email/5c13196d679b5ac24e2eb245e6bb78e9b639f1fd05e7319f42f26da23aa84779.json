@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "5c13196d679b5ac24e2eb245e6bb78e9b639f1fd05e7319f42f26da23aa84779",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:59+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "255b425aeba1d1e2d2f664048a11ef1dad07314f24fe8ef58bfff75e910fd5b2"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Environmental Student Assembly is putting on the Earth Week Fair, a campus gathering for USC students who care about sustainability or are just curious about it. The fair brings together tables from campus sustainability groups, a clothing swap and a series of talks. We are reaching out to invite you to co-host the event with our club as a fellow recognized student organization. Your involvement would help students find a welcoming place to learn, swap clothes and meet the groups already working on these issues across campus. We would love to talk about how we could plan it together.\",\"contains_instructions\":false}"
+}

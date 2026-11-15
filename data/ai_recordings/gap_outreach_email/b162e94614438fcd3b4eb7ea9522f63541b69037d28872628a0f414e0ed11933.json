@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "b162e94614438fcd3b4eb7ea9522f63541b69037d28872628a0f414e0ed11933",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:17+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "f64a13274699b105c20e2353c43419b2764f0faef40dbb0b5ae09f8915266be4"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Black Student Assembly is planning the Heritage Showcase, an event of performances and food celebrating heritage across the diaspora. It is for students who want to share in that celebration, whether they are performing, eating, or simply coming to learn and connect with their peers. We are reaching out to your organization about co-hosting the event with us as a fellow recognized student organization. Your involvement would matter to the students who come, because it would bring more voices and perspectives into the room and help the showcase feel like a shared celebration across our campus community. We would be glad to talk about what that could look like.\",\"contains_instructions\":false}"
+}

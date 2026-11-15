@@ -30,7 +30,7 @@ def test_options_refuse_unknown_attributes(client) -> None:  # type: ignore[no-u
 
 def test_email_is_a_draft_and_approval_sends_nothing(client) -> None:  # type: ignore[no-untyped-def]
     response = client.post("/gap/email", json={"kind": "in_kind_sponsor", "club_name": "Chess Club", "recipient": "Cafe",
-                                                "event_name": "Tournament", "ask": "Boards"})
+                                                "event_name": "Tournament", "ask": ["equipment"]})
     assert response.status_code == 200, response.text
     body = response.json()
     assert body["approved"] is False and "does not send" in body["notice"]
@@ -40,3 +40,19 @@ def test_email_is_a_draft_and_approval_sends_nothing(client) -> None:  # type: i
     assert approved.status_code == 200 and approved.json()["approved"] is True
     assert "has not sent anything" in approved.json()["message"]
     assert client.post("/gap/email/approve", json={"text": "   "}).status_code == 422
+
+
+def test_an_event_name_that_has_the_sponsor_pay_is_left_out(client) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 5 iteration 3, H): 'paid for by' names went into the subject and greeting."""
+    body = client.post("/gap/email", json={"kind": "in_kind_sponsor", "event_name": "Free Pizza Night paid for by Dominos",
+                                            "ask": ["food"]}).json()
+    assert "paid for by" not in body["text"] and "paid for by" not in body["subject"]
+    assert client.post("/gap/email", json={"kind": "in_kind_sponsor", "ask": "cover our venue fee"}).status_code == 422
+
+
+def test_fundraiser_and_ticket_sales_are_shown_as_the_office_decides(client) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 5 iteration 3, M): options that need an office's approval read 'Allowed'."""
+    report = client.post("/gap/options", json={"event_date": "2027-04-09", "as_of": "2026-11-15"}).json()
+    by_id = {o["id"]: o for o in report["options"]}
+    for option in ("fundraiser", "ticket_sales"):
+        assert by_id[option]["status"] == "office_decides" and by_id[option]["finding"]["verdict"] == "office_decides"

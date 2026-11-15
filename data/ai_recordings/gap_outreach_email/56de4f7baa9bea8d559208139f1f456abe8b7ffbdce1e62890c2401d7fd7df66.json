@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "56de4f7baa9bea8d559208139f1f456abe8b7ffbdce1e62890c2401d7fd7df66",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:14+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "91e213b4f7e3e483718f3f372a85addca0c7a94d8a18247d962d05a392c93479"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Dance Marathon is a long dance event run by a USC student club to raise awareness for children's hospitals. Students come together to spend many hours on their feet, and it asks a lot of their energy. Food and drinks would matter to the students who come: they would help keep everyone fueled and comfortable, so they can stay focused on why they are there, which is to speak up for children's hospitals. We would be glad to tell you more about the event and how your help could fit.\",\"contains_instructions\":false}"
+}

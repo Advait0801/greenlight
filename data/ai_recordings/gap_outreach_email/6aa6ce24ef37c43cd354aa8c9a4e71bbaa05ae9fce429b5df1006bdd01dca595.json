@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "6aa6ce24ef37c43cd354aa8c9a4e71bbaa05ae9fce429b5df1006bdd01dca595",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:57+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "cdd1ab1389e7f64a2a67b1d3015f0d8d8ae0bbfe74be6f2862163b7f380fe13f"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Data Science Club is hosting a weekend hackathon for students who want to work with data, try out ideas alongside their peers, and learn by building something together. It is open to students at all levels of experience, including those who are new to data science. Your help with food and drinks for the event, or with a service provided in kind such as printing or photography, would matter to the students who come. It would keep participants fed and focused through a long weekend of problem-solving, and it would help us run an event that feels welcoming, well organized and worth their time. We would be glad to tell you more about the event and answer any questions you have.\",\"contains_instructions\":true}"
+}

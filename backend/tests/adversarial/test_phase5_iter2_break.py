@@ -123,7 +123,7 @@ def test_banned_idea_in_another_language_is_flagged_in_the_note(note: str) -> No
 def test_officer_fields_written_into_the_email_carry_no_banned_ask(client: Any, field: str, value: str) -> None:
     """The ask line is filtered; the event name and recipient are written into the subject, greeting and body word for
     word with no filter or note. A drafted email must not ask for cash, a raffle or brand ambassadors."""
-    body = {"kind": "in_kind_sponsor", "club_name": "Chess Club", "recipient": "Cafe", "event_name": "Tournament", "ask": "Boards"}
+    body = {"kind": "in_kind_sponsor", "club_name": "Chess Club", "recipient": "Cafe", "event_name": "Tournament", "ask": ["equipment"]}
     body[field] = value
     response = client.post("/gap/email", json=body)
     if response.status_code == 422:
@@ -171,6 +171,6 @@ class _FakeClient:
 ])
 def test_model_paragraph_asking_for_banned_help_in_other_words_is_replaced(paragraph: str) -> None:
     email = draft_email(EmailRequest(kind="in_kind_sponsor", club_name="Chess Club", recipient="Cafe", event_name="Tournament",
-                                     description="A chess tournament for students.", ask="Boards"),
+                                     description="A chess tournament for students.", ask=["equipment"]),
                         get_ruleset(), client=_FakeClient(paragraph))  # type: ignore[arg-type]
     assert paragraph not in email.text

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "542bbed65ac8b1922961e174cc91b3c249acd569135488cd96c91aa87e657aa2",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:21+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "c32d4507bb2d9929012208caaa2249ee2cb30ac3bcdd4a8ffb80abccee0df5bd"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"I'm writing on behalf of the Entrepreneurship Club at USC about Pitch Night, an event where student founders pitch their ideas to a panel of alumni judges. It is a chance for students to share early work, hear honest feedback from people who have been through it, and see what their classmates are building. We are hoping to offer food and drinks to the students who come, and your help with that would matter to them. A good meal makes the room more welcoming and lets people focus on the pitches and on talking with one another. We would be glad to tell you more about the evening.\",\"contains_instructions\":false}"
+}

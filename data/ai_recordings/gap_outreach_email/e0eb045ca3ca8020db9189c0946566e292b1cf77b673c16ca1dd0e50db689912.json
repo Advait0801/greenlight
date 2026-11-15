@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "e0eb045ca3ca8020db9189c0946566e292b1cf77b673c16ca1dd0e50db689912",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:37+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "431adc5cf3d3cdf19bcb406ade39301296c82ea3ac7ce073a6f94d5964034794"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Trojan Robotics is hosting Spring Build Day, a hands-on event for USC students who are curious about robotics, whether they are just starting out or already building. Students work in teams to put together small robots, and senior members teach soldering along the way. Many students come with plenty of enthusiasm but limited access to tools and materials, so the right equipment or supplies would make a real difference to what they can build and how much each person gets to try. We would be glad to tell you more about the day and how your help would reach the students who take part.\",\"contains_instructions\":false}"
+}

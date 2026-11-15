@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "2c94e70b399d8f714e88893c7da024ed8141302b4e94b18cce9a595e4570fb5b",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:33+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "d5826956597b29f858e3701ebc290dd177012025b366a397d79a194dbdae24be"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Poetry Society at USC is hosting Open Mic, a relaxed evening where students share poems and short stories with a friendly room. It is an easygoing night for anyone who wants to read, listen, or simply spend time around words. We are writing to ask whether you might be able to help us. Your help would matter to the students who come, because it would give them something thoughtful to take home from the evening and make the night feel cared for. Thank you for considering it.\",\"contains_instructions\":false}"
+}

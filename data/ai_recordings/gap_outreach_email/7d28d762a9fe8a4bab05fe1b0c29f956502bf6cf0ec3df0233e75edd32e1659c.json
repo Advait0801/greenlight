@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "7d28d762a9fe8a4bab05fe1b0c29f956502bf6cf0ec3df0233e75edd32e1659c",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:38:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "2e0f78191338cc25c2e171463f5396e807796ed5f5d1200bd038838beee03fd0"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"The Cooking Club is hosting the Potluck Cook-off, an event where teams cook dishes from their home cultures and then share them with everyone who comes. It is meant for USC students who enjoy food, want to learn about each other's backgrounds, and like trying something new at the table. We are writing because your help with food and drinks for the event would matter to the students who attend. It would help make sure everyone has plenty to share and enjoy, and it would let the teams focus on celebrating the traditions behind their dishes. We would be glad to tell you more about the event.\",\"contains_instructions\":false}"
+}

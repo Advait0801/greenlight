@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "e4ba71ee5732aeeaa60e6a7088f6593ecdb5d67ac4fdd49f0255702e5d6cec1b",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T11:37:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "fed1f3ffc94829c08ff3e8919a030983a1bca2f861f04a001707bf22a6d517fc"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Women in Business is hosting our Career Mixer, a networking evening with alumni speakers for students interested in business. Many of these students are still working out their path, and talking with alumni who have walked a similar one can make it feel more real. We are writing to ask whether your company might help us in kind, with goods or services, so that the students who come leave with something useful from the evening. Your help would matter to them, and we would be glad to tell you more about the event.\",\"contains_instructions\":false}"
+}

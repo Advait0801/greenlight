@@ -47,7 +47,7 @@ OPTIONS: tuple[_Option, ...] = (
     _Option("donations", "Donations through a University gift account", "donations-through-university", "fundraising",
             ("own-tax-exempt-banned",)),
     _Option("ticket_sales", "Ticket sales to cover this event's costs", "ticket-sales-cover-costs", "ticket_sales",
-            ("usg-ineligible-ticketed-events", "cash-collection-approval")),
+            ("usg-ineligible-ticketed-events", "cash-collection-approval", "fundraising-approval-discretionary")),
     _Option("free_drawing", "A free drawing (no purchase or donation needed)", "free-drawing-wording", "prize_drawing",
             ("raffle-purchase-banned",)),
     _Option("voluntary_dues", "Voluntary dues", "dues-voluntary", "collects_dues", ("dues-required-banned",)),
@@ -62,6 +62,8 @@ BANNED_RULES: tuple[str, ...] = ("sponsorship-cash-banned", "raffle-purchase-ban
 # Words in the officer's own note that point at a banned idea; the matching rule is shown first, as "not allowed".
 _IDEA_PATTERNS: dict[str, re.Pattern[str]] = {
     "sponsorship-cash-banned": re.compile(
+        r"\b(cover\w*|pay\w*|pick\w* up|reimburs\w*|foot\w*|underwrit\w*|fund\w*)\b.{0,40}\b(fees?|bills?|costs?|invoices?|"
+        r"tabs?|rent\w*|expenses?|caterer|catering bill|us)\b|\bpaid for by\b|"
         r"\b(efectivo|dinero|argent|espèces|bargeld|honorarium|honoraria|bitcoin|crypto\w*|bank transfer)\b|现金|現金|钱|錢|"
         r"\b(cash|money|monetary|cheque|check|dollars?|wire|venmo|zelle|paypal|financial (?:support|contribution))\b.*\bsponsor|"
         r"\bsponsor\w*\b.*\b(cash|money|monetary|cheque|check|dollars?|pay(?:s|ing)? us|financial)\b|\$\s?\d.*\bsponsor|\bsponsor\w*\b.*\$\s?\d|"
@@ -140,7 +142,7 @@ class GapOption(BaseModel):
     id: OptionId
     title: str
     # Allowed options are not pass/fail checks, so they carry no green. "allowed" or a yellow "check first".
-    status: Literal["allowed", "check_first"]
+    status: Literal["allowed", "check_first", "office_decides"]
     status_label: str
     message: str
     citation: Citation
@@ -221,7 +223,7 @@ def funding_gap(request: GapRequest, ruleset: RuleSet, calendar: AcademicCalenda
         steps = _steps(request, ruleset, calendar, as_of, opt.activity, baseline)
         conditions = [citation_for(ruleset, r) for r in opt.condition_rules if r in ruleset]
         finding: Finding | None = None
-        status: Literal["allowed", "check_first"] = "allowed"
+        status: Literal["allowed", "check_first", "office_decides"] = "allowed"
         if opt.id == "other_usc_funds":
             status = "check_first"
             finding = finding_for(ruleset, opt.rule_id, Verdict.YELLOW, rule.message, rule.fix_template)
@@ -231,8 +233,14 @@ def funding_gap(request: GapRequest, ruleset: RuleSet, calendar: AcademicCalenda
                                   "This event asks USG for money, and a ticketed event cannot get USG funding. Selling "
                                   "tickets would end the USG request.",
                                   "Choose another option, or drop the USG request and sell tickets only to cover costs.")
+        discretionary = next((r for r in opt.condition_rules if r in ruleset and ruleset.display_severity(r) == "office_decides"), None)
+        if discretionary is not None and finding is None:
+            # Allowed only once an office approves it: never shown as a plain "Allowed" (phase 5 iteration 3).
+            status = "office_decides"
+            finding = finding_for(ruleset, discretionary, Verdict.OFFICE_DECIDES, ruleset.get(discretionary).message,
+                                  ruleset.get(discretionary).fix_template)
         late = next((step for step in steps if step.past_due), None)
-        if late is not None and finding is None:
+        if late is not None and (finding is None or status == "office_decides"):
             status = "check_first"
             finding = finding_for(ruleset, late.rule_id, Verdict.YELLOW,
                                   f"The lead time has passed: '{late.title}' was due {late.due.isoformat() if late.due else 'already'}.",
@@ -240,6 +248,7 @@ def funding_gap(request: GapRequest, ruleset: RuleSet, calendar: AcademicCalenda
         options.append(GapOption(
             id=opt.id, title=opt.title, status=status,
             status_label=("Allowed, with the conditions below" if status == "allowed"
+                          else "The office decides: allowed only once it approves" if status == "office_decides"
                           else "Needs a human look: a step is already late" if late is not None and opt.id not in ("other_usc_funds", "ticket_sales")
                           else "Needs a human look: check first"),
             message=rule.message, citation=citation_for(ruleset, opt.rule_id), conditions=conditions, steps=steps,
@@ -290,7 +299,7 @@ def email_is_clean(text: str) -> bool:
 # For names the officer types (event, recipient, club): only money and the banned options, so "Fresh Market" stays.
 _NAME_BANNED = re.compile(
     r"\$|\b(cash|money|monetary|dollars?|usd|bucks|raffles?|lotter\w*|sweepstakes?|ambassadors?|promoters?|influencers?|"
-    r"activations?|donat\w*|sponsorship)\b", re.IGNORECASE)
+    r"activations?|donat\w*|sponsorship|paid|pays?|cover\w*|reimburs\w*|bills?|invoices?|fees?)\b", re.IGNORECASE)
 
 
 def name_is_clean(text: str) -> bool:
