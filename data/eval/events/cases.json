@@ -1173,6 +1173,27 @@
             "past_due": false
           },
           {
+            "rule_id": "fundraising-approval-discretionary",
+            "status": "office_decides",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "own-tax-exempt-banned",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "brand-ambassadors-banned",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "food-approved-provider",
             "status": "check_with_office",
             "due": null,
@@ -1322,6 +1343,27 @@
           },
           {
             "rule_id": "no-individual-benefit",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "fundraising-approval-discretionary",
+            "status": "office_decides",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "own-tax-exempt-banned",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "brand-ambassadors-banned",
             "status": "condition",
             "due": null,
             "violated": false,
@@ -2789,6 +2831,20 @@
             "past_due": false
           },
           {
+            "rule_id": "fundraising-approval-discretionary",
+            "status": "office_decides",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "brand-ambassadors-banned",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "food-approved-provider",
             "status": "check_with_office",
             "due": null,
@@ -3031,13 +3087,6 @@
             "past_due": false
           },
           {
-            "rule_id": "cosponsor-club-primary",
-            "status": "to_do",
-            "due": null,
-            "violated": false,
-            "past_due": false
-          },
-          {
             "rule_id": "cohost-unrecognized-banned",
             "status": "condition",
             "due": null,
@@ -3110,7 +3159,8 @@
         "headcount": 30,
         "attributes": [
           "co_hosts",
-          "social_event"
+          "social_event",
+          "co_host_not_recognized"
         ],
         "needs_officer_input": [],
         "obligations": [
@@ -3185,13 +3235,6 @@
             "past_due": false
           },
           {
-            "rule_id": "cosponsor-club-primary",
-            "status": "to_do",
-            "due": null,
-            "violated": false,
-            "past_due": false
-          },
-          {
             "rule_id": "cohost-unrecognized-banned",
             "status": "blocked",
             "due": null,
@@ -3235,7 +3278,8 @@
         "venue": "venue_tes_meeting_room",
         "headcount": 100,
         "attributes": [
-          "sponsorship"
+          "sponsorship",
+          "sponsor_gives_money"
         ],
         "needs_officer_input": [],
         "obligations": [
@@ -3318,6 +3362,13 @@
             "past_due": false
           },
           {
+            "rule_id": "cosponsor-primary-audience",
+            "status": "to_do",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "sponsorship-activation-banned",
             "status": "condition",
             "due": null,
@@ -3348,7 +3399,8 @@
         "attributes": [
           "prize_drawing",
           "fundraising",
-          "cash_collection"
+          "cash_collection",
+          "drawing_requires_purchase"
         ],
         "needs_officer_input": [],
         "obligations": [
@@ -3438,6 +3490,13 @@
             "note": "Tickets must be bought to enter."
           },
           {
+            "rule_id": "free-drawing-wording",
+            "status": "to_do",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "fundraising-meeting",
             "status": "to_do",
             "due": "2027-04-09",
@@ -3453,6 +3512,27 @@
           },
           {
             "rule_id": "no-individual-benefit",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "fundraising-approval-discretionary",
+            "status": "office_decides",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "own-tax-exempt-banned",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "brand-ambassadors-banned",
             "status": "condition",
             "due": null,
             "violated": false,
@@ -3490,7 +3570,8 @@
         "attributes": [
           "props",
           "decorations",
-          "multi_day"
+          "multi_day",
+          "prohibited_decoration"
         ],
         "needs_officer_input": [],
         "obligations": [
@@ -3946,6 +4027,27 @@
           {
             "rule_id": "item-sales-bookstore",
             "status": "to_do",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "fundraising-approval-discretionary",
+            "status": "office_decides",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "own-tax-exempt-banned",
+            "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "brand-ambassadors-banned",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false

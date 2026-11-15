@@ -454,6 +454,25 @@ def test_new_event_rules_from_the_third_audit(ruleset) -> None:  # type: ignore[
     assert ruleset.get("tabling-limits").params["days_in_a_week_must_be_consecutive"] is True
 
 
+def test_banned_verdicts_come_from_named_facts(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, outside-money audit M): every event or outside-money ban names
+    the fact that breaks it, so the verdict never comes from the model's judgment."""
+    facts = ruleset.vocabulary["facts"]
+    for rule in ruleset:
+        if rule.kind == "banned" and rule.domain in ("events", "outside_money"):
+            fact = rule.params.get("violated_when")
+            assert fact, rule.id
+            assert fact in facts or any(fact in group for group in ruleset.vocabulary.values()), rule.id
+
+
+def test_free_drawing_rules_are_required_steps(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, outside-money audit H2)."""
+    rule = ruleset.get("free-drawing-wording")
+    assert (rule.kind, rule.severity, rule.triggers) == ("requirement", "red", ["prize_drawing"])
+    for words in ("free tickets", "never a 'raffle'", "beneficiary"):
+        assert words in rule.message
+
+
 def test_manual_deadline_table_is_intact_and_its_doubtful_rows_are_recorded(ruleset) -> None:  # type: ignore[no-untyped-def]
     """Regression (phase 0 iteration 3, outside-money audit H1 and M): the hand transcription matches its
     hash, every deadline is a Wednesday, the rows run Monday to Friday, and the rows a person must

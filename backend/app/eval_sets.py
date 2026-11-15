@@ -201,6 +201,12 @@ def _check_events(data: dict[str, Any], ruleset: RuleSet | None, problems: list[
             if o["status"] == "blocked" and not o["violated"]:
                 problems.append(f"{cid}: {o['rule_id']} is blocked but not marked violated")
         if ruleset is not None and all(o["rule_id"] in ruleset for o in expected["obligations"]):
+            for o in expected["obligations"]:
+                fact = ruleset.get(o["rule_id"]).params.get("violated_when")
+                if fact and o["violated"] != (fact in expected["attributes"]):
+                    problems.append(
+                        f"{cid}: {o['rule_id']} is broken exactly when '{fact}' is among the attributes; violated must be {fact in expected['attributes']}"
+                    )
             start, as_of = _iso(expected["event_date"]), _iso(case["as_of"])
             for o in expected["obligations"]:
                 _check_obligation(cid, ruleset, o, start, as_of, problems)

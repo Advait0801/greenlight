@@ -47,6 +47,9 @@
       "triggers": [
         "sponsorship"
       ],
+      "params": {
+        "violated_when": "sponsor_gives_money"
+      },
       "conflicts_with": null
     },
     {
@@ -58,15 +61,37 @@
       "source": "USC Student Handbook 2026-27 (August 25, 2026)",
       "source_section": "RSO Co-Sponsorship",
       "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
-      "source_text": "The RSO must be the primary contact for Campus Activities, and other campus departments involved in the planning or approval of the event. • The main contact from the RSO must be a current, full-time student and member of the RSO. • The money must be paid by the RSO and not the outside agency for any fees owed to the university. • The RSO must be the primary name listed on all advertisements and promotional materials.",
+      "source_text": "The RSO must be the primary contact for Campus Activities, and other campus departments involved in the planning or approval of the event. • The main contact from the RSO must be a current, full-time student and member of the RSO. • The money must be paid by the RSO and not the outside agency for any fees owed to the university. • The RSO must be the primary name listed on all advertisements and promotional materials. • The main contact from the RSO must be present at all meetings, walkthroughs, and day-of event as the primary producer of the event.",
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "red",
-      "message": "With any co-sponsor or sponsor, the club must be the primary contact, its main contact must be a current full-time student member, the club pays all university fees, and the club's name comes first on all advertising.",
-      "fix_template": "Make the club the payer and the first name on every flyer.",
-      "applies_to": "An event with a co-host or sponsor",
+      "message": "When a club hosts an event with an outside organization or sponsor, the club must be the primary contact, its main contact must be a current full-time student member who is present at all meetings, walkthroughs and on the day, the club pays all university fees, and the club's name comes first on all advertising.",
+      "fix_template": "Make the club the payer, the primary contact and the first name on every flyer.",
+      "applies_to": "An event co-hosted with an outside organization, or with a sponsor",
       "triggers": [
-        "co_hosts",
+        "outside_co_host",
+        "sponsorship"
+      ],
+      "conflicts_with": null
+    },
+    {
+      "id": "cosponsor-primary-audience",
+      "domain": "outside_money",
+      "kind": "requirement",
+      "title": "The audience must be mainly USC students and alumni",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "RSO Co-Sponsorship",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "The primary target audience for the event must be USC students and alumni.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "When a club hosts an event with an outside organization or sponsor, the main audience must be USC students and alumni.",
+      "fix_template": "Aim the event and its advertising at USC students and alumni.",
+      "applies_to": "An event co-hosted with an outside organization, or with a sponsor",
+      "triggers": [
+        "outside_co_host",
         "sponsorship"
       ],
       "conflicts_with": null
@@ -84,7 +109,7 @@
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "info",
-      "message": "Co-hosting with another recognized student organization is allowed. All co-hosts must be named in the permit application.",
+      "message": "Clubs co-sponsor events with other student organizations, departments and outside agencies; the co-sponsorship conditions apply, a co-host that is not a recognized student organization is not allowed, and every co-host is named in the permit application.",
       "fix_template": null,
       "applies_to": "Sharing an event and its costs with another club",
       "triggers": [
@@ -118,6 +143,9 @@
       "triggers": [
         "co_hosts"
       ],
+      "params": {
+        "violated_when": "co_host_not_recognized"
+      },
       "conflicts_with": null
     },
     {
@@ -134,11 +162,38 @@
       "verified": "read",
       "severity": "red",
       "message": "A club cannot bring a business to campus as a vendor; a business may take part only in an event that exists for its own sake.",
-      "fix_template": "Remove the vendor sales, or make the business a small part of a real club event.",
+      "fix_template": "Remove the vendor sales. A business may take part only in an event that exists for its own purpose.",
       "applies_to": "An event with an outside business selling or promoting",
       "triggers": [
         "outside_vendors"
       ],
+      "params": {
+        "violated_when": "club_brings_business_as_vendor"
+      },
+      "conflicts_with": null
+    },
+    {
+      "id": "vendors-need-permission",
+      "domain": "outside_money",
+      "kind": "banned",
+      "title": "Outside vendors may not sell on campus without permission",
+      "owner_office": "Student Life and Trojan Event Services (TES)",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Vendors",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Outside vendors are prohibited from selling on campus without prior permission from one of these departments: • USC Bookstores, (213) 740-4317. • USC Private Events & Conferences, (213) 740-5956. • USC Athletic Department, (213) 740-5200. • Trojan Event Services, (213) 764-4943.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "Outside vendors may not sell on campus without prior permission from the USC Bookstores, USC Private Events & Conferences, the USC Athletic Department or Trojan Event Services.",
+      "fix_template": "Get permission for the vendor sales from one of those departments, or remove them.",
+      "applies_to": "An event where an outside vendor sells to attendees",
+      "triggers": [
+        "outside_vendors"
+      ],
+      "params": {
+        "violated_when": "vendor_sells_without_permission"
+      },
       "conflicts_with": null
     },
     {
@@ -154,7 +209,7 @@
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "info",
-      "message": "Clubs may receive tax-deductible donations only through the university (a gift account through University Advancement), arranged with Campus Activities first.",
+      "message": "Clubs may solicit and receive tax-deductible donations through the university, working with Campus Activities first.",
       "fix_template": null,
       "applies_to": "Asking people or organizations for donations",
       "triggers": [
@@ -176,8 +231,14 @@
       "verified": "read",
       "severity": "red",
       "message": "A club that files for its own tax-exempt status without Campus Activities' approval loses recognition.",
-      "fix_template": "Do not file with the IRS; ask Campus Activities about a university gift account.",
+      "fix_template": "Do not file with the IRS; ask Campus Activities about receiving donations through the university.",
       "applies_to": "A plan to register the club as a non-profit",
+      "triggers": [
+        "fundraising"
+      ],
+      "params": {
+        "violated_when": "files_own_tax_exemption"
+      },
       "conflicts_with": null
     },
     {
@@ -214,6 +275,30 @@
       "conflicts_with": null
     },
     {
+      "id": "fundraising-approval-discretionary",
+      "domain": "outside_money",
+      "kind": "requirement",
+      "title": "Fundraising and ticket sales are approved case by case",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Sales and Fundraising by RSOs: Process",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "Ticket sales as a fundraising activity may not be approved for every event. See Ticket Events/Payment for Services section for more details. v. Other types – Campus Activities, Trojan Event Services and other campus partners may approve the fundraising request based on the event details.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "office_decides",
+      "message": "Campus Activities, Trojan Event Services and other campus offices decide whether to approve a fundraiser or ticket sales, event by event.",
+      "fix_template": "Ask Campus Activities early; the meeting is due 2 weeks before the event.",
+      "applies_to": "An event with fundraising, ticket sales, item sales or money collection",
+      "triggers": [
+        "fundraising",
+        "ticket_sales",
+        "item_sales",
+        "cash_collection"
+      ],
+      "conflicts_with": null
+    },
+    {
       "id": "no-individual-benefit",
       "domain": "outside_money",
       "kind": "banned",
@@ -234,6 +319,9 @@
         "item_sales",
         "ticket_sales"
       ],
+      "params": {
+        "violated_when": "individual_benefits_from_fundraising"
+      },
       "conflicts_with": null
     },
     {
@@ -282,13 +370,16 @@
       "triggers": [
         "prize_drawing"
       ],
+      "params": {
+        "violated_when": "drawing_requires_purchase"
+      },
       "conflicts_with": null
     },
     {
       "id": "free-drawing-wording",
       "domain": "outside_money",
-      "kind": "allowed",
-      "title": "Free drawings, with the required wording",
+      "kind": "requirement",
+      "title": "Free drawings: the rules California law requires",
       "owner_office": "Campus Activities",
       "source": "USC Student Handbook 2026-27 (August 25, 2026)",
       "source_section": "Free Drawings",
@@ -296,9 +387,9 @@
       "source_text": "Free drawings are legal when rules conforming to the California State Law are followed exactly. These rules are: • The drawing must be in connection with an event or an RSO. • The ticket must have the following information displayed on it: – Date, time, and location of drawing. – Name of sponsors and beneficiary of fundraising. – Donation or purchase of ticket is not required to be eligible to win. – Winner need not be present at drawing (not required but advised). • Free tickets (a minimum of one per person) must be available. • Each solicitor must know that free tickets can be obtained and how to obtain them. • The word “drawing” or “free drawing” is required; the word “raffle” on the ticket or in advertisements should not be used.",
       "effective_date": "2026-08-25",
       "verified": "read",
-      "severity": "info",
-      "message": "A free drawing is allowed if free tickets are available, the ticket shows the date, time, place, sponsors and that no purchase is needed, and the word 'raffle' is not used.",
-      "fix_template": null,
+      "severity": "red",
+      "message": "A drawing must follow these rules exactly: it is tied to an event or the club; each ticket shows the date, time and place of the drawing, the sponsors and beneficiary, that no donation or purchase is needed to win, and (advised) that the winner need not be present; free tickets are available, at least one per person; everyone handing out tickets knows how to get a free one; and it is called a 'drawing' or 'free drawing', never a 'raffle'.",
+      "fix_template": "Print the required wording on every ticket, offer free tickets, and call it a free drawing.",
       "applies_to": "A prize drawing",
       "triggers": [
         "prize_drawing"
@@ -335,17 +426,20 @@
       "source": "USC Student Handbook 2026-27 (August 25, 2026)",
       "source_section": "Sponsorship Activation",
       "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
-      "source_text": "An activation is any event that brings a non-university affiliated company or business onto campus solely to market its products or services. Often, sponsoring companies will approach RSOs about booking their event on campus, or promoting their brand, in exchange for money or products. The university does not permit RSOs to engage in sponsorship activations.",
+      "source_text": "An activation is any event that brings a non-university affiliated company or business onto campus solely to market its products or services. Often, sponsoring companies will approach RSOs about booking their event on campus, or promoting their brand, in exchange for money or products. The university does not permit RSOs to engage in sponsorship activations. Campus Activities is permitted to approve requests for Sponsorship Activations on behalf of Student Life. USC Student Government (USG & GSG) is the only student-led entity at USC that is permitted to utilize sponsorship activations, in collaboration with Campus Activities, and is limited to booking two sponsorship activations per semester.",
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "red",
-      "message": "Clubs cannot host sponsorship activations (a company coming to campus to market itself, for money or products). Only USG and GSG may, through Campus Activities.",
+      "message": "Clubs cannot host sponsorship activations (a company coming to campus to market itself, for money or products). USC Student Government (USG and GSG) is the only student-led entity that may, with Campus Activities.",
       "fix_template": "Decline the activation, or ask the company for an in-kind sponsorship of a club event instead.",
       "applies_to": "A company booth, promotion or brand event on campus",
       "triggers": [
         "sponsorship",
         "outside_vendors"
       ],
+      "params": {
+        "violated_when": "sponsor_runs_activation"
+      },
       "conflicts_with": null
     },
     {
@@ -365,8 +459,13 @@
       "fix_template": "Remove the brand ambassador or promoter from the plan.",
       "applies_to": "Promoting through a brand ambassador or outside promoter",
       "triggers": [
-        "sponsorship"
+        "sponsorship",
+        "fundraising",
+        "ticket_sales"
       ],
+      "params": {
+        "violated_when": "uses_brand_ambassadors"
+      },
       "conflicts_with": null
     },
     {
@@ -403,6 +502,9 @@
       "message": "Dues cannot be a requirement for joining, for voting membership, or for holding office.",
       "fix_template": "Make dues voluntary.",
       "applies_to": "Membership that requires paying dues",
+      "params": {
+        "violated_when": "dues_required"
+      },
       "conflicts_with": null
     },
     {

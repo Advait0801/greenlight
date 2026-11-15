@@ -654,6 +654,18 @@
           },
           {
             "event": "spring-banquet",
+            "rule_id": "fundraising-approval-discretionary",
+            "status": "office_decides",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "brand-ambassadors-banned",
+            "status": "condition",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
             "rule_id": "food-approved-provider",
             "status": "check_with_office",
             "due": null
@@ -871,7 +883,8 @@
             "alcohol",
             "food",
             "sponsorship",
-            "social_event"
+            "social_event",
+            "sponsor_gives_money"
           ],
           "estimated_cost_cents": 200000,
           "usg_request_cents": 100000
@@ -1378,6 +1391,12 @@
           {
             "event": "networking-night",
             "rule_id": "cosponsor-club-primary",
+            "status": "to_do",
+            "due": null
+          },
+          {
+            "event": "networking-night",
+            "rule_id": "cosponsor-primary-audience",
             "status": "to_do",
             "due": null
           },

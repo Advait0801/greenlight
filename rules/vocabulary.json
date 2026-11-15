@@ -1,5 +1,5 @@
 {
-  "description": "The names a rule's `triggers` may use, and that the event, budget and year-plan test sets use. A name can appear in more than one group (for example `food` is both an event attribute and a budget category). The loader rejects a rule that uses a name not listed here.",
+  "description": "The names a rule's `triggers` may use, and that the event, budget and year-plan test sets use. A name can appear in more than one group (for example `food` is both an event attribute and a budget category). The loader rejects a rule that uses a name not listed here. `facts` are things the officer or the reading step states about an event; a `banned` rule names the fact that breaks it in params.violated_when, so the verdict comes from that fact, never from the model's judgment. A fact read with low confidence leads to yellow.",
   "event_attributes": {
     "any_event": "Every event",
     "venue_tes_meeting_room": "A Ronald Tutor Campus Center (TCC) meeting room, booked through Trojan Event Services",
@@ -27,6 +27,7 @@
     "item_sales": "Selling items",
     "charity_collection": "Collecting money or goods for a charity or non-profit",
     "co_hosts": "Co-hosted or co-sponsored with another organization",
+    "outside_co_host": "Co-hosted with an organization that is not a USC student organization or department",
     "sponsorship": "A company sponsoring the event",
     "outside_vendors": "Outside businesses selling, exhibiting or promoting at the event (not a caterer or rental company the club hires)",
     "performers": "Performers, DJs, speakers or exhibitors from outside the club",
@@ -82,5 +83,19 @@
     "amazon": "An expense bought on Amazon",
     "conference_registration": "Registration for a conference or event that has a login",
     "new_club": "The club was first registered with Campus Activities within the last two academic semesters"
+  },
+  "facts": {
+    "sponsor_gives_money": "A sponsor is giving the club money (not goods or services)",
+    "sponsor_runs_activation": "A company is coming to campus to market its products or services",
+    "uses_brand_ambassadors": "Promotion through brand ambassadors or third-party promoters",
+    "co_host_not_recognized": "A co-host is not a recognized student organization",
+    "club_brings_business_as_vendor": "The club is bringing a business to campus as a vendor",
+    "vendor_sells_without_permission": "An outside vendor sells on campus without permission from an authorized department",
+    "drawing_requires_purchase": "Entering a drawing requires buying a ticket or donating",
+    "individual_benefits_from_fundraising": "A member or other person receives money, trade, discounts or goods from the fundraising",
+    "files_own_tax_exemption": "The club plans to file for its own tax-exempt status",
+    "dues_required": "Paying dues is required for some level of membership",
+    "alcohol_is_main_focus": "Alcohol is the main focus of the event",
+    "prohibited_decoration": "A prohibited decoration is planned (tape, glitter, confetti, fog or bubble machine, candles, pyrotechnics)"
   }
 }

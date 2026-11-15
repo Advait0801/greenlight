@@ -460,6 +460,9 @@
       "triggers": [
         "decorations"
       ],
+      "params": {
+        "violated_when": "prohibited_decoration"
+      },
       "conflicts_with": null
     },
     {
@@ -826,6 +829,9 @@
         "social_dance"
       ],
       "trigger_mode": "all",
+      "params": {
+        "violated_when": "social_dance"
+      },
       "conflicts_with": null
     },
     {
@@ -899,6 +905,9 @@
         "ticket_sales"
       ],
       "trigger_mode": "all",
+      "params": {
+        "violated_when": "ticket_sales"
+      },
       "conflicts_with": null
     },
     {
@@ -947,6 +956,9 @@
       "triggers": [
         "alcohol"
       ],
+      "params": {
+        "violated_when": "alcohol_is_main_focus"
+      },
       "conflicts_with": null
     },
     {
@@ -1044,6 +1056,9 @@
       "triggers": [
         "candles"
       ],
+      "params": {
+        "violated_when": "candles"
+      },
       "conflicts_with": null,
       "notes": "The same FAQ describes a fire permit for open flame (lafd-division-5-permit) and sends canned heat (Sterno) to separate guidelines (sterno-guidelines), so this ban is applied to candles and decorative flames only."
     },

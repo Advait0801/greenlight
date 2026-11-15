@@ -338,6 +338,11 @@ def load_rules(rules_dir: Path) -> RuleSet:
                 problems.append(f"{where}: trigger_mode 'all' needs at least two triggers")
             _check_params(rule, where, problems)
             _check_numbers(rule, where, problems)
+            fact = rule.params.get("violated_when")
+            if rule.kind == "banned" and rule.domain in ("events", "outside_money") and not fact:
+                problems.append(f"{where}: a banned rule must name the fact that breaks it in params.violated_when")
+            if fact is not None and (not isinstance(fact, str) or (vocabulary and fact not in known_triggers)):
+                problems.append(f"{where}: params.violated_when '{fact}' is not in vocabulary.json")
             _check_source(rule, where, sources, sources_dir, problems)
             rules[rule.id] = rule
             files[rule.id] = file_name
