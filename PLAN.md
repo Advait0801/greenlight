@@ -54,7 +54,7 @@ Safety valve, because the deadline is fixed: after **five** iterations on one ph
 
 After every build step and every iteration, update [docs/PROGRESS.md](docs/PROGRESS.md): phase, iteration, findings count by severity, what was fixed, gate result. A new session must be able to resume from that file alone.
 
-Commit locally after each iteration with a message like `phase 2 iter 3: audit fixes`.
+Commit locally in small pieces as you go: one commit per logical change, and one per finding fixed (the fix and its regression test together). Subjects are imperative and say what changed, for example `Fix per-person food cap when headcount is zero`. Do not start a subject with the phase or iteration (`phase 2`, `iter 3`); record phases and iterations in `docs/PROGRESS.md`.
 
 ### Phase checkpoint: commit and push before moving on
 
@@ -63,7 +63,7 @@ When a phase's gate passes, **pause before starting the next phase** and do this
 1. Run the full test suite one more time. It must pass.
 2. Update `docs/PROGRESS.md`: mark the phase's gate as passed.
 3. Check that nothing secret is staged (`.env`, keys, databases). `git status` must show only intended files.
-4. Commit everything with the message `phase <n> complete: <goal>`.
+4. Commit what remains with a descriptive subject, for example `Record event packet gate as passed in progress log`. No phase prefix.
 5. Push to `origin main`.
 6. Confirm the push succeeded, then start the next phase.
 
@@ -281,7 +281,7 @@ Use the `final-reviewer` agent definition and pass the model for each iteration.
 **Rules for changes in this phase. Be careful: there is no later safety net.**
 - Bug fixes only. No new features, no refactoring, no dependency upgrades, no renaming, no formatting sweeps.
 - Fix blocker and high findings. Record medium and low findings in `docs/reviews/known-issues.md` and leave the code alone.
-- One finding, one small change, one regression test, one commit.
+- One finding, one small change, one regression test, one commit, with a subject that names the fix (no phase or iteration prefix).
 - After every change: full test suite, then the demo journey on the live link.
 - If a fix is risky or large, do not make it. Prefer hiding the affected feature from the demo.
 - **After F3**, fix blockers only. Then run the full suite and the demo journey twice. If both pass, commit, tag the commit `submission`, push the commit and the tag (`git push origin main --tags`), and stop.

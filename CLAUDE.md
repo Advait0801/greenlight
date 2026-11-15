@@ -101,7 +101,8 @@ docs/               progress log, review reports, research notes, submission mat
 - Type hints on all Python; `strict` TypeScript.
 - Plain language in the interface. No office acronym without its full name. State is never shown by colour alone.
 - Secrets only in `.env` (ignored by git) or Replit secrets. Never commit a key.
-- Small local commits with clear messages after each iteration.
+- Small local commits: one per logical piece (a component, a script, the CI fix, one finding fixed with its regression test), not one per iteration.
+- Commit subjects are imperative and say what changed, e.g. `Reject rule files with duplicate ids`. Never start a subject with `phase N` or `iter N`; phases and iterations are tracked in `docs/PROGRESS.md`.
 - Push to `origin main` at the end of every phase, once its gate passes, and before starting the next phase (PLAN.md, "Phase checkpoint"). Do not push at any other time, and never force-push.
 
 ## Working with sub-agents
@@ -112,7 +113,7 @@ PLAN.md section 1 is the rule book. In short:
 - They report; they do not fix. The breaker may add tests under `backend/tests/adversarial/` only.
 - Reports go in `docs/reviews/`.
 - A phase is done only when its gate passes. Do not move on before that.
-- When the gate passes: commit, push, confirm the push, then start the next phase.
+- When the gate passes: commit the remaining work (small commits, descriptive subjects), push, confirm the push, then start the next phase.
 - In Phase 7, change as little as possible. After the third final review, the code is frozen.
 
 ## Hackathon rules that bind the code
