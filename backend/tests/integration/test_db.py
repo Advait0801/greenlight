@@ -21,6 +21,8 @@ SECTION_5_TABLES = {
     "rules", "clubs", "users", "year_plans", "events", "obligations", "documents",
     "line_items", "findings", "funding_options", "audit_log",
 }
+# Added in Phase 5: applications a club chose to send to the USG screen (PROGRESS.md, Decisions).
+PHASE_5_TABLES = {"usg_sent_applications"}
 
 
 @pytest.fixture
@@ -33,7 +35,7 @@ def engine(tmp_path: Path):  # type: ignore[no-untyped-def]
 
 def test_every_table_from_section_5_exists(engine) -> None:  # type: ignore[no-untyped-def]
     assert SECTION_5_TABLES <= set(inspect(engine).get_table_names())
-    assert SECTION_5_TABLES == set(Base.metadata.tables)
+    assert SECTION_5_TABLES | PHASE_5_TABLES == set(Base.metadata.tables)
 
 
 def test_money_is_stored_in_whole_cents_and_cannot_be_negative(engine) -> None:  # type: ignore[no-untyped-def]
