@@ -121,15 +121,15 @@ def plan_to_ics(report: YearPlanReport, *, now: datetime | None = None) -> str:
     USG's deadline table (each marked 'check with USG')."""
     stamp = _stamp(now)
     lines = _header("Greenlight year plan" + (f": {report.club_name}" if report.club_name else ""))
+    planned = {step.key for step in report.strategy.steps}
     for event in report.events:
         key = hashlib.sha256(f"{event.key}|{event.event_date}|{event.end_date}".encode()).hexdigest()[:16]
         lines += packet_events(event.packet, stamp, key=key)
-        for d in event.usg_deadlines:
-            if d.table_date is None:
-                continue
-            description = (f"{event.name}: {d.title}. This date comes from Greenlight's hand-transcribed copy of USG's "
-                           f"Funding Application Deadlines table, which nobody has confirmed yet. Check it with USG "
+        for d in event.usg_deadlines if event.key in planned else []:
+            description = (f"{event.name}: {d.title}. This is the earlier of the date in Greenlight's hand-transcribed copy "
+                           f"of USG's Funding Application Deadlines table (not yet confirmed) and a count of calendar weeks "
+                           f"back from the event. Check it with USG "
                            f"(usgfunds@usc.edu).\n\nSource: {d.citation.source}\n{d.citation.source_url}\n\n{report.notice}")
-            lines += _vevent(f"{key}-{d.rule_id}-table@greenlight", d.table_date, d.table_date + timedelta(days=1),
+            lines += _vevent(f"{key}-{d.rule_id}-table@greenlight", d.apply_by, d.apply_by + timedelta(days=1),
                              f"Check with USG: apply for {event.name}", description, d.table_citation.source_url, stamp)
     return _finish(lines)

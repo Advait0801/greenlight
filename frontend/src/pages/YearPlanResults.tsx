@@ -18,7 +18,7 @@ export function Section({ id, title, children, intro }: { id: string; title: str
 
 function itemBadge(item: CalendarItem): { state: BadgeState; label: string } {
   if (item.kind === "event") return { state: "info", label: "The event" };
-  if (item.past_due) return { state: item.unconfirmed ? "yellow" : "red", label: "Passed" };
+  if (item.past_due) return { state: item.unconfirmed ? "yellow" : "red", label: item.unconfirmed ? "May have passed: check with USG" : "Passed" };
   if (item.unconfirmed) return { state: "yellow", label: "Check with USG" };
   if (item.status === "office_decides") return { state: "office_decides", label: "Contact the office" };
   if (item.status === "check_with_office") return { state: "yellow", label: "Check with the office" };
@@ -55,7 +55,7 @@ function deadlineText(d: TableDeadline): string {
   const table = d.table_date
     ? `USG's table (Greenlight's unconfirmed copy) says ${formatDay(d.table_date)}`
     : d.table_status === "not_in_table" ? "USG's table has no row for this week" : "USG's table lists no deadline for this week";
-  return `${table}; counted in calendar weeks it is ${formatDay(d.latest_possible)} at the latest.`;
+  return `${table}; counted back in calendar weeks it is ${formatDay(d.calendar_count)}. Apply by the earlier date, ${formatDay(d.apply_by)}.`;
 }
 
 export function PlanResults({ report, onOpenPacket, onOpenMoney }: {

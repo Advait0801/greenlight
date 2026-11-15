@@ -49,8 +49,9 @@ export interface TableDeadline {
   title: string;
   column: "6_week" | "9_week";
   weeks: number;
-  latest_possible: string;
-  latest_possible_in: string;
+  calendar_count: string;
+  calendar_count_in: string;
+  apply_by: string;
   table_status: "date" | "no_deadline" | "not_applicable" | "not_in_table";
   table_date: string | null;
   table_row_to_confirm: boolean;

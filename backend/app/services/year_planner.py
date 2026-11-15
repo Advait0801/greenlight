@@ -232,8 +232,9 @@ def _usg_deadlines(ruleset: RuleSet, calendar: AcademicCalendar, sources_dir: Pa
         table_day = found.deadline
         before = term is not None and (latest < term.classes_begin or (table_day is not None and table_day < term.classes_begin))
         out.append(TableDeadline(
-            rule_id=rule.id, title=rule.title, column=column, weeks=rule.offset, latest_possible=latest,
-            latest_possible_in=_where(latest, calendar), table_status=found.status, table_date=table_day,
+            rule_id=rule.id, title=rule.title, column=column, weeks=rule.offset, calendar_count=latest,
+            apply_by=min(latest, table_day) if table_day is not None else latest,
+            calendar_count_in=_where(latest, calendar), table_status=found.status, table_date=table_day,
             table_row_to_confirm=found.to_confirm, before_semester=before,
             passed_per_table=table_day is not None and table_day < as_of,
             citation=citation_for(ruleset, rule.id), table_citation=citation_for(ruleset, TABLE_RULE),
@@ -292,7 +293,7 @@ def plan_year(request: YearPlanRequest, ruleset: RuleSet, calendar: AcademicCale
     budget = _budget(request, events, strategy, ruleset, yearly_cap, as_of, calendar)
     by_key = {row.key: row for row in budget.rows}
 
-    calendar_items = _calendar(events, ruleset)
+    calendar_items = _calendar(events, ruleset, {step.key for step in strategy.steps})
     crowded = _crowded(calendar_items)
     planned_keys = {step.key for step in strategy.steps}
     upcoming = [item for item in calendar_items if item.kind != "event" and item.day >= as_of and not item.past_due
@@ -373,11 +374,16 @@ def _input_problems(request: YearPlanRequest, events: list[_Event], problems: _P
 
 def _deadline_problems(events: list[_Event], problems: _Problems) -> None:
     for e in events:
+        term_start = e.term.classes_begin if e.term is not None else date.min
         for d in e.usg_deadlines:
             if d.before_semester:
-                note = (f"{e.plan.name}: counted back {d.weeks} calendar weeks from {_short(e.plan.event_date or d.latest_possible)}, "
-                        f"{d.title} falls on {_short(d.latest_possible)} at the latest ({d.latest_possible_in}). "
-                        f"{_table_text(d)}. Either way it falls before the semester of the event.")
+                note = (f"{e.plan.name}: counted back {d.weeks} calendar weeks from {_short(e.plan.event_date or d.calendar_count)}, "
+                        f"{d.title} falls on {_short(d.calendar_count)} ({d.calendar_count_in}). "
+                        f"{_table_text(d)}. "
+                        + ("Either way it falls before the semester of the event."
+                           if d.table_date is not None and d.calendar_count < term_start and d.table_date < term_start else
+                           "One of the two falls before the semester of the event.")
+                        + f" Apply by the earlier date, {_short(d.apply_by)}.")
                 problems.add("deadline_in_previous_semester_or_break", d.rule_id, Verdict.YELLOW, [e.plan.key], note,
                              "Apply to USG before the semester ends; confirm the date in USG's deadline table or with "
                              "usgfunds@usc.edu.", also=[TABLE_RULE])
@@ -441,6 +447,13 @@ def _yearly_problems(request: YearPlanRequest, events: list[_Event], problems: _
         requested = sum(e.plan.usg_request_cents for e in group)
         keys = [e.plan.key for e in group]
         if year == this_year:
+            if request.usg_received_this_year_cents is None and requested > cap:
+                problems.add("over_yearly_cap", rule.id, Verdict.RED, keys,
+                             f"{year}: USG requests total {money(requested)}, over the {money(cap)} yearly cap by "
+                             f"{money(requested - cap)} even before any money already received (not entered).",
+                             f"Ask USG for at least {money(requested - cap)} less across these events, or fund that much "
+                             "another way.", group=year)
+                continue
             if request.usg_received_this_year_cents is None:
                 problems.add("yearly_cap_unknown", rule.id, Verdict.YELLOW, keys,
                              f"Greenlight does not know how much the club has received from USG in {year}, so it cannot "
@@ -472,7 +485,7 @@ def _apply_by(e: _Event) -> TableDeadline | None:
     """The earliest dated deadline in the table copy, or else the earliest latest-possible date."""
     if not e.usg_deadlines:
         return None
-    return min(e.usg_deadlines, key=lambda d: (d.table_date or d.latest_possible, d.rule_id))
+    return min(e.usg_deadlines, key=lambda d: (d.apply_by, d.rule_id))
 
 
 def _not_fundable(e: _Event, ruleset: RuleSet) -> tuple[str, Verdict, Citation | None] | None:
@@ -643,7 +656,7 @@ def _budget(request: YearPlanRequest, events: list[_Event], strategy: FundingStr
 # Calendar
 
 
-def _calendar(events: list[_Event], ruleset: RuleSet) -> list[CalendarItem]:
+def _calendar(events: list[_Event], ruleset: RuleSet, planned: set[str]) -> list[CalendarItem]:
     items: list[CalendarItem] = []
     for e in events:
         name, key = e.plan.name, e.plan.key
@@ -661,12 +674,14 @@ def _calendar(events: list[_Event], ruleset: RuleSet) -> list[CalendarItem]:
                                           rule_id=o.rule_id, title=f"Contact the office: {o.title}", status=o.status,
                                           status_label=STATUS_LABELS[o.status], past_due=o.contact_by < e.packet.as_of,
                                           unconfirmed=False, citation=o.citation))
+        if key not in planned:
+            continue  # no "apply to USG" date for an event the funding plan leaves out
         for d in e.usg_deadlines:
-            if d.table_date is not None:
-                items.append(CalendarItem(day=d.table_date, kind="usg_table", event_key=key, event_name=name,
-                                          rule_id=d.rule_id, title=f"Apply to USG: {d.title}", status="check_with_office",
-                                          status_label="Check with USG: date from an unconfirmed copy of USG's table",
-                                          past_due=d.passed_per_table, unconfirmed=True, citation=d.table_citation))
+            items.append(CalendarItem(day=d.apply_by, kind="usg_table", event_key=key, event_name=name,
+                                      rule_id=d.rule_id, title=f"Apply to USG: {d.title}", status="check_with_office",
+                                      status_label=("Check with USG: the earlier of USG's table (unconfirmed copy) and a "
+                                                    "count of calendar weeks"),
+                                      past_due=d.apply_by < e.packet.as_of, unconfirmed=True, citation=d.table_citation))
     kind_order = {"usg_table": 0, "due": 1, "contact_by": 2, "event": 3}
     return sorted(items, key=lambda i: (i.day, kind_order[i.kind], i.event_key, i.rule_id or ""))
 

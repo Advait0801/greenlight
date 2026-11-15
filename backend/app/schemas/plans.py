@@ -130,10 +130,12 @@ class TableDeadline(BaseModel):
     title: str
     column: Literal["6_week", "9_week"]
     weeks: int
-    # The event date minus `weeks` calendar weeks. An academic week is at least seven days, so the deadline is no
-    # later than this (counted from the event; the first payment is assumed to be due on or before the event).
-    latest_possible: date
-    latest_possible_in: str
+    # The event date minus `weeks` calendar weeks (counted from the event; the first payment is assumed to be due on or
+    # before the event). Not a bound: USG's own table sometimes gives a later date, sometimes an earlier one.
+    calendar_count: date
+    calendar_count_in: str
+    # The earlier of `calendar_count` and `table_date`: the stricter date, the one the plan tells the officer to use.
+    apply_by: date
     table_status: Literal["date", "no_deadline", "not_applicable", "not_in_table"]
     table_date: date | None
     table_row_to_confirm: bool

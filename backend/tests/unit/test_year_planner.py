@@ -57,8 +57,8 @@ def test_demo_retreat_travel_deadline_lands_in_november_of_the_previous_semester
     retreat = next(e for e in report.events if e.key == "retreat")
     travel = next(d for d in retreat.usg_deadlines if d.rule_id == "usg-deadline-travel")
     assert travel.table_date == date(2026, 11, 18)
-    assert travel.latest_possible == date(2026, 12, 25)
-    assert travel.latest_possible_in == "winter recess"
+    assert travel.calendar_count == date(2026, 12, 25)
+    assert travel.calendar_count_in == "winter recess"
     assert travel.before_semester
     problem = next(p for p in report.problems if p.rule_id == "usg-deadline-travel")
     assert problem.severity is Verdict.YELLOW
@@ -245,3 +245,37 @@ def test_over_yearly_cap_figure_is_counted_per_academic_year() -> None:
     report = _plan(events)
     assert report.budget.usg_requested_over_yearly_cap_cents == 0
     assert all(p.type != "over_yearly_cap" for p in report.problems)
+
+
+# ---- regressions from iteration 3 (audit)
+
+
+def test_apply_by_is_the_earlier_of_the_table_and_the_calendar_week_count() -> None:
+    """H: for a Feb 22 event the table says Jan 13 but six calendar weeks back is Jan 11; the plan said Jan 13 and
+    called Jan 11 'at the latest'."""
+    report = _plan([_event("feb", "2027-02-22")])
+    d = next(x for x in report.events[0].usg_deadlines if x.rule_id == "usg-page-deadline-event-date")
+    assert d.table_date == date(2027, 1, 13) and d.calendar_count == date(2027, 1, 11)
+    assert d.apply_by == date(2027, 1, 11)
+    step = report.strategy.steps[0]
+    assert step.apply_by is not None and step.apply_by.apply_by == date(2027, 1, 11)
+    usg_days = {i.day for i in report.calendar if i.kind == "usg_table"}
+    assert usg_days == {date(2027, 1, 11)}
+    assert all("at the latest" not in p.note for p in report.problems)
+
+
+def test_requests_alone_over_the_cap_are_red_when_received_is_unknown() -> None:
+    events = [_event(f"e{i}", f"2027-04-{5 + i:02d}", estimated_cost_cents=300000, usg_request_cents=300000) for i in range(3)]
+    report = _plan(events, usg_received_this_year_cents=None)
+    over = next(p for p in report.problems if p.type == "over_yearly_cap")
+    assert over.severity is Verdict.RED and "$1,000.00" in over.note
+
+
+def test_no_apply_to_usg_date_for_an_event_left_out_of_the_funding_plan() -> None:
+    report = _plan([_event("tickets", "2027-04-09", attributes=["food", "ticket_sales"])])
+    assert not any(i.kind == "usg_table" for i in report.calendar)
+
+
+def test_calendar_items_carry_their_rule_citation() -> None:
+    report = _case("yp-01")
+    assert all(i.citation is not None for i in report.calendar if i.kind != "event")
