@@ -184,3 +184,9 @@ def test_draft_without_the_model_falls_back_to_the_officers_words(tmp_path: Path
     report = check_budget(request, get_ruleset(), get_calendar(), date(2026, 11, 15))
     draft = draft_application(request, report, "Because.", client=_client(tmp_path))
     assert draft.sections["purpose"] == "Because." and draft.notes
+
+
+def test_a_document_with_instructions_has_no_sure_categories() -> None:
+    """Regression (phase 3 iteration 3, audit M): a quote the model saw instructions in kept its categories 'sure'."""
+    doc = document_from_reading(_reading(), index=1, name="q", text=INJECTION, ruleset=get_ruleset())
+    assert doc.contains_instructions and doc.lines[0].category_sure is False

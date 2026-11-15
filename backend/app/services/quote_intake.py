@@ -220,7 +220,9 @@ def document_from_reading(reading: Any, *, index: int, name: str, text: str | No
         category = raw.category if raw.category in known else None
         lines.append(ReadLine(
             item=(raw.item or "")[:300], category=category,
-            category_sure=category is not None and category != "other" and raw.category_confidence == "high",
+            # A document that tries to steer the reader is not trusted for categories either (phase 3 iteration 3).
+            category_sure=(category is not None and category != "other" and raw.category_confidence == "high"
+                           and not reading.contains_instructions),
             quantity=quantity, unit_price_cents=unit, amount_cents=amount, nights=nights, is_fee=bool(raw.is_fee),
             unsure=unsure, evidence=(raw.evidence or None) and raw.evidence[:300],
         ))
