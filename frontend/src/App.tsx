@@ -12,7 +12,7 @@ function Mark({ small }: { small?: boolean }) {
     <span aria-hidden="true" className={`flex flex-none flex-col items-center justify-center gap-[3px] rounded-md bg-black/15 ${small ? "h-8 w-6" : "h-10 w-7"}`}>
       <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
       <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-      <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+      <span className="h-2 w-2 rounded-full bg-[#22c55e] shadow-[0_0_6px_1px_rgba(34,197,94,0.75)]" />
     </span>
   );
 }
