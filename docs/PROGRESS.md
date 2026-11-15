@@ -8,7 +8,7 @@ Final reviewers in Phase 7 must **not** read this file.
 
 - **Phase 0, 1, 2, 3:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** built on `main` (2026-11-15); iterations next.
-- **Next action:** Phase 4 iteration 1 (verify).
+- **Next action:** Phase 4 iteration 2 (break).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -19,7 +19,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 4 | Year plan | done (on `main`) | 0 | — | open |
+| 4 | Year plan | done (on `main`) | 1 | no (iteration 1: 0 blockers, 1 high, fixed) | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
@@ -93,6 +93,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 4, iteration 1 — verify
+Date/time: 2026-11-15
+Agent and model: verifier (fresh), Opus 5.5, medium effort, on commit 5bb70c5
+Report: docs/reviews/phase-4-iter-1-verify.md
+Findings: 0/1/2/5 (5 of 6 exit criteria pass; eval 2/2 plans match, 233 caught, 0 missed, 0 wrongly flagged; checked at 375 px in headless Chrome)
+Fixed: H1 with the amount received from USG left empty, the funding plan applied no yearly cap ($12,000 planned for one year); it now caps at $8,000 (received cannot be negative) and says the amount is unknown (regression test in tests/unit/test_year_planner.py). Also M: the over-the-cap figure added requests from different academic years (now per year, test added); M: calendar and "this week" items now show their rule text and source.
+Left open: M the strategy never suggests a fund unless the officer picks one (shown "needs a human look"); L some not-planned reasons named the wrong cap (partly fixed: received money now named); L "this week" can list a USG application for an event not in the funding plan; L a partial request can be a few cents; L small tap targets (checkboxes, nav links); L a venue request due on December 25 (Phase 2 rule, matches the test set).
+Full test suite: pass (683)
+Gate: iteration 2 (break) next
 
 ### Phase 3, iteration 3 — audit; phase closed
 Date/time: 2026-11-15
