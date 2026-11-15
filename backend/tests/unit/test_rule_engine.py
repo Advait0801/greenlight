@@ -186,3 +186,11 @@ def test_passed_deadlines_after_the_event_are_past_due(ruleset, calendar) -> Non
                           ruleset, calendar, date(2026, 11, 15))
     evaluation = _by_id(packet)["usg-post-event-evaluation"]
     assert evaluation.due == date(2026, 11, 10) and evaluation.past_due
+
+
+def test_usg_breaks_rule_is_not_green_for_a_summer_event(ruleset, calendar) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 2 iteration 3, audit H1): a summer date was green on 'no USG funding during breaks'."""
+    packet = _packet(ruleset, calendar, event_date=date(2027, 5, 25), venue="venue_tes_meeting_room", attributes=["usg_funding"])
+    item = _by_id(packet)["usg-no-funding-breaks"]
+    assert item.status == "check_with_office"
+    assert item.finding is not None and item.finding.verdict is Verdict.YELLOW

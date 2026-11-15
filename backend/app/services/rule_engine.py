@@ -137,6 +137,12 @@ def _date_check(rule: Rule, facts: EventFacts, calendar: AcademicCalendar) -> _D
         return _DateCheck(bool(hit), f"{_fmt(hit[0])} falls on study days or final exams." if hit else None)
     if rule.id == "usg-no-funding-breaks":
         hit = [day for day in days if calendar.is_break(day) or calendar.is_university_holiday(day) or calendar.is_study_day_or_final_exam(day)]
+        if hit:
+            return _DateCheck(True, f"{_fmt(hit[0])} falls in a university holiday, break, study days or finals.")
+        outside = [day for day in days if (term := calendar.term_for(day)) is None or term.id.startswith("summer")]
+        if outside:
+            # The guidelines name no summer dates; USG's FAQ reads as no summer funding (a yellow rule). Never green.
+            return _DateCheck(None, f"{_fmt(outside[0])} is outside the fall and spring semesters; ask USG (usgfunds@usc.edu) whether it can be funded.")
         return _DateCheck(bool(hit), f"{_fmt(hit[0])} falls in a university holiday, break, study days or finals." if hit else None)
     if rule.id == "usg-faq-no-summer-funding":
         hit = [day for day in days if (term := calendar.term_for(day)) is None or term.id.startswith("summer")]
