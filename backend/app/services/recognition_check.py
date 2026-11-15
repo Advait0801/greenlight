@@ -45,27 +45,41 @@ STATE_VERDICTS: dict[State, Verdict | None] = {
 BLANK = "{blank}"
 BLANK_SHOWN = "________"
 CLUB_FLAGS = ("has_parent_organization", "has_school_affiliation", "has_additional_officers", "has_appointed_positions")
+CLUB_FLAG_QUESTIONS = {
+    "has_parent_organization": "Is the club a chapter of a national or parent organization?",
+    "has_school_affiliation": "Is the club affiliated with a USC school, department or program?",
+    "has_additional_officers": "Does the club have officer positions beyond the five required ones?",
+    "has_appointed_positions": "Is any officer position appointed rather than elected?",
+}
 
 ARTICLE_HEADING = re.compile(r"^[ \t]*ARTICLE\s+([IVX]{1,4})\b\s*[.:]?", re.IGNORECASE)
 SECTION_HEADING = re.compile(r"^[ \t]*SECTION\s+([A-H])\s*[.:]", re.IGNORECASE)
 PART_HEADING = re.compile(r"^[ \t]*PART\s*(\d{1,2})\s*[.:]", re.IGNORECASE)
 INLINE_HEADING = re.compile(r"(?<=\S)[ \t]+(?=(?:ARTICLE\s+[IVX]{1,4}\s*[.:]|Section\s+[A-H]\s*[.:]|Part\s*\d{1,2}\s*[.:]))")
 APPENDIX = re.compile(r"^[ \t]*APPENDIX\b")
-DOT_LEADER = re.compile(r"\.{4,}")
+# A table-of-contents line: a dot leader ending in a page number. Other lines with dots are content.
+DOT_LEADER = re.compile(r"\.{4,}\s*\d{1,3}\s*$")
 PAGE_NOISE = re.compile(
     r"^(\[page \d+\]|\d{1,3}|page \d+( of \d+)?|constitution template for (recognized )?student organizations"
     r"|university of southern california|\d{4}\s*-\s*\d{2}\s*ay|table of contents)$",
     re.IGNORECASE,
 )
-YEAR_LABEL = re.compile(r"(20\d{2})\s*[-–/]\s*(\d{2})(?:\d{2})?\s*(?:AY|academic year)", re.IGNORECASE)
+YEAR_LABEL = re.compile(r"\b20(\d{2})\s*[-–/]\s*(?:20)?(\d{2})\b(?=\s*(?:AY\b|academic\s+year|school\s+year|$|\n))",
+                        re.IGNORECASE | re.MULTILINE)
 INSTRUCTION_TEXT = re.compile(
     r"ignore\s+(all\s+|the\s+|any\s+)?(previous\s+|prior\s+|above\s+)?(rules|instructions)"
     r"|mark\s+(this|it|everything|all|every)\b.{0,40}\b(present|approved|compliant|green|passing)"
     r"|(automated|ai)\s+(reviewer|checker|assistant|system)",
     re.IGNORECASE,
 )
-PLACEHOLDERS = {"na", "notapplicable", "tbd", "tba", "tobedetermined", "tobedecided", "none", "nil", "blank", "todo",
-                "fillin", "insert", "xxx", "xxxx"}
+# Answers that say nothing: never a filled blank. ("None" and "N/A" are judged separately: some blanks accept them.)
+PLACEHOLDER_TEXT = re.compile(
+    r"\b(tbd|tbc|tba|tbh|tbdl|to\s+be\s+(?:decided|determined|confirmed|announced|added|filled|completed|written)"
+    r"|insert(?:ed)?\b|lorem\s+ipsum|fill\s+(?:this\s+)?in|placeholder|todo|to\s+do|x{2,}|blank)\b"
+    r"|\?{2,}|\.{3,}\s*$",
+    re.IGNORECASE,
+)
+NONE_ANSWERS = {"na", "notapplicable", "none", "nil", "nodues", "nothing", "n"}
 # How to read a fill-in against each rule it could break: the yes/no question put to the AI reader, and
 # words that make code doubt a "no". These are reading aids only. The rule's text, its citation and the
 # verdict come from the rule table; a "yes" to a question means the rule is broken.
@@ -226,6 +240,7 @@ class Structure:
     sections: dict[tuple[str, str], list[Chunk]] = field(default_factory=dict)
     articles: set[str] = field(default_factory=set)
     loose: list[tuple[str, str]] = field(default_factory=list)  # (where, text) outside any Part
+    appendix: list[str] = field(default_factory=list)  # the template's appendix is empty; anything here is reported
 
 
 def parse_structure(text: str) -> Structure:
@@ -240,12 +255,20 @@ def parse_structure(text: str) -> Structure:
     article: str | None = None
     section: str | None = None
     chunk: Chunk | None = None
+    in_appendix = False
     for raw in text.split("\n"):
         line = raw.strip()
         if not line or PAGE_NOISE.match(line) or DOT_LEADER.search(line):
             continue
+        if in_appendix:
+            structure.appendix.append(line)
+            continue
         if APPENDIX.match(line):
-            break
+            in_appendix = True
+            rest = APPENDIX.sub("", line, count=1).strip(" .:\t")
+            if rest and not rest.isdigit():
+                structure.appendix.append(rest)
+            continue
         heading = ARTICLE_HEADING.match(line)
         if heading:
             article, section, chunk = heading.group(1).upper(), None, None
@@ -290,10 +313,22 @@ def _says_not_applicable(squeezed: str) -> bool:
     return squeezed in ("na", "none") or squeezed.startswith("notapplicable")
 
 
-def _is_placeholder(original: str, squeezed: str) -> bool:
+def _is_placeholder(original: str, squeezed: str, none_is_acceptable: bool = False) -> bool:
+    """True when a blank's answer says nothing: a placeholder, a bracketed prompt, or (unless the blank
+    accepts it) "none" or "N/A". Only letters and digits count, so "?", "-" or "..." alone is empty too."""
+    original = re.sub(r"_{2,}", " ", original)  # the form's printed answer line, not part of the answer
     stripped = original.strip().strip(".,;:")
     bracketed = len(stripped) > 1 and stripped[0] in "[<{(" and stripped[-1] in "]>})"
-    return squeezed in PLACEHOLDERS or bracketed
+    if bracketed or PLACEHOLDER_TEXT.search(original) or not squeezed:
+        return True
+    if len(squeezed) <= 2 and not squeezed.isdigit() and squeezed not in ("na", "no"):
+        return True  # "x", "a": too short to be an answer
+    return squeezed in NONE_ANSWERS and not none_is_acceptable
+
+
+def _repeats_template(squeezed: str, before: str, after: str) -> bool:
+    """A blank filled with the fixed words around it ("at least of all meetings of all meetings")."""
+    return len(squeezed) >= 4 and (after.startswith(squeezed) or before.endswith(squeezed))
 
 
 def _word_differences(clause: Clause, text: str) -> tuple[list[str], list[str]]:
@@ -360,6 +395,7 @@ def _compare_text(clause: Clause, text: str) -> Comparison:
     blanks: list[str] = []
     empty: list[int] = []
     placeholder = False
+    accepts_none = bool(clause.rule.params.get("none_is_acceptable"))
     for number, (start, end) in enumerate(spans, start=1):
         # The blank runs from just after the fixed words before it to just before the fixed words after it,
         # punctuation included, so a "[insert name]" keeps its brackets.
@@ -369,7 +405,8 @@ def _compare_text(clause: Clause, text: str) -> Comparison:
         blanks.append(value)
         if end <= start:
             empty.append(number)
-        elif _is_placeholder(value, squeezed[start:end]) and not clause.rule.params.get("none_is_acceptable"):
+        elif _is_placeholder(value, squeezed[start:end], accepts_none) or _repeats_template(
+                squeezed[start:end], segments[number - 1], segments[number]):
             empty.append(number)
             placeholder = True
     if empty:
@@ -384,9 +421,18 @@ def compare(clause: Clause, lines: list[str]) -> Comparison:
     whole = _compare_text(clause, "\n".join(lines).strip())
     if whole.state == "present" or clause.template.endswith(BLANK):
         return whole
+    # The clause's own wording can only fill the first few lines; stop once they are longer than it.
+    limit = len(despace(clause.template)) + 40
+    length = 0
     for count in range(1, len(lines)):
+        length += len(despace(lines[count - 1]))
+        if length > limit:
+            break
         head = _compare_text(clause, "\n".join(lines[:count]).strip())
         if head.state == "present":
+            # Words after a fixed clause can change what it means (for example "this does not apply to..."), so the
+            # clause is not shown as present; the officer is asked to look.
+            head.state, head.reason = "needs_look", "extra_after"
             head.extra_lines = [line for line in lines[count:] if line.strip()]
             return head
     return whole
@@ -483,16 +529,34 @@ def reader_questions(ruleset: RuleSet) -> list[ReaderQuestion]:
     return questions
 
 
+VAGUE_COUNT = re.compile(
+    r"\b(less|fewer|under|below|most|up\s+to|max(?:imum)?|no\s+more|half|halves|quarter|third|fraction|or|optional|"
+    r"if|as\s+needed|needed|may|might|approximately|about|around|roughly|between|variable|varies|tbd|tbc)\b"
+    r"|\d\s*[/.,]\s*\d|-\s*\d",
+    re.IGNORECASE,
+)
+
+
 def _count_in(value: str) -> int | None:
-    """A whole number stated in a short answer ("two", "2", "at least 3"), or None when it is not clear."""
+    """A whole number stated in a short answer ("two", "2", "at least 3"), or None when it is not clear.
+    Wording that allows fewer ("less than one", "at most 1", "one-half") is never read as a number."""
+    if VAGUE_COUNT.search(value):
+        return None
     found = {int(token) if token.isdigit() else NUMBER_WORDS[token] for token in _tokens(value)
              if token.isdigit() or token in NUMBER_WORDS}
     return found.pop() if len(found) == 1 else None
 
 
-def _signal_terms(rule: Rule, text: str) -> list[str]:
+MEMBERSHIP_CONTEXT = re.compile(r"\b(member|members|membership|join|joining|eligib\w*|admi(?:t|tted|ssion))\b", re.IGNORECASE)
+# Warning words too common to mean anything outside a membership blank ("must", "required", "pay").
+WEAK_TERMS = {"must", "required", "mandatory", "pay", "pays", "paid", "payment", "approval", "approved", "anyone", "public",
+              "vote of", "member of", "members of", "selected", "chosen", "test"}
+
+
+def _signal_terms(rule: Rule, text: str, *, strong_only: bool = False) -> list[str]:
     folded = " ".join(_tokens(text))
-    return [term for term in READING_AIDS.get(rule.id, (None, ()))[1] if re.search(rf"\b{re.escape(term)}\b", folded)]
+    return [term for term in READING_AIDS.get(rule.id, (None, ()))[1]
+            if not (strong_only and term in WEAK_TERMS) and re.search(rf"\b{re.escape(term)}\b", folded)]
 
 
 def _conflicts(
@@ -501,6 +565,19 @@ def _conflicts(
     """Rules the filled-in wording breaks (certain) or may break (needs a human look)."""
     out: list[Conflict] = []
     filled = " ".join(comparison.blanks)
+    if BLANK in clause.template and not clause.rule.params.get("contradicted_by_rules"):
+        # Membership conditions can be written into any blank (a purpose, a meeting rule). Code has no reader
+        # question for these blanks, so wording that talks about membership and names a barrier needs a look.
+        if MEMBERSHIP_CONTEXT.search(filled):
+            for rule_id in READING_AIDS:
+                if rule_id in ruleset and (terms := _signal_terms(ruleset.get(rule_id), filled, strong_only=True)):
+                    out.append(Conflict(
+                        rule_id=rule_id, certain=False, basis="terms", terms=terms,
+                        reason="This answer sets a condition on membership, which the membership rules limit.",
+                        message=ruleset.get(rule_id).message, fix=None, evidence=None,
+                        citation=citation_for(ruleset, rule_id),
+                    ))
+        return out
 
     def add(rule: Rule, certain: bool, basis: str, reason: str = "", evidence: str | None = None,
             terms: list[str] | None = None) -> None:
@@ -691,17 +768,32 @@ def check_constitution(
         assigned.update(_assign(section_clauses, structure.sections.get(key, [])))
 
     fixed_starts = [clause.segments[0][:15] for clause in clauses if clause.article is None and BLANK not in clause.template]
+    comparisons: dict[str, Comparison] = {}
+    for clause in clauses:
+        if clause.article is None:
+            comparisons[clause.rule.id] = _preamble(clause, structure.preamble, fixed_starts)
+        else:
+            chunk = assigned.get(clause.rule.id)
+            comparisons[clause.rule.id] = compare(clause, chunk.lines) if chunk is not None else Comparison("missing", "absent")
+    # A "no" from the officer does not hide a clause when the document itself fills in a clause that depends on
+    # the same fact (for example Article VI.B names a national organization): the fact is then treated as unknown.
+    disputed = sorted({
+        str(clause.rule.params["required_if_flag"]) for clause in clauses
+        if clause.rule.params.get("required_if_flag") and club.get(clause.rule.params["required_if_flag"]) is False
+        and comparisons[clause.rule.id].state == "present" and comparisons[clause.rule.id].blanks
+        # Only when the "no" would hide a clause that is not there.
+        and any(other.rule.params.get("required_if_flag") == clause.rule.params["required_if_flag"]
+                and comparisons[other.rule.id].state != "present" for other in clauses)
+    })
+    club = {**club, **{flag: None for flag in disputed}}
+
     results: list[ClauseResult] = []
     extra: list[str] = []
     for clause in clauses:
         rule = clause.rule
         flag = rule.params.get("required_if_flag")
         required_reason = rule.params.get("required_if") if flag else None
-        if clause.article is None:
-            comparison = _preamble(clause, structure.preamble, fixed_starts)
-        else:
-            chunk = assigned.get(rule.id)
-            comparison = compare(clause, chunk.lines) if chunk is not None else Comparison("missing", "absent")
+        comparison = comparisons[rule.id]
         state: State = comparison.state
         conflicts: list[Conflict] = []
         if flag and club.get(flag) is False:
@@ -719,7 +811,7 @@ def check_constitution(
             extra.extend(f"After {clause.label}: {line}" for line in comparison.extra_lines)
 
         message = _message(clause, state, comparison, conflicts, required_reason)
-        if state == "needs_look" and not conflicts:
+        if state == "needs_look" and not conflicts and comparison.reason != "extra_after":
             message = (
                 f"{clause.label}: Greenlight read this from a scanned file and cannot double-check the reading. "
                 "Compare it with the template yourself." if transcribed else
@@ -752,8 +844,17 @@ def check_constitution(
     for chunks in structure.sections.values():
         extra.extend(f"Part {chunk.number}: {chunk.text}" for chunk in chunks if not chunk.used and despace(chunk.text))
     extra.extend(f"{where}: {line}" for where, line in structure.loose)
+    extra.extend(f"Appendix: {line}" for line in structure.appendix)
 
     notes = _notes(text, ruleset, structure, results, extra, transcribed)
+    if disputed:
+        notes.insert(0, ReportNote(
+            kind="answer_disputed", verdict=Verdict.YELLOW,
+            message="You answered “no” to a question about your club, but your constitution fills in a clause that applies "
+                    "only when the answer is “yes”. Greenlight treats the answer as not sure, so the related clauses are "
+                    "checked as required. Check your answers to the questions about your club.",
+            detail=[CLUB_FLAG_QUESTIONS.get(flag, flag) for flag in disputed],
+        ))
     summary = {state: sum(1 for result in results if result.state == state) for state in STATE_LABELS}
     summary["total"] = len(results)
     summary["extra_text"] = len(extra)
@@ -775,7 +876,7 @@ def _notes(text: str, ruleset: RuleSet, structure: Structure, results: list[Clau
     template_rule = "recognition-constitution-template"
     citation = citation_for(ruleset, template_rule) if template_rule in ruleset else None
     expected_year = template_year(ruleset)
-    years = {f"{start}-{end}" for start, end in YEAR_LABEL.findall(text)}
+    years = {f"20{start}-{end}" for start, end in YEAR_LABEL.findall(text)}
     other_years = sorted(years - {expected_year}) if expected_year else []
     if other_years:
         notes.append(ReportNote(
