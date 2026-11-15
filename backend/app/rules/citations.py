@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from app.schemas.common import Citation
+from app.schemas.common import Citation, Finding, Verdict
 
 if TYPE_CHECKING:
     from app.rules.loader import RuleSet
@@ -24,3 +24,9 @@ def citation_for(ruleset: RuleSet, rule_id: str) -> Citation:
         uncertain_reasons=ruleset.uncertain_reasons(rule_id),
         display_severity=ruleset.display_severity(rule_id),
     )
+
+
+def finding_for(ruleset: RuleSet, rule_id: str, verdict: Verdict, message: str, fix: str | None = None) -> Finding:
+    """The one way features build a finding: the citation comes from the rule table, and the Finding type
+    refuses a green the rule cannot support."""
+    return Finding(rule_id=rule_id, verdict=verdict, message=message, fix=fix, citation=citation_for(ruleset, rule_id))

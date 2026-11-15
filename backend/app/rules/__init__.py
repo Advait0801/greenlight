@@ -9,7 +9,7 @@ from functools import lru_cache
 
 from app.config import get_settings
 from app.rules.calendar import AcademicCalendar, CalendarLoadError, load_calendar
-from app.rules.citations import citation_for
+from app.rules.citations import citation_for, finding_for
 from app.rules.loader import RuleLoadError, RuleSet, load_rules
 from app.rules.schema import Rule
 
@@ -50,6 +50,7 @@ __all__ = [
     "RuleSet",
     "calendar_rule_problems",
     "citation_for",
+    "finding_for",
     "get_calendar",
     "get_ruleset",
     "load_calendar",
