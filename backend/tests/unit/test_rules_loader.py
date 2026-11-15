@@ -403,3 +403,12 @@ def test_usg_deadline_rules_pin_their_anchors_and_offsets(ruleset) -> None:  # t
     assert ruleset.get("usg-page-deadline-event-date").params["whichever_first_rules"] == ["usg-page-deadline-nine-weeks-payment"]
     assert ruleset.get("usg-deadline-vendor").conflicts_with == ["usg-page-deadline-event-date"]
     assert set(ruleset.get("usg-faq-deadline-new-vendors-travel").conflicts_with or []) == {"usg-deadline-travel", "usg-approved-vendor"}
+
+
+def test_summer_usg_funding_is_flagged(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, funding audit H2): a USG-funded summer event is not a silent pass."""
+    rule = ruleset.get("usg-faq-no-summer-funding")
+    assert rule.kind == "blocked_period" and "usg_funding" in rule.triggers
+    assert "summer" in rule.params["blocked"]
+    assert ruleset.display_severity(rule.id) == "yellow"
+    assert ruleset.get("usg-no-funding-breaks").params["also_blocks_submissions"] is True

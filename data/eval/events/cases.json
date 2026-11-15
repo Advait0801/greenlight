@@ -2137,6 +2137,13 @@
             "note": "The date falls in a university holiday, break, study days or finals."
           },
           {
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-03-19",
@@ -2316,6 +2323,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-03-10",
@@ -2424,6 +2438,13 @@
           {
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2672,6 +2693,13 @@
           {
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false

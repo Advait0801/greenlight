@@ -198,6 +198,12 @@
           },
           {
             "event": "welcome-mixer",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "welcome-mixer",
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-02-10"
@@ -270,6 +276,12 @@
           },
           {
             "event": "workshop",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-03-01"
@@ -314,6 +326,12 @@
             "event": "retreat",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -486,6 +504,12 @@
           },
           {
             "event": "culture-night",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "culture-night",
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-04-14"
@@ -638,6 +662,12 @@
             "event": "spring-banquet",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
+            "due": null
+          },
+          {
+            "event": "spring-banquet",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -927,6 +957,12 @@
           },
           {
             "event": "speaker-series-1",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "speaker-series-1",
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-02-08"
@@ -995,6 +1031,12 @@
             "event": "resume-workshop",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
+            "due": null
+          },
+          {
+            "event": "resume-workshop",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1133,6 +1175,12 @@
             "event": "case-competition",
             "rule_id": "usg-no-funding-breaks",
             "status": "condition",
+            "due": null
+          },
+          {
+            "event": "case-competition",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1317,6 +1365,12 @@
           },
           {
             "event": "networking-night",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "networking-night",
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
             "due": "2027-04-12"
@@ -1427,6 +1481,12 @@
             "event": "speaker-series-2",
             "rule_id": "usg-no-funding-breaks",
             "status": "blocked",
+            "due": null
+          },
+          {
+            "event": "speaker-series-2",
+            "rule_id": "usg-faq-no-summer-funding",
+            "status": "check_with_office",
             "due": null
           },
           {

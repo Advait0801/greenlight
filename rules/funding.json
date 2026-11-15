@@ -259,7 +259,7 @@
       "effective_date": "2026-10-21",
       "verified": "read",
       "severity": "red",
-      "message": "USG does not fund events held during university holidays, breaks, study days or final exams.",
+      "message": "USG does not fund events held during university holidays, breaks, study days or final exams, and does not process applications on those days.",
       "fix_template": "Move the event out of {blocked_period_name} ({blocked_start} to {blocked_end}).",
       "applies_to": "A USG-funded event whose date falls in a university holiday, break, study days or finals",
       "triggers": [
@@ -271,12 +271,45 @@
           "breaks",
           "study_days",
           "final_exams"
+        ],
+        "also_blocks_submissions": true
+      },
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-academic-calendar-2026-27"
+      ],
+      "notes": "The sentence covers both events and applications: no USG submission deadline should fall on a holiday, break, study day or finals day. The transcribed deadline table skips exactly those Wednesdays (it jumps from 2026-11-18 to 2027-01-13)."
+    },
+    {
+      "id": "usg-faq-no-summer-funding",
+      "domain": "funding",
+      "kind": "blocked_period",
+      "title": "No USG funding for summer events (USG FAQ)",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding FAQ document (FAQ for Funding Website)",
+      "source_section": "FAQ 6: Can I apply for summer event funding?",
+      "source_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "source_text": "Can I apply for summer event funding? 1. USG Funding does not process applications or provide funding for events during University holidays, breaks, study days, or finals.",
+      "effective_date": "2026-11-14",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "Asked whether summer events can be funded, USG's FAQ answers that it does not fund events during holidays, breaks, study days or finals. Greenlight reads this as no USG funding for events outside the fall and spring semesters; confirm with usgfunds@usc.edu.",
+      "fix_template": "Hold the event during the fall or spring semester, or ask USG (usgfunds@usc.edu) first.",
+      "applies_to": "A USG-funded event outside the fall and spring semesters (for example in summer)",
+      "triggers": [
+        "usg_funding"
+      ],
+      "params": {
+        "blocked": [
+          "summer",
+          "between_semesters"
         ]
       },
       "conflicts_with": null,
       "depends_on": [
         "usc-academic-calendar-2026-27"
-      ]
+      ],
+      "notes": "The FAQ answers the summer question with the breaks sentence, so it implies no summer funding without saying so; shown yellow. The deadline table also has no rows after April 30, 2027."
     },
     {
       "id": "usg-post-event-evaluation",
