@@ -23,6 +23,9 @@ STATUS_LABELS: dict[str, str] = {
 }
 
 MAX_HEADCOUNT = 1_000_000
+# Dates outside these years cannot be checked (the calendar and rules are for 2026-27) and could not be shifted safely.
+EARLIEST = date(2000, 1, 1)
+LATEST = date(2100, 12, 31)
 MAX_ATTRIBUTES = 80
 
 
@@ -46,6 +49,9 @@ class EventFacts(BaseModel):
 
     @model_validator(mode="after")
     def _consistent(self) -> EventFacts:
+        for value in (self.event_date, self.end_date):
+            if value is not None and not (EARLIEST <= value <= LATEST):
+                raise ValueError(f"dates must be between {EARLIEST.year} and {LATEST.year}")
         if self.end_date is not None and self.event_date is None:
             raise ValueError("an end date needs a start date")
         if self.end_date is not None and self.event_date is not None and self.end_date < self.event_date:
