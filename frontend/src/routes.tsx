@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 
+import { Accuracy } from "./pages/Accuracy";
 import { EventPacket } from "./pages/EventPacket";
 import { GapHelper } from "./pages/GapHelper";
 import { Handover } from "./pages/Handover";
@@ -24,5 +25,6 @@ export const routes: AppRoute[] = [
   { path: "/money/gap", element: <GapHelper />, label: "Funding gap" },
   { path: "/handover", element: <Handover />, label: "Handover" },
   { path: "/usg", element: <UsgScreen />, label: "USG screen" },
+  { path: "/accuracy", element: <Accuracy />, label: "Accuracy" },
   { path: "/status", element: <Home />, label: "Status" },
 ];

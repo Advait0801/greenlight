@@ -1,0 +1,38 @@
+[
+  {
+    "set": "events",
+    "cases": 30,
+    "status": "evaluated",
+    "caught": 456,
+    "missed": 0,
+    "wrongly_flagged": 0,
+    "notes": "end to end (recorded reading step): 30/30 obligation lists match, 0 silently missing; engine on the test set's attributes: 30/30 match, 1 status/date differences, 30/30 conflict lists match"
+  },
+  {
+    "set": "budgets",
+    "cases": 20,
+    "status": "evaluated",
+    "caught": 30,
+    "missed": 0,
+    "wrongly_flagged": 0,
+    "notes": "seeded violations caught 30/30; wrong greens 0; fund matches or yellow 20/20; totals exact 20/20; draft allowed right 20/20; expected findings missing 0; line verdicts differing 0; reading errors 0"
+  },
+  {
+    "set": "constitutions",
+    "cases": 10,
+    "status": "evaluated",
+    "caught": 21,
+    "missed": 0,
+    "wrongly_flagged": 0,
+    "notes": "21/21 planted faults found; 1 found with a different state than the answer key"
+  },
+  {
+    "set": "year_plans",
+    "cases": 2,
+    "status": "evaluated",
+    "caught": 233,
+    "missed": 0,
+    "wrongly_flagged": 0,
+    "notes": "2/2 plans match (calendar, budget totals and problems); problems found 12/12, extra 0; budget totals exact in 2/2; splits add up in 2/2"
+  }
+]

@@ -174,3 +174,13 @@ def test_events_evaluator_counts_a_miss_as_silent_unless_the_officer_is_asked() 
     expected = {"obligations": [{"rule_id": "minors-registration", "status": "to_do", "due": None, "violated": False, "past_due": False}],
                 "source_conflicts": []}
     assert compare(packet, expected)["silently_missing"] == ["minors-registration"]
+
+
+def test_accuracy_page_figures_match_a_fresh_run_of_the_test_sets() -> None:
+    """data/eval/results.json (shown on the accuracy page) must be what run_eval.py measures now.
+    Refresh it with: python scripts/run_eval.py --json > data/eval/results.json"""
+    fresh = run(str(SCRIPTS / "run_eval.py"), "--json",
+                env={"AI_MODE": "recorded", "AI_RECORDINGS_DIR": str(REPO_ROOT / "data" / "ai_recordings")})
+    assert fresh.returncode == 0, fresh.stderr
+    saved = json.loads((REPO_ROOT / "data" / "eval" / "results.json").read_text(encoding="utf-8"))
+    assert json.loads(fresh.stdout) == saved
