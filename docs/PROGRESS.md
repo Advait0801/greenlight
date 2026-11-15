@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Closed |
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
-| 1 | Recognition check | done | 0 | — | open (branch `phase-1/recognition`) |
+| 1 | Recognition check | done | 1 | yes (iteration 1: 0 blockers, 0 high) | open (branch `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
@@ -102,6 +102,16 @@ Fixed: M1 with no venue, every on-campus venue's steps are listed as "check with
 Left open: M3 most "office decides" items have no contact-by date (no source gives one); L2 "move the date" can suggest a blocked period (the text says to check the new date); L3 an .ics with no dated items is empty (the page disables the button); L4 DPS and GSG appear without full names in rule titles; L5 three more cautious statuses than the test set (ev-23 unsure performers, ev-28); L6 the repository's local .env sets AI_MODE=live (a developer setting, not committed).
 Full test suite: pass (389)
 Gate: iteration 2 (break) next
+
+### Phase 1, iteration 1 — verify
+Date/time: 2026-11-15, about 02:30-03:00 PT
+Agent and model: one fresh verifier (general-purpose agent following .claude/agents/verifier.md, which this session could not load by name), Opus 5.5, medium effort
+Report: docs/reviews/phase-1-iter-1-verify.md
+Findings: 0/0/1/6 (all 6 exit criteria pass; keyboard use checked by reading the code)
+Fixed: the upload form no longer says the file is not kept (the audit log keeps the AI reader's quotes); the hard-coded closing date on the page is gone (the readiness checklist shows it with its source); focus moves to the "could not check this file" message.
+Left open: M keyboard use not driven in a real browser; L extra text on the cover page not listed; L co-09 VIII.A.2 shown "wording changed" not "contradicts"; L a changed cover-page clause shows no "your document says".
+Full test suite: pass (421 + 105 adversarial)
+Gate: not yet, because iterations 2 (break) and 3 (audit) have not run
 
 ### Phase 0, iteration 4 — break and audit (six reviewers in parallel); phase closed
 Date/time: 2026-11-15, about 00:00-02:30 PT
