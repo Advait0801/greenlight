@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { PrecheckNotice } from "../components/PrecheckNotice";
+import { PageHeader, Wizard } from "../components/ui";
 import { checkConstitution, getSampleConstitution, type ConstitutionReport } from "./recognitionApi";
 import { RecognitionReadiness } from "./RecognitionReadiness";
 import { RecognitionReport } from "./RecognitionReport";
@@ -22,6 +23,7 @@ export function Recognition() {
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<ConstitutionReport | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
     if (report) resultRef.current?.querySelector<HTMLElement>("h2")?.focus();
@@ -54,27 +56,15 @@ export function Recognition() {
     setBusy(true);
     const outcome = await checkConstitution(form);
     setBusy(false);
-    if (outcome.ok) setReport(outcome.data);
-    else setError(outcome.error);
+    if (outcome.ok) {
+      setReport(outcome.data);
+      setStep(1);
+    } else setError(outcome.error);
   }
 
-  return (
-    <div className="space-y-10">
-      <section aria-labelledby="recognition-heading" className="space-y-3">
-        <h1 id="recognition-heading" className="text-3xl font-bold tracking-tight">
-          Recognition check
-        </h1>
-        <p className="max-w-2xl text-stone-700">
-          Compare your constitution with the 2026-27 Campus Activities template before you submit. Greenlight marks each required
-          clause as present, missing, changed or in conflict with a rule, and shows the template's wording and its source.
-        </p>
-        <p className="max-w-2xl text-stone-700">
-          The application's key dates, with their sources, are in the readiness checklist below.
-        </p>
-        <PrecheckNotice />
-      </section>
-
-      <form onSubmit={submit} className="space-y-5 rounded-lg border border-stone-200 bg-white p-5 shadow-sm" aria-busy={busy}>
+  const form = (
+      <form onSubmit={submit} className="grid gap-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6 xl:grid-cols-2" aria-busy={busy}>
+        <div className="space-y-5">
         <div className="space-y-1">
           <button type="button" onClick={loadSample} className="text-sm text-cardinal underline underline-offset-2">
             No file to hand? Try a sample constitution
@@ -107,13 +97,15 @@ export function Recognition() {
           <label className="block">
             <span className="text-sm font-medium">Constitution text</span>
             <textarea
-              className="mt-1 block h-56 w-full rounded border border-stone-400 p-2 font-mono text-sm"
+              className="mt-1 block h-72 w-full rounded border border-stone-400 p-2 font-mono text-sm"
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
           </label>
         )}
 
+        </div>
+        <div className="space-y-5">
         <fieldset className="space-y-3">
           <legend className="font-semibold">About your club</legend>
           <p className="text-sm text-stone-600">
@@ -155,13 +147,35 @@ export function Recognition() {
           Nothing is submitted anywhere. Greenlight does not save your file; when its AI reader reads it, the words it quotes are
           kept in a private audit log.
         </p>
+        </div>
       </form>
+  );
 
-      <div ref={resultRef} aria-live="polite">
-        {report ? <RecognitionReport report={report} /> : null}
-      </div>
+  const locked = report ? undefined : "Check a constitution first (step 1). No file to hand? Try the sample constitution.";
+  return (
+    <div className="space-y-6">
+      <PageHeader eyebrow="Recognition" title="Recognition check">
+        <p>
+          Compare your constitution with the 2026-27 Campus Activities template before you submit. Greenlight marks each required
+          clause as present, missing, changed or in conflict with a rule, and shows the template's wording and its source.
+        </p>
+        <p>
+          The application's key dates, with their sources, are in the readiness checklist below.
+        </p>
+        <PrecheckNotice />
+      </PageHeader>
 
-      <RecognitionReadiness />
+      <Wizard
+        label="Recognition steps"
+        step={step}
+        onStep={setStep}
+        steps={[
+          { id: "upload", label: "Upload", content: form },
+          { id: "findings", label: "Findings", content: report ? <div ref={resultRef} aria-live="polite"><RecognitionReport report={report} view="findings" /></div> : null, ...(locked ? { locked } : {}) },
+          { id: "report", label: "Report", content: report ? <RecognitionReport report={report} view="report" /> : null, ...(locked ? { locked } : {}) },
+          { id: "readiness", label: "Readiness checklist", content: <RecognitionReadiness /> },
+        ]}
+      />
     </div>
   );
 }

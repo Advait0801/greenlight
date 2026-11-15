@@ -99,31 +99,8 @@ export function RecognitionReadiness() {
         </p>
       </div>
 
-      {report ? (
-        <div className="rounded-lg border border-stone-200 bg-white p-5" aria-live="polite">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="font-medium">{report.message}</p>
-            <StatusBadge state={report.overall} label={report.overall === "green" ? "Ready" : report.overall === "red" ? "Not ready" : "Needs a human look"} />
-          </div>
-          <h3 className="mt-4 font-semibold">Key dates</h3>
-          <ul className="mt-2 space-y-3">
-            {report.key_dates.map((key) => (
-              <li key={key.label} className="text-sm">
-                <p>
-                  <span className="font-medium">{key.label}:</span> {key.message}
-                </p>
-                <SourceLink citation={key.citation} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-      {error ? (
-        <p role="alert" className="rounded border border-red-300 bg-white px-4 py-3">
-          {error}
-        </p>
-      ) : null}
-
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] xl:items-start">
+        <div className="space-y-5">
       <fieldset className="rounded-lg border border-stone-200 bg-white p-5">
         <legend className="px-1 font-semibold">Officers</legend>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -166,6 +143,33 @@ export function RecognitionReadiness() {
         ))}
       </fieldset>
 
+        </div>
+        <div className="space-y-5">
+      {report ? (
+        <div className="rounded-lg border border-stone-200 bg-white p-5" aria-live="polite">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-medium">{report.message}</p>
+            <StatusBadge state={report.overall} label={report.overall === "green" ? "Ready" : report.overall === "red" ? "Not ready" : "Needs a human look"} />
+          </div>
+          <h3 className="mt-4 font-semibold">Key dates</h3>
+          <ul className="mt-2 space-y-3">
+            {report.key_dates.map((key) => (
+              <li key={key.label} className="text-sm">
+                <p>
+                  <span className="font-medium">{key.label}:</span> {key.message}
+                </p>
+                <SourceLink citation={key.citation} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {error ? (
+        <p role="alert" className="rounded border border-red-300 bg-white px-4 py-3">
+          {error}
+        </p>
+      ) : null}
+
       {report
         ? report.groups.map((group) => (
             <section key={group.title} aria-label={`${group.title} checklist`} className="space-y-2">
@@ -205,6 +209,8 @@ export function RecognitionReadiness() {
             </section>
           ))
         : null}
+        </div>
+      </div>
     </section>
   );
 }
