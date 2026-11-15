@@ -139,3 +139,9 @@ def test_start_up_survives_another_worker_storing_the_same_rule_versions(monkeyp
     monkeypatch.setattr(main, "sync_rule_versions", clash)
     with TestClient(main.create_app()) as started:
         assert started.get("/health").status_code == 200
+
+
+def test_health_names_the_database_kind_but_not_its_address(client) -> None:  # type: ignore[no-untyped-def]
+    body = client.get("/health").json()
+    assert body["database_kind"] == "sqlite"
+    assert "sqlite:" not in str(body) and "postgresql:" not in str(body)

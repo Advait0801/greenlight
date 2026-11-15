@@ -75,6 +75,8 @@ def health(response: Response) -> dict[str, Any]:
         "notice": PRECHECK_NOTICE,
         "ai_mode": get_settings().ai_mode.value,
         "database": database,
+        # Only the kind (sqlite or postgresql), never the address: shows whether the deployed site kept its data.
+        "database_kind": get_engine().dialect.name,
         "rules": rules,
         "calendar": calendar,
     }
