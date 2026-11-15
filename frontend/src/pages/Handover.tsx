@@ -82,7 +82,7 @@ export function Handover() {
             </div>
           ))}
           <button type="button" onClick={() => {
-            if (window.confirm("Replace the year plan saved in this browser with next year's starting plan?")) navigate("/", { state: { seedPlan: packet.next_year_plan } });
+            if (window.confirm("Replace the year plan saved in this browser with next year's starting plan?")) navigate("/plan", { state: { seedPlan: packet.next_year_plan } });
           }} className="rounded border border-stone-400 px-4 py-2">
             Start next year's plan from this one
           </button>

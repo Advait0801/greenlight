@@ -1,23 +1,197 @@
 @import "tailwindcss";
 
-/* USC cardinal and gold, used lightly as accents. */
+/* USC cardinal and gold. Cardinal carries actions and identity; gold is the accent rule. */
 @theme {
   --color-cardinal: #990000;
   --color-cardinal-dark: #7a0000;
+  --color-cardinal-50: #fbf2f2;
+  --color-cardinal-100: #f5dede;
   --color-gold: #ffcc00;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-gold-soft: #fff6d6;
+  --color-ink: #1c1917;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.06), 0 4px 16px -6px rgb(28 25 23 / 0.10);
+  --shadow-lift: 0 2px 4px rgb(28 25 23 / 0.06), 0 12px 28px -10px rgb(28 25 23 / 0.18);
 }
 
 :root {
   color-scheme: light;
 }
 
+html {
+  scroll-padding-top: 6rem; /* anchors land below the sticky header and in-page tabs */
+}
+
 body {
-  @apply bg-stone-50 text-stone-900 antialiased;
+  @apply bg-[#f7f5f2] text-ink antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+
+/* Headings: a display face for page and section titles. */
+main h2,
+main h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+main h2 {
+  @apply text-stone-950;
 }
 
 /* A visible focus ring on everything that can take focus. */
 :focus-visible {
   outline: 3px solid var(--color-cardinal);
   outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- Surfaces: every white bordered box in the pages becomes a card with depth. ---------- */
+main .bg-white.border,
+main .bg-white.rounded-md {
+  border-color: rgb(231 229 228);
+  border-radius: 0.875rem;
+  box-shadow: var(--shadow-card);
+}
+main li.bg-white.border {
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+main li.bg-white.border:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+/* ---------- Form controls ---------- */
+main input[type="text"],
+main input[type="number"],
+main input[type="date"],
+main input[type="password"],
+main input[type="email"],
+main input:not([type]),
+main select,
+main textarea {
+  border-radius: 0.5rem;
+  border: 1px solid rgb(168 162 158);
+  background: #fff;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+main input:hover:not(:disabled),
+main select:hover:not(:disabled),
+main textarea:hover:not(:disabled) {
+  border-color: rgb(120 113 108);
+}
+main input:focus,
+main select:focus,
+main textarea:focus {
+  border-color: var(--color-cardinal);
+  box-shadow: 0 0 0 3px rgb(153 0 0 / 0.15);
+  outline: none;
+}
+main input[type="checkbox"],
+main input[type="radio"] {
+  accent-color: var(--color-cardinal);
+  width: 1.125rem;
+  height: 1.125rem;
+}
+main label {
+  font-weight: 500;
+}
+main input[type="file"] {
+  display: block;
+  width: 100%;
+  border: 2px dashed rgb(168 162 158);
+  border-radius: 0.875rem;
+  background: #fff;
+  padding: 1.25rem;
+  cursor: pointer;
+  font-weight: 400;
+}
+main input[type="file"]:hover {
+  border-color: var(--color-cardinal);
+  background: var(--color-cardinal-50);
+}
+main input[type="file"]::file-selector-button {
+  margin-right: 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--color-cardinal);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- Buttons ---------- */
+main button {
+  transition: background-color 120ms ease, box-shadow 120ms ease, transform 80ms ease, border-color 120ms ease;
+}
+main button:not(:disabled) {
+  cursor: pointer;
+}
+main button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+main button.bg-cardinal {
+  border-radius: 0.625rem;
+  box-shadow: 0 1px 2px rgb(122 0 0 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  font-weight: 600;
+}
+main button.bg-cardinal:hover:not(:disabled) {
+  background-color: var(--color-cardinal-dark);
+}
+main button.border:not(.bg-cardinal) {
+  border-radius: 0.625rem;
+  background-color: #fff;
+}
+main button.border:not(.bg-cardinal):hover:not(:disabled) {
+  border-color: var(--color-cardinal);
+  background-color: var(--color-cardinal-50);
+}
+main button:disabled {
+  cursor: not-allowed;
+}
+
+/* ---------- Disclosure ---------- */
+main details > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+main details > summary::-webkit-details-marker {
+  display: none;
+}
+main details > summary::before {
+  content: "";
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 150ms ease;
+  margin-right: 0.15rem;
+}
+main details[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+/* ---------- Tables ---------- */
+main table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+main thead th {
+  background: rgb(245 245 244);
+  font-weight: 600;
+  text-align: left;
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

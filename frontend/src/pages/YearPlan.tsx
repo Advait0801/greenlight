@@ -15,9 +15,10 @@ import {
 } from "../api/plans";
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { StatusBadge } from "../components/StatusBadge";
-import { PlanResults, Section } from "./YearPlanResults";
+import { PageHeader, Panel, Wizard } from "../components/ui";
+import { BudgetAndFunding, EventsPane, PlanOverview, YearCalendar } from "./YearPlanResults";
 
-const STORAGE_KEY = "greenlight-year-plan-v1";
+export const STORAGE_KEY = "greenlight-year-plan-v1";
 const FUNDS: { id: FundId; name: string }[] = [
   { id: "usg-fund-professional-academic", name: "Professional and Academic Research" },
   { id: "usg-fund-philanthropy", name: "Philanthropy" },
@@ -142,7 +143,7 @@ function EventEditor({ e, details, onChange, onDelete }: {
   const id = `ev-${e.key}`;
   return (
     <li className="rounded-md border border-stone-300 bg-white p-4">
-      <fieldset className="grid gap-3 sm:grid-cols-2">
+      <fieldset className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <legend className="sr-only">{e.name || "New event"}</legend>
         <label className="block sm:col-span-2"><span className="font-medium">Event name</span>
           <input value={e.name} maxLength={200} onChange={(x) => onChange({ name: x.target.value })} className={input} /></label>
@@ -206,6 +207,7 @@ export function YearPlan() {
   const [readRows, setReadRows] = useState<ReadRow[]>([]);
   const [reading, setReading] = useState(false);
   const [newDate, setNewDate] = useState("");
+  const [step, setStep] = useState(() => (loadSaved().events.length ? 2 : 0));
   const latest = useRef(0);
 
   useEffect(() => {
@@ -249,8 +251,10 @@ export function YearPlan() {
 
   async function loadDemo() {
     const result = await getDemoPlan();
-    if (result.ok) setEdit(fromRequest(result.data));
-    else setError(result.error);
+    if (result.ok) {
+      setEdit(fromRequest(result.data));
+      setStep(2);
+    } else setError(result.error);
   }
 
   async function read(event: FormEvent) {
@@ -325,82 +329,61 @@ export function YearPlan() {
     URL.revokeObjectURL(url);
   }
 
-  return (
-    <div className="space-y-10">
-      <section aria-labelledby="plan-heading" className="space-y-3">
-        <h1 id="plan-heading" className="text-3xl font-bold tracking-tight">Your club's year plan</h1>
-        <p className="max-w-2xl text-stone-700">
-          Enter your club's money and the events you want to run. Greenlight lays out every deadline on one calendar, splits
-          your budget, plans what to ask Undergraduate Student Government (USG) for within its caps, and flags problems early.
-          Change anything and the whole plan is worked out again.
-        </p>
-        <PrecheckNotice {...(report ? { text: report.notice } : {})} />
-        <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={loadDemo} className="rounded-md bg-cardinal px-4 py-2 font-medium text-white">Load the demo club</button>
-          <button type="button" onClick={() => { setEdit(EMPTY_PLAN); setReport(null); }} className="rounded-md border border-stone-400 px-4 py-2">Start an empty plan</button>
+  const status = (
+    <div aria-live="polite" className="space-y-2">
+      {inputProblems.length ? (
+        <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-3">
+          <p className="font-medium">Fix these to see the plan:</p>
+          <ul className="list-disc pl-5">{inputProblems.map((p) => <li key={p}>{p}</li>)}</ul>
         </div>
-        {error ? <p role="alert" className="rounded-md border border-red-700 bg-red-50 p-3 text-red-900">{error}</p> : null}
-      </section>
-
-      <div aria-live="polite" className="space-y-2">
-        {inputProblems.length ? (
-          <div role="alert" className="rounded-md border border-amber-700 bg-amber-50 p-3">
-            <p className="font-medium">Fix these to see the plan:</p>
-            <ul className="list-disc pl-5">{inputProblems.map((p) => <li key={p}>{p}</li>)}</ul>
-          </div>
-        ) : null}
-        {updating ? <p className="text-stone-700">Working out the plan…</p> : null}
-      </div>
-
-      {report && !updating ? (
-        <>
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="font-medium">
-              {report.counts.red ?? 0} red, {report.counts.yellow ?? 0} to check · {dollars(report.budget.shortfall_cents)} still to find
-            </p>
-            <button type="button" onClick={ics} className="rounded-md border border-stone-400 px-4 py-2">Download the calendar (.ics)</button>
-          </div>
-          <PlanResults report={report} onOpenPacket={openPacket} onOpenMoney={openMoney} onOpenGap={openGap} />
-        </>
       ) : null}
-      <details open={edit.events.length === 0} className="space-y-6 rounded-md border border-stone-300 bg-stone-50 p-3">
-        <summary className="cursor-pointer text-lg font-semibold">Edit the plan: club, money and {edit.events.length} events</summary>
-        <div className="mt-4 space-y-8">
-      <Section id="club-heading" title="Club and money">
-        <div className="grid gap-3 rounded-md border border-stone-300 bg-white p-4 sm:grid-cols-2">
-          <label className="block"><span className="font-medium">Club name</span>
-            <input value={edit.club_name} maxLength={200} onChange={(x) => setEdit({ ...edit, club_name: x.target.value })} className={input} /></label>
-          <label className="block"><span className="font-medium">Undergraduate or graduate</span>
-            <select value={edit.level} onChange={(x) => setEdit({ ...edit, level: x.target.value as EditPlan["level"] })} className={input}>
-              <option value="">Not said</option><option value="undergraduate">Undergraduate</option><option value="graduate">Graduate</option>
-            </select></label>
-          <label className="block sm:col-span-2"><span className="font-medium">Purpose or mission</span>
-            <textarea value={edit.mission} maxLength={2000} rows={2} onChange={(x) => setEdit({ ...edit, mission: x.target.value })} className={input} /></label>
-          <label className="block"><span className="font-medium">Money on hand ($)</span>
-            <input inputMode="decimal" value={edit.on_hand} onChange={(x) => setEdit({ ...edit, on_hand: x.target.value })} className={input} /></label>
-          <label className="block"><span className="font-medium">Expected income ($)</span>
-            <input inputMode="decimal" value={edit.income} onChange={(x) => setEdit({ ...edit, income: x.target.value })} className={input} /></label>
-          <label className="block sm:col-span-2"><span className="font-medium">Already received from USG this academic year ($; leave empty if you do not know)</span>
-            <input inputMode="decimal" value={edit.received} onChange={(x) => setEdit({ ...edit, received: x.target.value })} className={input} /></label>
-          <div className="sm:col-span-2">
-            <label htmlFor="unavailable" className="font-medium">Dates the officers are unavailable</label>
-            <div className="mt-1 flex flex-wrap gap-2">
-              <input id="unavailable" type="date" value={newDate} onChange={(x) => setNewDate(x.target.value)} className="rounded-md border border-stone-400 p-2" />
-              <button type="button" disabled={!newDate} onClick={() => { setEdit({ ...edit, unavailable: [...new Set([...edit.unavailable, newDate])].sort() }); setNewDate(""); }} className="rounded-md border border-stone-400 px-3 py-2 disabled:opacity-60">Add date</button>
-            </div>
-            <ul className="mt-2 flex flex-wrap gap-2">
-              {edit.unavailable.map((d) => (
-                <li key={d}><button type="button" onClick={() => setEdit({ ...edit, unavailable: edit.unavailable.filter((x) => x !== d) })} className="rounded-full border border-stone-400 px-3 py-1 text-sm" aria-label={`Remove ${d}`}>{d} ✕</button></li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Section>
+      {updating ? <p className="flex items-center gap-2 text-stone-700"><span aria-hidden="true" className="h-3 w-3 animate-pulse rounded-full bg-gold" />Working out the plan…</p> : null}
+    </div>
+  );
+  const ready = report && !updating ? report : null;
+  const locked = ready ? undefined : edit.events.length === 0
+    ? "Add at least one event (step 2), or load the demo club, to see this."
+    : updating ? "Working out the plan…" : "Fix the problems shown above to see this.";
 
-      <Section id="events-edit-heading" title={`Events (${edit.events.length})`} intro="You supply the events; Greenlight never invents them.">
-        <form onSubmit={read} className="space-y-2 rounded-md border border-stone-300 bg-white p-4">
+  const clubStep = (
+    <Panel id="club-heading" title="Club and money">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <label className="block"><span className="font-medium">Club name</span>
+          <input value={edit.club_name} maxLength={200} onChange={(x) => setEdit({ ...edit, club_name: x.target.value })} className={input} /></label>
+        <label className="block"><span className="font-medium">Undergraduate or graduate</span>
+          <select value={edit.level} onChange={(x) => setEdit({ ...edit, level: x.target.value as EditPlan["level"] })} className={input}>
+            <option value="">Not said</option><option value="undergraduate">Undergraduate</option><option value="graduate">Graduate</option>
+          </select></label>
+        <label className="block md:col-span-2 xl:col-span-1 xl:row-span-2"><span className="font-medium">Purpose or mission</span>
+          <textarea value={edit.mission} maxLength={2000} rows={5} onChange={(x) => setEdit({ ...edit, mission: x.target.value })} className={input} /></label>
+        <label className="block"><span className="font-medium">Money on hand ($)</span>
+          <input inputMode="decimal" value={edit.on_hand} onChange={(x) => setEdit({ ...edit, on_hand: x.target.value })} className={input} /></label>
+        <label className="block"><span className="font-medium">Expected income ($)</span>
+          <input inputMode="decimal" value={edit.income} onChange={(x) => setEdit({ ...edit, income: x.target.value })} className={input} /></label>
+        <label className="block md:col-span-2"><span className="font-medium">Already received from USG this academic year ($; leave empty if you do not know)</span>
+          <input inputMode="decimal" value={edit.received} onChange={(x) => setEdit({ ...edit, received: x.target.value })} className={input} /></label>
+        <div className="md:col-span-2 xl:col-span-3">
+          <label htmlFor="unavailable" className="font-medium">Dates the officers are unavailable</label>
+          <div className="mt-1 flex flex-wrap gap-2">
+            <input id="unavailable" type="date" value={newDate} onChange={(x) => setNewDate(x.target.value)} className="rounded-md border border-stone-400 p-2" />
+            <button type="button" disabled={!newDate} onClick={() => { setEdit({ ...edit, unavailable: [...new Set([...edit.unavailable, newDate])].sort() }); setNewDate(""); }} className="rounded-md border border-stone-400 px-3 py-2 disabled:opacity-60">Add date</button>
+          </div>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {edit.unavailable.map((d) => (
+              <li key={d}><button type="button" onClick={() => setEdit({ ...edit, unavailable: edit.unavailable.filter((x) => x !== d) })} className="rounded-full border border-stone-400 px-3 py-1 text-sm" aria-label={`Remove ${d}`}>{d} ✕</button></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Panel>
+  );
+
+  const eventsStep = (
+    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      <Panel id="events-edit-heading" title="Paste a list" intro="You supply the events; Greenlight never invents them.">
+        <form onSubmit={read} className="space-y-2">
           <label htmlFor="paste" className="block font-medium">Paste a list, one event per line (optional)</label>
-          <textarea id="paste" value={pasted} onChange={(x) => setPasted(x.target.value)} rows={3} className={input}
+          <textarea id="paste" value={pasted} onChange={(x) => setPasted(x.target.value)} rows={5} className={input}
             placeholder="Culture night for about 150 people on McCarthy Quad on Friday, April 9, 2027, with a DJ and catered food." />
           <button type="submit" disabled={reading || !pasted.trim()} className="rounded-md border border-stone-400 px-4 py-2 disabled:opacity-60">{reading ? "Reading…" : "Read my list"}</button>
           {readRows.length ? (
@@ -419,17 +402,66 @@ export function YearPlan() {
             </div>
           ) : null}
         </form>
-        <ul className="space-y-3">
-          {edit.events.map((e) => (
-            <EventEditor key={e.key} e={e} details={details} onChange={(c) => setEvent(e.key, c)}
-              onDelete={() => setEdit({ ...edit, events: edit.events.filter((x) => x.key !== e.key) })} />
-          ))}
-        </ul>
-        <button type="button" onClick={() => setEdit({ ...edit, events: [...edit.events, blankEvent(edit.events)] })} className="rounded-md border border-stone-400 px-4 py-2">Add an event</button>
-      </Section>
-
+      </Panel>
+      <section aria-labelledby="events-list-heading" className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 id="events-list-heading" className="font-display text-xl font-semibold">Events ({edit.events.length})</h2>
+          <button type="button" onClick={() => setEdit({ ...edit, events: [...edit.events, blankEvent(edit.events)] })} className="rounded-md border border-stone-400 px-4 py-2">Add an event</button>
         </div>
-      </details>
+        {edit.events.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white/60 p-8 text-center text-stone-700">No events yet. Paste a list, add one by hand, or load the demo club.</div>
+        ) : (
+          <ul className="grid gap-3 2xl:grid-cols-2">
+            {edit.events.map((e) => (
+              <EventEditor key={e.key} e={e} details={details} onChange={(c) => setEvent(e.key, c)}
+                onDelete={() => setEdit({ ...edit, events: edit.events.filter((x) => x.key !== e.key) })} />
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Year plan"
+        title="Your club's year plan"
+        actions={
+          <>
+            <button type="button" onClick={loadDemo} className="rounded-md bg-cardinal px-4 py-2 font-medium text-white">Load the demo club</button>
+            <button type="button" onClick={() => { setEdit(EMPTY_PLAN); setReport(null); setStep(0); }} className="rounded-md border border-stone-400 px-4 py-2">Start an empty plan</button>
+            {ready ? <button type="button" onClick={ics} className="rounded-md border border-stone-400 px-4 py-2">Download the calendar (.ics)</button> : null}
+          </>
+        }
+      >
+        <p>
+          Enter your club's money and the events you want to run. Greenlight lays out every deadline on one calendar, splits
+          your budget, plans what to ask Undergraduate Student Government (USG) for within its caps, and flags problems early.
+          Change anything and the whole plan is worked out again.
+        </p>
+        <PrecheckNotice {...(report ? { text: report.notice } : {})} />
+      </PageHeader>
+      {error ? <p role="alert" className="rounded-xl border border-red-300 bg-red-50 p-3 text-red-900">{error}</p> : null}
+      {status}
+      {ready ? (
+        <p className="font-medium">
+          {ready.counts.red ?? 0} red, {ready.counts.yellow ?? 0} to check · {dollars(ready.budget.shortfall_cents)} still to find
+        </p>
+      ) : null}
+      <Wizard
+        label="Year plan steps"
+        step={step}
+        onStep={setStep}
+        steps={[
+          { id: "club", label: "Club and money", content: clubStep },
+          { id: "events", label: "Events", count: edit.events.length, content: eventsStep },
+          { id: "overview", label: "Overview", content: ready ? <PlanOverview report={ready} /> : null, ...(locked ? { locked } : {}) },
+          { id: "calendar", label: "Calendar", content: ready ? <YearCalendar report={ready} /> : null, ...(locked ? { locked } : {}) },
+          { id: "budget", label: "Budget and funding", content: ready ? <BudgetAndFunding report={ready} /> : null, ...(locked ? { locked } : {}) },
+          { id: "each", label: "Each event", content: ready ? <EventsPane report={ready} onOpenPacket={openPacket} onOpenMoney={openMoney} onOpenGap={openGap} /> : null, ...(locked ? { locked } : {}) },
+        ]}
+      />
     </div>
   );
 }
