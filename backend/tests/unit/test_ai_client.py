@@ -259,3 +259,25 @@ def test_copies_of_the_request_label_are_neutralised_in_any_spelling(tmp_path: P
         task="selftest-contact", instructions="Extract the club name and the headcount.", request="Fill in the structure from the document.",
         documents=[UntrustedDocument(name="sentence.txt", text=INJECTION)], output_type=Contact,
     ).user_content)  # the same request and documents give the same code, so recordings still replay
+
+
+def test_personal_data_is_blanked_in_optional_and_list_fields_and_evidence() -> None:
+    """Regression (phase 0 iteration 4, code audit H): an optional personal field, a list of personal
+    values, and the evidence quote of another field all kept a traveller's name."""
+    from typing import Annotated
+
+    from app.ai.schemas import PERSONAL, without_personal_data
+
+    class Trip(BaseModel):
+        lead: Annotated[ExtractedField[str], PERSONAL] | None
+        names: list[Annotated[str, PERSONAL]]
+        headcount: ExtractedField[int]
+
+    trip = Trip(
+        lead=ExtractedField[str](value="Jordan Example", confidence="high", evidence="lead: Jordan Example"),
+        names=["Jordan Example", "Sam Sample"],
+        headcount=ExtractedField[int](value=2, confidence="high", evidence="Jordan Example and Sam Sample"),
+    )
+    saved = without_personal_data(trip).model_dump_json()
+    assert "Jordan" not in saved and "Sam" not in saved, saved
+    assert '"value":2' in saved.replace(" ", "")
