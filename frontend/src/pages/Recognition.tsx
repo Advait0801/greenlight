@@ -57,7 +57,7 @@ export function Recognition() {
           clause as present, missing, changed or in conflict with a rule, and shows the template's wording and its source.
         </p>
         <p className="max-w-2xl text-stone-700">
-          The Spring 2027 application closes <strong>November 22, 2026 at 11:59 pm</strong>. Late applications are not accepted.
+          The application's key dates, with their sources, are in the readiness checklist below.
         </p>
         <PrecheckNotice />
       </section>
@@ -133,7 +133,10 @@ export function Recognition() {
         >
           {busy ? "Checking…" : "Check my constitution"}
         </button>
-        <p className="text-xs text-stone-600">Nothing is submitted anywhere. Greenlight does not keep your file.</p>
+        <p className="text-xs text-stone-600">
+          Nothing is submitted anywhere. Greenlight does not save your file; when its AI reader reads it, the words it quotes are
+          kept in a private audit log.
+        </p>
       </form>
 
       <div ref={resultRef} aria-live="polite">
