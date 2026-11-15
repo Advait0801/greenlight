@@ -9,7 +9,7 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
 - **Phase 5 (supporting features and the USG screen):** closed 2026-11-15 after three iterations, pushed to `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut).
-- **Phase 6 (ship):** in progress. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres). Iteration 1 (verify) done; iteration 2 (break) running.
+- **Phase 6 (ship):** in progress. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres). Iterations 1 (verify) and 2 (break) done; iteration 3 (audit) running.
 - **Next action:** a person adds `USG_REVIEWER_KEY` to Replit secrets, then redeploy (the USG screen answers 503 until then).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
@@ -23,7 +23,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 6 | Ship | done (on `main`, deployed) | 1 | no (iteration 1: 0 blockers, 1 high: secret not set) | open |
+| 6 | Ship | done (on `main`, deployed) | 2 | no (iteration 2: 0 blockers, 2 high, fixed) | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
 ## Phase 0 build (2026-11-14)
@@ -113,6 +113,14 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 6, iteration 2 — break
+
+Report: `docs/reviews/phase-6-iter-2-breaker.md`; tests `backend/tests/adversarial/test_phase6_iter2_break.py`. 0 blockers, 2 high, 3 medium, 3 low. Live load (5 parallel journeys, ~140 requests) all correct; AI down: demo steps replay, other input yellow, never green.
+- H1 fixed: `POST /money/read` ran the AI reader on the event loop; now in a worker thread (test: slow reader does not stall another request).
+- H2 fixed: money check and event packet kept the old result after an input changed; both pages now clear the result (and the draft) on any change. The frontend has no test runner, so this was checked in the browser (attendance 150 to 100 clears the report; editing the date clears the packet).
+- M3 fixed: a second denial approval is refused (409). M4 fixed: `init_db` retries when several instances create tables at once. L6 fixed: a missing `/assets/` file is a 404.
+- Open: M5 (gap page opened directly has no event name, so the demo paragraph replays only from the year plan), L7 (`/api/docs` public), L8 (422 not 503 for some AI-down answers; no client timeout).
 
 ### Phase 6, iteration 1 — verify
 
