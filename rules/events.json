@@ -117,7 +117,7 @@
       "verified": "read",
       "severity": "red",
       "message": "Clubs cannot host events in the first 3 weeks of the spring semester. Trojan Event Services says events can start after January 26, 2027.",
-      "fix_template": "Move the event to January 27, 2027 or later.",
+      "fix_template": "Move the event to February 1, 2027 or later, or confirm a date from January 27 to 31 with Trojan Event Services first.",
       "applies_to": "Any club event in a Trojan Event Services venue dated on or before January 26, 2027",
       "triggers": [
         "venue_tes_meeting_room",
