@@ -23,6 +23,8 @@ from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urldefrag
 
+from app.jsonutil import StrictJSONError, loads_strict
+
 HEADER_END = "==== END OF SNAPSHOT HEADER ===="
 
 # Characters that carry no text: soft hyphen, zero-width space/joiners, byte-order mark.
@@ -66,10 +68,10 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
     """Return the sources keyed by canonical URL."""
     path = sources_dir / "manifest.json"
     try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
+        raw = loads_strict(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise ManifestError(f"{path}: source manifest not found") from exc
-    except json.JSONDecodeError as exc:
+    except (json.JSONDecodeError, StrictJSONError) as exc:
         raise ManifestError(f"{path}: not valid JSON ({exc})") from exc
     if not isinstance(raw, dict) or not isinstance(raw.get("sources"), list):
         raise ManifestError(f"{path}: expected an object with a 'sources' list")

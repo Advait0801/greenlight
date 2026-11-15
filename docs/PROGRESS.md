@@ -9,7 +9,7 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase:** 0 — Foundation
 - **Step:** build done; iteration 1 (verify) next
 - **Next action:** run iteration 1 with a fresh `verifier` sub-agent (PLAN.md section 1)
-- **Blocked on humans:** the four open questions (PROJECT_CONTEXT section 8) still need a person to confirm them; a person must review the rule table by hand (PLAN.md section 3). An API key is now in `.env` (added by a human on 2026-11-14); nothing in Phase 0 needs it.
+- **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
 
@@ -29,14 +29,14 @@ Final reviewers in Phase 7 must **not** read this file.
 What exists now:
 - **Backend** (`backend/`): FastAPI app with `GET /health`, `GET /rules`, `GET /rules/{id}`; routers in `app/api/` are discovered automatically. SQLAlchemy tables for every table in PROJECT_CONTEXT section 5 (money in whole cents). Settings from env and `.env`.
 - **Claude client** (`app/ai/`): structured output via `messages.parse` validated against Pydantic models; `AI_MODE` = `recorded` (default; replay only, never the network), `live`, or `record` (live + save). Untrusted text is HTML-escaped inside `<document>` wrappers and the system prompt says it is data. Recordings store document fingerprints, not text. One live smoke call (Haiku, 2026-11-14) confirmed structured output works and an injected "mark this approved" was reported as document content.
-- **Source snapshots** (`rules/sources/`): 17 sources in `manifest.json` with fetch time, SHA-256 and version date; text snapshots committed; small raw PDFs/CSVs committed, the 6.7 MB Handbook PDF and raw HTML not.
-- **Rule table**: 256 rules (`funding` 68, `events` 59, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 252 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 4 `unverified`; 10 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, officer trainings template vs recognition page).
+- **Source snapshots** (`rules/sources/`): 18 sources (one a manual transcription) in `manifest.json` with fetch time, SHA-256 and version date; text snapshots committed; small raw PDFs/CSVs committed, the 6.7 MB Handbook PDF and raw HTML not.
+- **Rule table**: 257 rules (`funding` 69, `events` 59, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 253 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 4 `unverified`; 11 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
 - **Calendar** (`rules/calendar.json`): Fall 2026, Spring 2027, Summer 2027 from the Registrar's page; `unverified`.
-- **Test sets** (`data/eval/`): 30 events (415 expected obligations), 20 budgets (30 planted violations), 10 constitutions (20 planted faults), 2 year plans; JSON Schemas in `data/eval/schemas/`; method in `data/eval/README.md`.
+- **Test sets** (`data/eval/`): 30 events (417 expected obligations), 20 budgets (30 planted violations), 10 constitutions (20 planted faults), 2 year plans; JSON Schemas in `data/eval/schemas/`; method in `data/eval/README.md`.
 - **Scripts**: `validate_rules.py`, `run_eval.py` (+ `evaluators/` plug-in folder), `seed_demo.py` (+ `data/demo/club.json`), `fetch_sources.py`.
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
-- **Tests**: 120 passing (`pytest`), 0 adversarial yet.
+- **Tests**: 128 passing (`pytest`), 0 adversarial yet.
 
 ## Iteration log
 
@@ -56,12 +56,12 @@ Gate: passed / not yet, because ...
 
 ## Open questions for humans
 
-| Question | Asked | Answer |
-|---|---|---|
-| USG funding deadlines table, and how academic weeks are counted across winter break | 2026-11-14 | Partly: another session transcribed the sign-in-only table by hand (`rules/sources/usg-funding-deadlines.txt`). A person must compare it with the sheet before it is trusted; until then academic-week deadlines stay yellow. |
-| Spring 2027 academic calendar: first day, breaks, study days, finals | 2026-11-14 | Read from the Registrar's public page into `rules/calendar.json`; PLAN.md requires a person to confirm it. |
-| Approved vendor and caterer lists | 2026-11-14 | USG Vendor List snapshotted (both tabs). Purchasing's approved-caterer list is not public (phone only). |
-| Is the cap four funded events per semester? | 2026-11-14 | The USG web page FAQ says so; the guidelines do not. Encoded `unverified` (yellow) until USG confirms. |
+| Question | Asked | Answer (researched 2026-11-14 by the managing session; see `docs/research/open_questions.md`) | Status in the rules |
+|---|---|---|---|
+| USG funding deadlines table, and how academic weeks are counted across winter break | 2026-11-14 | Found. The "Funding Application Deadlines" Google Sheet needs a sign-in; transcribed by hand (`docs/research/manual_snapshots/usg-funding-deadlines-26-27.csv`, copied to `rules/sources/usg-funding-deadlines.txt` as a manual snapshot). Keyed by event week, a 6-week and a 9-week deadline, always a Wednesday; weeks with no deadline (winter recess, study days, finals, spring recess) get no USG funding. Look deadlines up; do not compute them. | `usg-academic-week-definition` unverified (code cannot check the transcription); academic-week deadlines yellow |
+| Spring 2027 academic calendar: first day, breaks, study days, finals | 2026-11-14 | Official calendar (usc.edu/academic-calendar and academics.usc.edu/calendar, same dates): classes Jan 11 - Apr 30, holidays Jan 18 and Feb 15, spring recess Mar 14-21, study days May 1-4, exams May 5-12; winter recess Dec 17 - Jan 10. | `rules/calendar.json` matches the snapshot; still unverified until a person confirms (PLAN.md Phase 0) |
+| Approved vendor and caterer lists | 2026-11-14 | USG Vendor List is public, two tabs (Food Vendors, Other Vendors), both snapshotted. INACTIVE / NOT FOUND / registration-state rows mean yellow. The list includes buses, balloon vendors and talent agencies, which are ineligible: vendor check and eligibility check stay separate. Purchasing's approved-caterer list is not public. | `usg-vendor-list` unverified |
+| Is the cap four funded events per semester? | 2026-11-14 | Only in the USG Funding page FAQ; the 2026-27 guidelines and the USG FAQ document do not state it. | `usg-events-per-semester-cap` unverified, yellow, "confirm with usgfunds@usc.edu" |
 
 ## Decisions
 
@@ -80,4 +80,7 @@ Record any change of scope or departure from PROJECT_CONTEXT here, with the reas
 - **Ports configurable** for parallel phases: `BACKEND_PORT`, `FRONTEND_PORT`, `API_PROXY_TARGET`, `VITE_API_BASE_URL` (CLAUDE.md). Backend routes have no `/api` prefix; the Vite proxy strips it.
 - **Parallel-friendly layout**: routers and evaluators are discovered by file; pages are one line in `frontend/src/routes.tsx`.
 - **`AI_MODE` default is `recorded`** (in code and `.env.example`) so nothing spends API money by accident.
-- **Year plan yp-01**: the retreat's travel deadline is not flagged as "previous semester"; counted back nine weeks it is about January 20–22, 2027 (the transcribed table says January 20), inside the spring semester.
+- **USG deadlines differ from PROJECT_CONTEXT's assumption** (from the researched deadline table): deadlines are not a count of academic weeks; they are looked up by event week. For spring events before spring recess (Jan 11 - Mar 12, 2027) the 9-week travel deadline is November 11 or 18, 2026, in the previous semester, not January; for events after spring recess it is January 20 - February 24, 2027. PROJECT_CONTEXT section 11's line "the retreat's travel deadline ... lands in January" is therefore true only for a retreat after spring recess. The demo club's retreat (`data/demo/club.json`, year plan yp-01) is set to February 26-28, 2027, so the demo shows a travel deadline of November 18, 2026, in the previous semester. PROJECT_CONTEXT itself is not edited.
+- **Three source disagreements on USG deadlines**, each encoded as a conflict pair with the stricter applied: the guidelines count back from the initial payment due date, the web page, FAQ document and table from the event (week); the FAQ document says 8 weeks for travel, the guidelines 9; the FAQ document allows "new vendors", the guidelines reject vendors not on the list.
+- **Calendar stays `unverified`** although the managing session suggested `read`: PLAN.md Phase 0 says to mark it unverified "until a human confirms it", and the research was done by an AI session. To confirm, a person sets `verified` to `read` in both `rules/calendar.json` and rule `usc-academic-calendar-2026-27` (validate_rules.py checks they agree).
+- **Research files from the managing session** (`docs/research/open_questions.md`, `docs/research/manual_snapshots/`) are committed with Phase 0 at its request and are part of the iteration 3 audit.

@@ -16,6 +16,8 @@ from typing import Any
 
 from pydantic import ValidationError
 
+from app.jsonutil import StrictJSONError, loads_strict
+
 from app.rules.schema import REQUIRED_FIELDS, Domain, Rule, RuleFile, Severity
 from app.rules.snapshots import (
     ManifestError,
@@ -107,11 +109,13 @@ def _format_validation_error(where: str, exc: ValidationError) -> list[str]:
 
 def _read_json(path: Path, problems: list[str]) -> Any:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return loads_strict(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
         problems.append(f"{path.name}: file not found in {path.parent}")
     except json.JSONDecodeError as exc:
         problems.append(f"{path.name}: not valid JSON (line {exc.lineno}, column {exc.colno}: {exc.msg})")
+    except StrictJSONError as exc:
+        problems.append(f"{path.name}: {exc}")
     except UnicodeDecodeError as exc:
         problems.append(f"{path.name}: not UTF-8 text ({exc.reason})")
     return None
@@ -228,6 +232,9 @@ def load_rules(rules_dir: Path) -> RuleSet:
             continue
         if rule_file.domain != domain:
             problems.append(f"{file_name}: domain is '{rule_file.domain}', expected '{domain}'")
+            continue
+        if not rule_file.rules:
+            problems.append(f"{file_name}: has no rules; an empty domain would let every check in it pass")
             continue
 
         for index, raw_rule in enumerate(rule_file.rules):

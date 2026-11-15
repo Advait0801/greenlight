@@ -13,6 +13,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
+from app.jsonutil import StrictJSONError, loads_strict
 from app.rules.schema import Verified
 from app.rules.snapshots import ManifestError, canonical_url, load_manifest, snapshot_text, text_in_snapshot
 
@@ -149,11 +150,13 @@ class CalendarLoadError(Exception):
 def load_calendar(rules_dir: Path) -> AcademicCalendar:
     path = rules_dir / "calendar.json"
     try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
+        raw = loads_strict(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise CalendarLoadError([f"{path} not found"]) from exc
     except json.JSONDecodeError as exc:
         raise CalendarLoadError([f"not valid JSON (line {exc.lineno}, column {exc.colno}: {exc.msg})"]) from exc
+    except StrictJSONError as exc:
+        raise CalendarLoadError([str(exc)]) from exc
     try:
         calendar = AcademicCalendar.model_validate(raw)
     except ValidationError as exc:

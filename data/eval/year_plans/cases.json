@@ -54,8 +54,8 @@
         {
           "key": "retreat",
           "name": "Spring retreat in Big Bear",
-          "event_date": "2027-03-26",
-          "end_date": "2027-03-28",
+          "event_date": "2027-02-26",
+          "end_date": "2027-02-28",
           "venue": "venue_off_campus",
           "headcount": 20,
           "attributes": [
@@ -302,13 +302,13 @@
             "event": "retreat",
             "rule_id": "usg-post-event-evaluation",
             "status": "check_with_office",
-            "due": "2027-03-31"
+            "due": "2027-03-03"
           },
           {
             "event": "retreat",
             "rule_id": "usg-final-invoices",
             "status": "check_with_office",
-            "due": "2027-03-31"
+            "due": "2027-03-03"
           },
           {
             "event": "retreat",
@@ -325,6 +325,12 @@
           {
             "event": "retreat",
             "rule_id": "usg-deadline-travel",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "retreat",
+            "rule_id": "usg-faq-deadline-new-vendors-travel",
             "status": "check_with_office",
             "due": null
           },
@@ -677,6 +683,15 @@
               "spring-banquet"
             ],
             "note": "USG requests total $11,250.00, over the $8,000.00 yearly cap by $3,250.00."
+          },
+          {
+            "type": "deadline_in_previous_semester_or_break",
+            "rule_id": "usg-deadline-travel",
+            "severity": "yellow",
+            "events": [
+              "retreat"
+            ],
+            "note": "Counted back nine calendar weeks from February 26, 2027 the travel deadline is December 25, 2026 (winter recess); the transcribed USG deadline table (unverified) gives Wednesday, November 18, 2026, three days after the as-of date. Either way it falls before the spring semester."
           },
           {
             "type": "deadline_in_previous_semester_or_break",

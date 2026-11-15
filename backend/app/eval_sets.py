@@ -15,6 +15,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from app.config import REPO_ROOT
+from app.jsonutil import StrictJSONError, loads_strict
 from app.rules.loader import RuleSet
 
 EVAL_DIR = REPO_ROOT / "data" / "eval"
@@ -56,6 +57,13 @@ def _check_dates(node: Any, path: str, problems: list[str]) -> None:
             if (key.endswith("date") or key in ("due", "as_of", "first_registered")) and isinstance(value, str):
                 if _iso(value) is None:
                     problems.append(f"{here}: '{value}' is not a real date")
+            if key.endswith("dates") and isinstance(value, list):
+                for index, item in enumerate(value):
+                    if isinstance(item, str) and _iso(item) is None:
+                        problems.append(f"{here}[{index}]: '{item}' is not a real date")
+            start, end = _iso(node.get("event_date")), _iso(node.get("end_date"))
+            if key == "end_date" and start and end and end < start:
+                problems.append(f"{path}: end_date is before event_date")
             _check_dates(value, here, problems)
     elif isinstance(node, list):
         for index, value in enumerate(node):
@@ -88,9 +96,6 @@ def _check_events(data: dict[str, Any], ruleset: RuleSet | None, problems: list[
         ids = [o["rule_id"] for o in expected["obligations"]]
         if len(ids) != len(set(ids)):
             problems.append(f"{cid}: an obligation is listed twice")
-        start, end = _iso(expected["event_date"]), _iso(expected["end_date"])
-        if start and end and end < start:
-            problems.append(f"{cid}: end_date is before event_date")
         if expected["event_date"] is None and "event_date" not in expected["needs_officer_input"]:
             problems.append(f"{cid}: no event_date, so needs_officer_input must include 'event_date'")
         for o in expected["obligations"]:
@@ -218,11 +223,13 @@ def load_set(name: str, *, eval_dir: Path = EVAL_DIR, ruleset: RuleSet | None = 
         raise EvalSetError(name, [f"unknown test set; known: {', '.join(SETS)}"])
     path = eval_dir / SETS[name]
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        data = loads_strict(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise EvalSetError(name, [f"{path} not found"]) from exc
     except json.JSONDecodeError as exc:
         raise EvalSetError(name, [f"{path.name}: not valid JSON (line {exc.lineno}, column {exc.colno}: {exc.msg})"]) from exc
+    except StrictJSONError as exc:
+        raise EvalSetError(name, [f"{path.name}: {exc}"]) from exc
     problems = validate_set(name, data, eval_dir=eval_dir, ruleset=ruleset)
     if problems:
         raise EvalSetError(name, problems)

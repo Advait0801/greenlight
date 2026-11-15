@@ -116,10 +116,49 @@
       "offset": 9,
       "unit": "academic_weeks",
       "direction": "before",
-      "conflicts_with": null,
+      "conflicts_with": [
+        "usg-faq-deadline-new-vendors-travel"
+      ],
       "depends_on": [
         "usg-academic-week-definition"
-      ]
+      ],
+      "notes": "Sources disagree: USG's FAQ document says 8 academic weeks before the event date for travel. Greenlight applies the guidelines' 9 weeks (the stricter) and shows both."
+    },
+    {
+      "id": "usg-faq-deadline-new-vendors-travel",
+      "domain": "funding",
+      "kind": "deadline",
+      "title": "USG FAQ: 8 academic weeks for new vendors and travel",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG Funding FAQ document (FAQ for Funding Website)",
+      "source_section": "FAQ: When should I submit my application?",
+      "source_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "source_text": "Applications must be submitted on Wednesdays by 11:59 PM six academic weeks before the event date when using an approved vendor, and eight academic weeks before the event date for new vendors and travel.",
+      "effective_date": "2026-11-14",
+      "verified": "read",
+      "severity": "red",
+      "message": "USG's FAQ document says 8 academic weeks before the event date for travel and for new vendors. The 2026-27 guidelines say 9 weeks for travel and do not accept vendors that are not on the list; Greenlight applies the guidelines and shows both.",
+      "fix_template": "Apply by {due_date}, the earlier of the deadlines.",
+      "applies_to": "A USG application with travel or a vendor not on the list",
+      "check": "application_date <= event_date - 8 academic weeks",
+      "triggers": [
+        "travel",
+        "lodging",
+        "airfare",
+        "ground_transport"
+      ],
+      "anchor": "event_date",
+      "offset": 8,
+      "unit": "academic_weeks",
+      "direction": "before",
+      "conflicts_with": [
+        "usg-deadline-travel",
+        "usg-approved-vendor"
+      ],
+      "depends_on": [
+        "usg-academic-week-definition"
+      ],
+      "notes": "The FAQ document has no date and still says 8 weeks where the 2026-27 guidelines say 9, so it may be older than the guidelines."
     },
     {
       "id": "usg-missed-deadline-denial",
@@ -1132,8 +1171,10 @@
           "usg-vendor-list"
         ]
       },
-      "conflicts_with": null,
-      "notes": "PROJECT_CONTEXT section 7: which deadline applies to vendors not on the list is not stated, so a vendor not on the list is red."
+      "conflicts_with": [
+        "usg-faq-deadline-new-vendors-travel"
+      ],
+      "notes": "PROJECT_CONTEXT section 7: which deadline applies to vendors not on the list is not stated in the guidelines, so a vendor not on the list is red. Sources disagree: USG's FAQ document allows new vendors with 8 academic weeks' notice; Greenlight applies the guidelines (the stricter) and shows both."
     },
     {
       "id": "usg-vendor-list",
@@ -1159,7 +1200,7 @@
         ]
       },
       "conflicts_with": null,
-      "notes": "Two tabs: Food Vendors and Other Vendors. Being on the list does not make an expense eligible (the Other Vendors tab includes talent agencies, buses and balloon vendors, which the guidelines list as ineligible)."
+      "notes": "Two tabs: Food Vendors and Other Vendors. Rows marked INACTIVE or NOT FOUND, or with a registration state (NONE, In Progress, Invited), need a check with USG: yellow. Being on the list does not make an expense eligible (the Other Vendors tab includes talent agencies, buses and balloon vendors, which the guidelines list as ineligible), so the vendor check and the eligibility check are separate."
     },
     {
       "id": "usg-ineligible-reimbursements",

@@ -1,0 +1,73 @@
+SNAPSHOT OF: USG Funding FAQ document (FAQ for Funding Website)
+URL: https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit
+FETCHED FROM: https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/export?format=txt
+FETCHED AT: 2026-11-15T06:10:19Z
+RAW SHA-256: b3e68f95f6508d78b57dfd5cd409da9d4cf92f63325b539678bef2fa8285c74a
+FORMAT: txt
+==== END OF SNAPSHOT HEADER ====
+FAQ for Funding Website
+1. How do I get funding? Where is the application? 
+   1. To apply for funding, make sure you have thoroughly reviewed the Funding Guidelines and the Funding Guidelines Modules during the RSO Recognition process. USG Funding will process payments on your behalf. The USG Funding Application can be accessed through EngageSC.
+2. Who is eligible to receive funding?
+   1. Individuals and Registered Student Organizations that have gone through the re-recognition process with USC Campus Activities and have completed the Funding Guidelines module are eligible to receive funding. Organizations that have not gone through this process will not receive funding. 
+3. How do I know if my event is eligible for funding? 
+   1. Refer to the Funding Guidelines, which outline what items are eligible and not eligible for funding. If you have any questions or concerns about your application, feel free to reach out to us early in the process.
+4. How much funding is available per organization?
+   1. Individual organizations can receive a maximum of $8,000 from the USG Funding Department per year.
+5. When are Funding Applications open? 
+   1. Funding Applications are open every Wednesday at 8:00 AM and close at 11:59 PM.
+6. Can I apply for summer event funding?
+   1. USG Funding does not process applications or provide funding for events during University holidays, breaks, study days, or finals.
+7. Why are Funding Applications no longer accepted on a rolling basis?
+   1. Funding Directors handle hundreds of applications every year. Before, students had to wait for weeks to know if their application was accepted. To have a faster turnaround time, we now accept applications once a week. This gives Funding Directors more time to review and decide on applications, making the process faster for individuals and RSOs.
+8. What do I do if I miss the Funding Application submission deadline? 
+   1. If you miss the deadline, you can submit your application the following week when it reopens.
+9. When should I submit my application?
+   1. Applications must be submitted on Wednesdays by 11:59 PM six academic weeks before the event date when using an approved vendor, and eight academic weeks before the event date for new vendors and travel. Please review the Funding Application Deadlines for eligible event dates and submission deadlines.
+10. Where can I find a list of previously approved vendors? 
+   1. The Vendor List provides a guide of previous vendors the University has worked with. Remember to verify vendor status before submitting your application, as the list is not exhaustive and statuses can change.
+11. What does a complete budget proposal look like?
+   1. Quotes for each individual expense. For online purchases, include a screenshot of the cart showing prices, quantities, and total price including all fees. For Amazon purchases, create an Amazon Wish List and provide the link in the budget proposal.
+12. What should I submit after my event concludes? 
+   1. After your event, submit the After Event Evaluation form and Final invoices within three business days of the event's completion.
+13. I am having difficulty receiving the final invoices from the vendor, will I be penalized for not submitting the invoice on time?
+   1. It's not uncommon to encounter this issue. If you're having trouble getting the invoice, please inform the Funding Director immediately. Failure to communicate your situation within 3 business days after the event and update on the invoice status will result in the denial of future funding applications.
+14. What is the Funding Board Workshop Presentation? 
+   1. The Funding Board Workshop Presentation offers valuable information about the funding process, showcases successful past events, and provides application tips and frequently asked questions to increase your chances of a successful application. This will take place early in both the Fall and Spring semester, we encourage RSO’s and individuals applying to attend.
+15. What is a complete funding application? 
+   1. A complete funding application includes applicant information, Recognized Student Organization information, event logistics, and a full budget proposal for the event, including quotes for each individual expense.
+16. What happens if I submit an application that is missing information? 
+   1. If your application is missing information, the Funding Director will return it to you, and you will have three business days to provide the necessary information before your application is denied. 
+17. How will I know who the Funding Director is? 
+   1. The Funding Director will reach out to you after reviewing your application to introduce themselves and inform you of the next steps. If you have any questions, all Directors and Associate Directors have their contact information on the funding website under the FAQs section.
+18. What happens after the Funding Director accepts my application?
+   1. The Funding Director will forward your application to their Graduate Advisor for further review. The Graduate Advisor will then submit your application to USC Campus Activities Professional Staff for verification and processing.
+19. How will I know what stage my Funding Application is in? 
+   1. The Funding Director will inform you of the progress of your application as it moves forward.
+20. What are the Funding Boards I can receive funding from?
+   1. Funding is available from the Professional/Academic Research Fund, the Philanthropy Fund, the Social and Recreation/Startup Fund, and the Performing and Visual Arts Fund.
+21. I can pay for my event but can not get it covered by USG Funding since I missed the submission deadline, would I be able to be reimbursed?
+   1. USG Funding will not provide any reimbursements. Please be sure to submit applications on time to be eligible for funding.
+22. I submitted an application but was told it was denied, what are my next steps? 
+   1. If your application is denied, the Funding Director will provide a reason. You can reach out to them to discuss possible improvements for future applications.
+23. My organization has received funding in the past but was denied, why is that? 
+   1. Funding is not guaranteed and depends on various factors, and we recommend submitting applications early and exploring other funding sources throughout USC.
+24. What are other sources of funding besides USG? 
+   1. Students have several options for funding, including fundraising, crowdfunding through IgniteSC, membership fees, USC Academic Departments, USC Grants, fellowships or scholarships, programming assemblies and committees, partnering with other RSOs, and receiving donations from donors or USC alumni.
+
+
+Social Recreation Fund
+
+
+1. What’s a durable good?
+Durable goods are not eligible for funding. A durable good is a product that is designed to last for an extended period, typically three years or more. Unlike non-durable goods, which are consumed quickly or have a short lifespan, durable goods are often used repeatedly and do not wear out or break easily. For example, a durable good would be glass plates which are not eligible for funding the alternative would be paper plates which would classify for funding. Any such items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.
+
+
+Professional and Academic Fund
+
+
+1. Why is there an 8 week deadline for travel?
+Travel expense requests (airfare and hotel) must be made at least eight weeks prior to the date of travel to ensure enough time for our team to assess the application and accurately help you pick the best options for your academic travels. Applications received within this four week deadline, or eight week deadline in the event of air travel requests, will be considered at the discretion of the Director of the Academic Fund.
+
+
+Performing and Visual Arts Fund

@@ -50,7 +50,7 @@ python scripts/validate_rules.py
 
 "Verbatim" means: after Unicode NFKC normalisation and collapsing whitespace, `source_text` is a contiguous substring of the snapshot text. A word the PDF split across two lines at a hyphen is joined back. Every other character, including curly quotes and the source's own typos, must match.
 
-Unverified today (each with its note): the academic-week definition behind every USG deadline (a hand transcription of USG's sign-in-only deadline table is in `sources/usg-funding-deadlines.txt`, not checkable by code), the 4-funded-events-per-semester limit, the USG vendor list, and the academic calendar. Ten more rules depend on them and are shown yellow too.
+Unverified today (each with its note): the academic-week definition behind every USG deadline (a hand transcription of USG's sign-in-only deadline table is in `sources/usg-funding-deadlines.txt`, not checkable by code), the 4-funded-events-per-semester limit, the USG vendor list, and the academic calendar. Eleven more rules depend on them and are shown yellow too.
 
 ## Sources
 

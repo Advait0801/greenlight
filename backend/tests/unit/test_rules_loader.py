@@ -273,3 +273,27 @@ def test_tampered_snapshot_rejects_rules_quoting_it(rules_copy: Path) -> None:
 def test_broken_manifest_is_reported(rules_copy: Path) -> None:
     (rules_copy / "sources" / "manifest.json").write_text("[]", encoding="utf-8")
     _expect_problem(rules_copy, "manifest.json")
+
+
+def test_duplicate_json_keys_are_rejected(rules_copy: Path) -> None:
+    path = rules_copy / "funding.json"
+    text = path.read_text(encoding="utf-8")
+    # Add a second "severity" to the first rule; plain json.loads would silently keep the last one.
+    patched = text.replace('"severity": "yellow",', '"severity": "yellow", "severity": "info",', 1)
+    assert patched != text
+    path.write_text(patched, encoding="utf-8")
+    _expect_problem(rules_copy, "funding.json", "appears twice")
+
+
+def test_nan_in_params_is_rejected(rules_copy: Path) -> None:
+    path = rules_copy / "funding.json"
+    text = path.read_text(encoding="utf-8")
+    patched = text.replace('"max_usd_per_person": 35', '"max_usd_per_person": NaN', 1)
+    assert patched != text
+    path.write_text(patched, encoding="utf-8")
+    _expect_problem(rules_copy, "funding.json", "NaN is not allowed")
+
+
+def test_empty_rule_file_is_rejected(rules_copy: Path) -> None:
+    _edit(rules_copy, "outside_money.json", lambda d: d.update(rules=[]))
+    _expect_problem(rules_copy, "outside_money.json", "has no rules")

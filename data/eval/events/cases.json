@@ -2335,6 +2335,13 @@
             "due": null,
             "violated": false,
             "past_due": false
+          },
+          {
+            "rule_id": "usg-faq-deadline-new-vendors-travel",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
           }
         ],
         "source_conflicts": [
@@ -2351,6 +2358,13 @@
               "usg-incomplete-48-hours"
             ],
             "applied": "usg-incomplete-48-hours"
+          },
+          {
+            "rules": [
+              "usg-deadline-travel",
+              "usg-faq-deadline-new-vendors-travel"
+            ],
+            "applied": "usg-deadline-travel"
           }
         ]
       }
@@ -2429,6 +2443,13 @@
             "past_due": false
           },
           {
+            "rule_id": "usg-faq-deadline-new-vendors-travel",
+            "status": "check_with_office",
+            "due": null,
+            "violated": false,
+            "past_due": false
+          },
+          {
             "rule_id": "usg-ineligible-international-travel",
             "status": "blocked",
             "due": null,
@@ -2451,6 +2472,13 @@
               "usg-incomplete-48-hours"
             ],
             "applied": "usg-incomplete-48-hours"
+          },
+          {
+            "rules": [
+              "usg-deadline-travel",
+              "usg-faq-deadline-new-vendors-travel"
+            ],
+            "applied": "usg-deadline-travel"
           }
         ]
       }

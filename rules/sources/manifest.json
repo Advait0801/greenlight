@@ -34,6 +34,22 @@
       "version_date_basis": "Page modified time (article:modified_time)."
     },
     {
+      "id": "usg-funding-faq",
+      "title": "USG Funding FAQ document (FAQ for Funding Website)",
+      "owner": "Undergraduate Student Government (USG) Funding Department",
+      "url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/edit",
+      "fetch_url": "https://docs.google.com/document/d/11IYBlPhAzE_Exvim3Fm1Cr_nI6q6mdurzKACldOj9jU/export?format=txt",
+      "format": "txt",
+      "commit_raw": true,
+      "version_date": "2026-11-14",
+      "version_date_basis": "No version date in the document; date it was read. It still says 8 weeks for travel where the 2026-27 guidelines say 9, so it may be older than the guidelines.",
+      "snapshot": "usg-funding-faq.txt",
+      "raw": "raw/usg-funding-faq.txt",
+      "fetched_at": "2026-11-15T06:10:19Z",
+      "sha256": "b3e68f95f6508d78b57dfd5cd409da9d4cf92f63325b539678bef2fa8285c74a",
+      "bytes": 7969
+    },
+    {
       "id": "usg-vendor-list",
       "title": "USG Vendor List, Food Vendors tab (linked from the Funding Department Guidelines, Section 1)",
       "owner": "Undergraduate Student Government (USG) Funding Department",

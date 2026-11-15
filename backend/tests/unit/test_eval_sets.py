@@ -150,3 +150,31 @@ def test_unknown_set_and_bad_json_raise_clear_errors(tmp_path) -> None:  # type:
     with pytest.raises(EvalSetError) as caught:
         load_set("events", eval_dir=tmp_path)
     assert "not valid JSON" in str(caught.value)
+
+
+@pytest.mark.parametrize(
+    ("name", "change", "fragment"),
+    [
+        ("year_plans", lambda d: d["cases"][0]["plan"]["unavailable_dates"].append("2027-02-31"), "not a real date"),
+        ("year_plans", lambda d: d["cases"][0]["events"][2].update(end_date="2027-02-01"), "end_date is before event_date"),
+        ("budgets", lambda d: d["cases"][4]["event"].update(end_date="2027-04-01"), "end_date is before event_date"),
+        ("events", lambda d: d["cases"][19]["expected"].update(end_date="2027-03-01"), "end_date is before event_date"),
+    ],
+)
+def test_impossible_dates_are_rejected(ruleset, name: str, change, fragment: str) -> None:  # type: ignore[no-untyped-def]
+    data = copy.deepcopy(_load(name))
+    change(data)
+    problems = validate_set(name, data, ruleset=ruleset)
+    assert any(fragment in problem for problem in problems), problems
+
+
+def test_duplicate_keys_in_a_test_set_are_rejected(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    import shutil
+
+    shutil.copytree(EVAL_DIR / "schemas", tmp_path / "schemas")
+    (tmp_path / "events").mkdir()
+    text = (EVAL_DIR / SETS["events"]).read_text(encoding="utf-8")
+    (tmp_path / "events" / "cases.json").write_text(text.replace('"set": "events",', '"set": "events", "set": "events",', 1), encoding="utf-8")
+    with pytest.raises(EvalSetError) as caught:
+        load_set("events", eval_dir=tmp_path)
+    assert "appears twice" in str(caught.value)
