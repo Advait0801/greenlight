@@ -11,6 +11,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
+from starlette.concurrency import run_in_threadpool
 
 from app.api.deps import require_ruleset
 from app.db import get_session
@@ -73,12 +74,13 @@ async def constitution_check(
                             detail="Send either a file or pasted text, not both.")
     if has_file and file is not None:
         data = await file.read(MAX_UPLOAD_BYTES + 1)
-        report, results = check_upload(ruleset, club, filename=file.filename or "upload", data=data)
+        # The check (and the AI reader's call) runs in a worker thread, so one upload never stalls other requests.
+        report, results = await run_in_threadpool(check_upload, ruleset, club, filename=file.filename or "upload", data=data)
     else:
         if text is not None and len(text) > MAX_TEXT_CHARS:
             raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                                 detail=f"The pasted text is longer than {MAX_TEXT_CHARS:,} characters.")
-        report, results = check_upload(ruleset, club, text=text or "")
+        report, results = await run_in_threadpool(check_upload, ruleset, club, text=text or "")
     _audit(session, results)
     return report
 
