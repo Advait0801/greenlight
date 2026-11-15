@@ -21,10 +21,26 @@
       "applies_to": "Every USG deadline counted in academic weeks",
       "params": {
         "deadline_table_url": "https://docs.google.com/spreadsheets/d/1M8FHvuw6f7ErnHnrQIR_ijjVmaKVXZp5-5fxrrJ7e68/edit",
-        "deadline_table_snapshot": "usg-funding-deadlines.txt"
+        "deadline_table_snapshot": "usg-funding-deadlines.txt",
+        "date_to_row": "the Monday-to-Sunday week containing the date: a Saturday or Sunday uses the row for the Monday before it; the initial payment due date is looked up the same way and the earlier deadline applies",
+        "rows_to_confirm": [
+          "2027-01-11",
+          "2027-01-18",
+          "2027-01-25",
+          "2027-02-01",
+          "2027-02-08",
+          "2027-02-15",
+          "2027-03-22",
+          "2027-03-29",
+          "2027-04-05",
+          "2027-04-12",
+          "2027-04-19",
+          "2027-04-26"
+        ],
+        "while_unconfirmed": "show the earlier of the table's date and the same number of weeks counted back with breaks skipped, and cite both"
       },
       "conflicts_with": null,
-      "notes": "Open question in PROJECT_CONTEXT section 8. A hand transcription of the table, made in a signed-in browser on 2026-11-14, is in rules/sources/usg-funding-deadlines.txt; code cannot check it against the sheet. The transcribed table is keyed by event week and gives a 6-week and a 9-week deadline (always a Wednesday). It does not follow a simple count of weeks, so deadlines should be looked up in it, not computed. Weeks with no deadline (winter recess, study days, finals, spring recess) have no USG funding."
+      "notes": "Open question in PROJECT_CONTEXT section 8. A hand transcription of the table, made in a signed-in browser on 2026-11-14, is in rules/sources/usg-funding-deadlines.txt; code cannot check it against the sheet. In the transcription, the 9-week column for event weeks March 22 to April 26, 2027 is only 2 weeks before the 6-week column (3 weeks elsewhere), and some January and February rows give fewer weeks than the guidelines; a person must compare these rows (rows_to_confirm) with the sheet. The transcribed table is keyed by event week and gives a 6-week and a 9-week deadline (always a Wednesday). It does not follow a simple count of weeks, so deadlines should be looked up in it, not computed. Weeks with no deadline (winter recess, study days, finals, spring recess) have no USG funding."
     },
     {
       "id": "usg-deadline-vendor",

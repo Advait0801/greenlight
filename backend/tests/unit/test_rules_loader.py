@@ -452,3 +452,32 @@ def test_new_event_rules_from_the_third_audit(ruleset) -> None:  # type: ignore[
         assert rule_id in ruleset
     assert ruleset.get("classroom-requests-week-4").severity == "yellow"
     assert ruleset.get("tabling-limits").params["days_in_a_week_must_be_consecutive"] is True
+
+
+def test_manual_deadline_table_is_intact_and_its_doubtful_rows_are_recorded(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, outside-money audit H1 and M): the hand transcription matches its
+    hash, every deadline is a Wednesday, the rows run Monday to Friday, and the rows a person must
+    compare with the sheet are recorded on the rule that uses the table."""
+    import csv
+    import hashlib
+    from datetime import date as Date
+
+    entry = next(e for e in json.loads((RULES_DIR / "sources" / "manifest.json").read_text())["sources"] if e["id"] == "usg-funding-deadlines")
+    body = (RULES_DIR / "sources" / entry["snapshot"]).read_text(encoding="utf-8").partition(HEADER_END)[2].lstrip("\n")
+    assert hashlib.sha256(body.encode("utf-8")).hexdigest() == entry["sha256"]
+    rows = list(csv.DictReader(line for line in body.splitlines() if not line.startswith("#")))
+    short_after_recess = []
+    for row in rows:
+        start, end = Date.fromisoformat(row["event_week_start"]), Date.fromisoformat(row["event_week_end"])
+        assert start.weekday() == 0, row
+        for key in ("deadline_6_week", "deadline_9_week"):
+            if row[key] not in ("", "N/A"):
+                assert Date.fromisoformat(row[key]).weekday() == 2, row  # Wednesday
+        if row["deadline_6_week"] not in ("", "N/A") and row["deadline_9_week"] not in ("", "N/A"):
+            gap = (Date.fromisoformat(row["deadline_6_week"]) - Date.fromisoformat(row["deadline_9_week"])).days
+            if start >= Date(2027, 3, 22) and gap != 21:
+                short_after_recess.append(row["event_week_start"])
+        assert end >= start
+    params = ruleset.get("usg-academic-week-definition").params
+    assert set(short_after_recess) <= set(params["rows_to_confirm"])
+    assert "Saturday or Sunday" in params["date_to_row"]
