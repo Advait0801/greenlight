@@ -105,6 +105,10 @@ Medium and low findings left open when Phase 0 closed (details in the iteration 
 - **Recognition:** co-06's deleted officer is "weak" where "contradicts" may fit; template wording shows raw {blank} markers and VIII.B.1 is split across a page; blank positions and the continuation's position are not validated; VI.B.2 and VI.C.2 quotes differ only in underscores; some messages state facts outside the quoted passage; no test that each constitution text differs from co-01 only in its listed clauses; the Appendix is not encoded.
 - **Code:** 9 of 62 single-guard removals still leave the suite green (number checks inside lists, relative imports in the architecture test); status and deadline logic is written in more than one place until Phase 2 builds the calculator; the start page miscounts unconfirmed rules; a re-fetched source keeps its old version date; SourceLink does not mark a read rule resting on an unverified one.
 
+## Carried to Phase 7
+
+- **Phase 0 closed without a confirming review.** Iteration 4 (one breaker and five auditors) found 3 blockers and 17 highs. All of them were fixed with regression tests, and the suite passed (318). No fresh reviewer re-checked those fixes before the push on 2026-11-15 (6c63e0f). The humans accepted this to save time and asked for it to be covered in Phase 7. **Phase 7 orchestrator:** make F1 (correctness) explicitly cover the Phase 0 foundation: every rule in `rules/*.json` against its snapshot in `rules/sources/`, the deadline-table snapshot and calendar, and the rule loader and validator guards. Give F1 this as part of its lens. Do not hand it this file or the phase reports (PLAN.md Phase 7, "Independence").
+
 ## Open questions for humans
 
 | Question | Asked | Answer (researched 2026-11-14 by the managing session; see `docs/research/open_questions.md`) | Status in the rules |
