@@ -163,7 +163,7 @@
           {
             "event": "welcome-mixer",
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -187,7 +187,7 @@
           {
             "event": "welcome-mixer",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -229,7 +229,7 @@
           {
             "event": "workshop",
             "rule_id": "classroom-requests-week-4",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -253,7 +253,7 @@
           {
             "event": "workshop",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -295,7 +295,7 @@
           {
             "event": "retreat",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -427,7 +427,7 @@
           {
             "event": "culture-night",
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -457,7 +457,7 @@
           {
             "event": "culture-night",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -583,7 +583,7 @@
           {
             "event": "spring-banquet",
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -607,7 +607,7 @@
           {
             "event": "spring-banquet",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -886,7 +886,7 @@
           {
             "event": "speaker-series-1",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -928,7 +928,7 @@
           {
             "event": "resume-workshop",
             "rule_id": "classroom-requests-week-4",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -952,7 +952,7 @@
           {
             "event": "resume-workshop",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -1084,7 +1084,7 @@
           {
             "event": "case-competition",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -1234,7 +1234,7 @@
           {
             "event": "networking-night",
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -1258,7 +1258,7 @@
           {
             "event": "networking-night",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null
           },
           {
@@ -1366,7 +1366,7 @@
           {
             "event": "speaker-series-2",
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "blocked",
             "due": null
           },
           {
@@ -1446,11 +1446,11 @@
           {
             "type": "event_in_blocked_period",
             "rule_id": "usg-no-funding-breaks",
-            "severity": "yellow",
+            "severity": "red",
             "events": [
               "speaker-series-2"
             ],
-            "note": "May 5, 2027 is during final exams (calendar not yet confirmed)."
+            "note": "May 5, 2027 is during final exams; USG does not fund events during finals."
           },
           {
             "type": "over_yearly_cap",

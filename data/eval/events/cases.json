@@ -129,7 +129,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -346,7 +346,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -508,7 +508,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -720,7 +720,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -862,7 +862,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1646,7 +1646,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1759,7 +1759,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1953,7 +1953,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "blocked",
             "due": null,
             "violated": true,
             "past_due": false,
@@ -2088,7 +2088,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2123,7 +2123,7 @@
           },
           {
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "blocked",
             "due": null,
             "violated": true,
             "past_due": false,
@@ -2205,7 +2205,7 @@
           },
           {
             "rule_id": "classroom-requests-week-4",
-            "status": "check_with_office",
+            "status": "blocked",
             "due": null,
             "violated": true,
             "past_due": false,
@@ -2246,7 +2246,7 @@
           },
           {
             "rule_id": "classroom-requests-week-4",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2296,7 +2296,7 @@
           },
           {
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2402,7 +2402,7 @@
           },
           {
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2615,7 +2615,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2643,7 +2643,7 @@
           },
           {
             "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2857,7 +2857,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2991,7 +2991,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -3530,7 +3530,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false
@@ -3643,7 +3643,7 @@
           },
           {
             "rule_id": "social-events-not-study-days-finals",
-            "status": "check_with_office",
+            "status": "condition",
             "due": null,
             "violated": false,
             "past_due": false

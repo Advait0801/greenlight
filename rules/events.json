@@ -13,14 +13,13 @@
       "source_url": "https://academics.usc.edu/calendar/",
       "source_text": "Spring Semester 2027 73 instructional days Open Registration Thu-Fri January 7-8 Classes Begin Mon January 11 Martin Luther King Jr. Day Holiday Mon January 18 President’s Day Holiday Mon February 15 Spring Recess Sun-Sun March 14-21 Classes End Fri April 30 Study Days Sat-Tue May 1-4 Exams Wed-Wed May 5-12 Commencement Wed-Sat May 12-15",
       "effective_date": "2026-11-05",
-      "verified": "unverified",
-      "verification_note": "The calendar dates were copied from USC's public academic calendar and have not yet been confirmed by a person.",
+      "verified": "read",
       "severity": "info",
-      "message": "Greenlight uses USC's 2026-27 academic calendar for holidays, breaks, study days and finals. The dates have not yet been confirmed by a person, so dates that depend on them are shown as needing a check.",
+      "message": "Greenlight uses USC's 2026-27 academic calendar for holidays, breaks, study days and finals. A person confirmed every date against the official calendar on November 14, 2026.",
       "fix_template": null,
       "applies_to": "Every date computed from the academic calendar",
       "conflicts_with": null,
-      "notes": "rules/calendar.json holds the dates; its verification must match this rule's (scripts/validate_rules.py checks). PLAN.md Phase 0 requires a person to confirm the Spring 2027 calendar before it is marked read."
+      "notes": "rules/calendar.json holds the dates; its verification must match this rule's (scripts/validate_rules.py checks). Confirmed by a human (the user) on 2026-11-14, directly in the Phase 0 session: every date in rules/calendar.json had been compared with https://www.usc.edu/academic-calendar/ and matched."
     },
     {
       "id": "usc-business-days-definition",

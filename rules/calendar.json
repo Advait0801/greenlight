@@ -4,8 +4,8 @@
   "source": "USC Academic Calendar (Office of Academic Records and Registrar)",
   "source_url": "https://academics.usc.edu/calendar/",
   "effective_date": "2026-11-05",
-  "verified": "unverified",
-  "verification_note": "Read from the Registrar's public calendar page on 2026-11-14. PLAN.md Phase 0 requires a person to confirm the Spring 2027 calendar before it is treated as certain, so every date computed from it is shown yellow until then (rule usc-academic-calendar-2026-27).",
+  "verified": "read",
+  "verification_note": "Confirmed by a human (the user) on 2026-11-14: every date in this file (Fall 2026, Spring 2027, Summer 2027) was compared with the official calendar at https://www.usc.edu/academic-calendar/ and matched. Each term's source_text is checked against the Registrar's page snapshot. The business-day and academic-week definitions below are still unverified.",
   "timezone": "America/Los_Angeles",
   "terms": [
     {

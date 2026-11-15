@@ -21,7 +21,7 @@ def test_health_reports_everything_loaded(client) -> None:  # type: ignore[no-un
 
     expected_unverified = sum(1 for rule in load_rules(RULES_DIR) if rule.verified == "unverified")
     assert body["rules"]["by_verification"]["unverified"] == expected_unverified >= 4
-    assert body["calendar"]["verified"] == "unverified"
+    assert body["calendar"]["verified"] == "read"  # confirmed by the user on 2026-11-14
     assert "pre-check, not a decision" in body["notice"]
 
 

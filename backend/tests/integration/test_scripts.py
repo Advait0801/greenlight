@@ -40,7 +40,8 @@ def test_validate_rules_fails_on_a_broken_table(rules_copy: Path) -> None:
 def test_validate_rules_fails_when_calendar_and_rule_disagree(rules_copy: Path) -> None:
     path = rules_copy / "calendar.json"
     data = json.loads(path.read_text(encoding="utf-8"))
-    data["verified"] = "read"
+    data["verified"] = "unverified"
+    data["verification_note"] = "Pretend nobody has confirmed it."
     path.write_text(json.dumps(data), encoding="utf-8")
     result = run(str(SCRIPTS / "validate_rules.py"), "--rules-dir", str(rules_copy))
     assert result.returncode == 1

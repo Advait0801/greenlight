@@ -66,7 +66,6 @@ def test_open_questions_are_unverified_and_yellow(ruleset) -> None:  # type: ign
     # approved vendor list, four funded events per semester.
     for rule_id in (
         "usg-academic-week-definition",
-        "usc-academic-calendar-2026-27",
         "usg-vendor-list",
         "usg-events-per-semester-cap",
         "usc-business-days-definition",
@@ -78,7 +77,7 @@ def test_open_questions_are_unverified_and_yellow(ruleset) -> None:  # type: ign
 
 
 def test_rules_resting_on_unverified_rules_are_yellow(ruleset) -> None:  # type: ignore[no-untyped-def]
-    for rule_id in ("usg-deadline-vendor", "usg-deadline-travel", "usg-no-funding-breaks", "classroom-requests-week-4"):
+    for rule_id in ("usg-deadline-vendor", "usg-deadline-travel", "usg-post-event-evaluation", "usg-approved-vendor"):
         rule = ruleset.get(rule_id)
         assert rule.verified == "read" and rule.severity == "red"
         assert ruleset.display_severity(rule_id) == "yellow"
@@ -356,3 +355,11 @@ def test_verification_notes_are_plain_language(ruleset) -> None:  # type: ignore
         note = rule.verification_note or ""
         for developer_text in ("PROJECT_CONTEXT", "PLAN.md", "rules/", ".json", ".txt"):
             assert developer_text not in note, (rule.id, developer_text)
+
+
+def test_confirmed_calendar_makes_calendar_only_rules_certain(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """The user confirmed the calendar on 2026-11-14; rules that rest only on it are now certain."""
+    assert ruleset.get("usc-academic-calendar-2026-27").verified == "read"
+    for rule_id in ("usg-no-funding-breaks", "social-events-not-study-days-finals", "classroom-requests-week-4"):
+        assert ruleset.is_certain(rule_id), rule_id
+        assert ruleset.display_severity(rule_id) == "red", rule_id

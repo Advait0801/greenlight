@@ -15,9 +15,9 @@ def calendar():  # type: ignore[no-untyped-def]
     return load_calendar(RULES_DIR)
 
 
-def test_calendar_is_marked_unverified_until_a_person_confirms_it(calendar) -> None:  # type: ignore[no-untyped-def]
-    assert calendar.verified == "unverified"
-    assert calendar.verification_note
+def test_calendar_is_confirmed_by_a_person_but_its_assumptions_are_not(calendar) -> None:  # type: ignore[no-untyped-def]
+    assert calendar.verified == "read"  # confirmed by the user on 2026-11-14 (PLAN.md Phase 0)
+    assert "Confirmed by a human" in (calendar.verification_note or "")
     assert calendar.business_days.verified == "unverified"
     assert calendar.academic_weeks.verified == "unverified"
     assert calendar.academic_weeks.definition is None
