@@ -6,6 +6,7 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
+- **Phase 3 (branch `phase-3/money-check`):** built 2026-11-15; review iterations under way (see Iteration log).
 - **Phase 0:** closed 2026-11-15 (Foundation).
 - **Phase 2:** closed 2026-11-15 after three iterations; merged into `main` (pull request from `phase-2/event-packet`).
 - **Phase 1:** closed 2026-11-15 after three iterations; pull request from `phase-1/recognition` into `main` for the humans to merge.
@@ -19,7 +20,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
-| 3 | Money check | — | 0 | — | open |
+| 3 | Money check | done (branch `phase-3/money-check`) | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
@@ -63,6 +64,21 @@ Branch `phase-1/recognition`. What exists now:
 - **Evaluator** (`scripts/evaluators/constitutions.py`): 21/21 planted faults found, 0 missed, 0 wrongly flagged; one found with a different state (co-09 VIII.A.2 shown "wording changed", key says "contradicts").
 - **Tests**: 421 passing (103 new). Shared change: `tests/unit/test_architecture.py` allows `app/services/recognition_intake.py` to import the AI client.
 - Known limit: II.C.5 (dues) stays yellow on every constitution because the reader answers "no" only at medium confidence.
+
+## Phase 3 build (2026-11-15, branch `phase-3/money-check`)
+
+What exists now:
+- **Engine** (`backend/app/services/money_check.py`, `app/schemas/money.py`): budget lines + event + club figures + attachments -> red, yellow, office-decides or green per line; findings about the application; fund; totals; whether a draft may be written. Pure code, whole cents. Limits come from rule params (food $35 per person over all food lines on expected attendance, hotel $400 per room-night, on-campus venue and personnel $4,000 on the sum, $8,000 a year with what was received, over $4,000 and multi-day office decides, 4 events a semester yellow). Ineligible categories red with a computed fix; ticketed, closed on-campus, private residence and international events red; required documents (ESR, food forms, travel and hotel documents) red when missing; quote, cart screenshot and Amazon wish list per line. Unsure or unknown category, a line that does not add up, a duplicate line, a quote total that differs from the budget, another currency, an unreadable document: yellow with the reason. Unknown ticketing or openness is asked, never assumed. Green only through `finding_for` on certain rules. USG deadlines and blocked dates come from the Phase 2 engine (`build_packet`), not recomputed.
+- **Vendor check** (`app/services/vendor_list.py`): the vendor name against both vendor-list snapshots; always yellow while the list is unconfirmed, shown apart from eligibility (a listed DJ is still red).
+- **Fund**: the officer's choice, or the model's reading when it is sure and names one fund; anything else yellow with the candidates. Fund-specific rules: Professional fund must be free and open (red), PO vendor for arts production lines and the Philanthropy service rule (yellow, cannot be checked).
+- **Reading steps** (AI, `quote_intake.py`, `fund_reading.py`): the model copies amounts as written; code parses them to cents, refuses other currencies, negatives and ambiguous formats, checks numbers are written in a text document, computes a missing amount from quantity x unit price, adds up lines and compares with the stated total. Injected instructions are flagged and ignored.
+- **Draft** (`application_draft.py`): refused while any red remains (the route re-runs the check); the model writes four prose paragraphs with no figures, code drops any paragraph containing a number not in the officer's own text; every figure (budget table, totals, attendance, date) is written by code. The officer edits and approves; the approval is logged as a fingerprint. Nothing is submitted.
+- **API** (`app/api/money.py`): `GET /money/vocabulary`, `POST /money/read` (multipart; file type from its bytes), `POST /money/fund`, `POST /money/check`, `POST /money/draft`, `POST /money/draft/approve`.
+- **Frontend**: `/money/check` page (upload, event, editable budget lines, attachments, fund, report with sources, draft and approval); demo budget button.
+- **Evaluator** (`scripts/evaluators/budgets.py`): end to end on recorded readings: seeded violations caught 30/30, wrong greens 0, fund matches or yellow 20/20, totals exact 20/20, draft allowed right 20/20. 40 recordings in `data/ai_recordings/{quote_reading,fund_reading}/` (synthetic test data, force-added).
+- **Rule added**: `usg-ineligible-expenses-list` (funding.json; yellow; quotes the guidelines' ineligible list) for lines whose category is unclear.
+- **Shared code changed** (additive): `tests/unit/test_architecture.py` (three Phase 3 AI modules allowed), `frontend/src/routes.tsx` (one entry). No change to the rule loader, Finding, AI client, models, rule engine or deadline calculator.
+- **Tests**: 507 passing (adversarial included).
 
 ## Iteration log
 
@@ -221,6 +237,7 @@ Medium and low findings left open when Phase 1 closed (details in docs/reviews/p
 |---|---|---|
 | 1 Recognition check | teammate (second laptop) | `phase-1/recognition` |
 | 2 Event packet | this machine | `phase-2/event-packet` |
+| 3 Money check | this machine | `phase-3/money-check` |
 
 Both start from `origin/main` and end with a pull request into `main`. See "Decisions".
 
