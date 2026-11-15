@@ -205,9 +205,11 @@ def draft(body: DraftRequest, ruleset: RuleSet = Depends(require_ruleset), calen
           session: Session = Depends(get_session)) -> dict[str, Any]:
     """Draft the application text. The report is worked out again here, so no draft is written while a red item
     remains, whatever the page sends."""
-    report = _check(body.check, ruleset, calendar)
+    # Always as of today: a back-dated as_of must never unblock a draft (phase 3 iteration 2).
+    check_today = body.check.model_copy(update={"as_of": None})
+    report = _check(check_today, ruleset, calendar)
     try:
-        result = draft_application(body.check, report, body.purpose)
+        result = draft_application(check_today, report, body.purpose)
     except DraftRefused as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail={"message": str(exc), "blocked_by": exc.blocked_by}) from exc
