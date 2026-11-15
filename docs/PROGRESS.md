@@ -9,7 +9,7 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
 - **Phase 5 (supporting features and the USG screen):** built on `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut). Review iterations under way.
-- **Next action:** Phase 5 iteration 2 (break).
+- **Next action:** Phase 5 iteration 3 (audit).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -21,7 +21,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 1 | yes (iteration 1: 0 blockers, 0 high) | open |
+| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 2 | no (iteration 2: 0 blockers, 4 high, all fixed) | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
@@ -102,6 +102,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 5, iteration 2 — break
+Date/time: 2026-11-15
+Agent and model: breaker (fresh), Opus 5.5, medium effort, on commit e0417ae
+Report: docs/reviews/phase-5-iter-2-break.md (22 failing cases in backend/tests/adversarial/test_phase5_iter2_break.py)
+Findings: 0/4/2/1 (exit criteria 2-4 held: no other club's data through the queue, status, withdraw or handover routes; no reason reaches a club unapproved; every draft editable. Criterion 1 failed through the email, not the option list)
+Fixed (all covered by the breaker's tests): H1 sending to the USG screen dropped the uploaded documents before the re-check, so a quote-total mismatch never reached the reviewer (now checked with the documents, stored without them); H2 the event name and recipient went into the subject and greeting unfiltered (now replaced by a placeholder when they name money or a banned option); H3 the ask line knew only English words (now: text outside plain English is left out, and transfers, bitcoin, honoraria, representatives, purchase-to-enter giveaways and product demos are caught); H4 the fundraiser option left out the Bookstore and cash-collection approvals (now listed as conditions); M an option whose lead time had passed still read "Allowed" (now "a step is already late", with a yellow finding); M duties due after the event (evaluation, final invoices) could be cited as denial reasons (now excluded); M/L the drafted paragraph and the note scan missed Spanish and Chinese cash and raffle words (now caught).
+Left open (questions for the spec): an approved denial text can differ from the rules recorded with it, and re-drafting after approval replaces the recorded rules; "do not promise funding" is only in the prompt; sending twice gives two queue entries counted twice in the chart; the club name sent is not checked; the donations option shows the 2-week fundraiser meeting; the status route does not trim spaces around the token.
+Full test suite: pass (799, adversarial included)
+Gate: iteration 3 (audit) next
 
 ### Phase 5, iteration 1 — verify
 Date/time: 2026-11-15
