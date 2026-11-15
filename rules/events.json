@@ -311,15 +311,20 @@
         "venue_outdoor"
       ],
       "params": {
+        "free_venues": [
+          "venue_tes_meeting_room"
+        ],
         "deposit_usd": {
-          "venue_tes_meeting_room": 0,
           "trojan_grand_ballroom": 300,
           "bovard": 300,
           "venue_outdoor": 100
         },
         "due_business_days_after_processing": 5
       },
-      "conflicts_with": null
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-business-days-definition"
+      ]
     },
     {
       "id": "tes-av-equipment",

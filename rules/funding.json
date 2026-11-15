@@ -744,7 +744,7 @@
         "usg_funding"
       ],
       "params": {
-        "utilization_threshold": 0.5
+        "utilization_threshold_percent": 50
       },
       "conflicts_with": null
     },

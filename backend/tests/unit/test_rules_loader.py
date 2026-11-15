@@ -363,3 +363,25 @@ def test_confirmed_calendar_makes_calendar_only_rules_certain(ruleset) -> None: 
     for rule_id in ("usg-no-funding-breaks", "social-events-not-study-days-finals", "classroom-requests-week-4"):
         assert ruleset.is_certain(rule_id), rule_id
         assert ruleset.display_severity(rule_id) == "red", rule_id
+
+
+@pytest.mark.parametrize(
+    ("file", "rule_id", "change"),
+    [
+        ("events.json", "lafd-division-5-permit", lambda p: p.update(tent_area_sqft_over=4500)),
+        ("events.json", "tes-rso-deposits", lambda p: p["deposit_usd"].update(venue_outdoor=1)),
+        ("events.json", "alcohol-thursday-saturday", lambda p: p.update(service_ends_hours_before_end=3)),
+        ("events.json", "classroom-requests-week-4", lambda p: p.update(requests_open_week=9)),
+        ("funding.json", "usg-fund-closure", lambda p: p.update(utilization_threshold_percent=75)),
+    ],
+)
+def test_every_number_in_params_must_be_in_the_quoted_text(rules_copy: Path, file: str, rule_id: str, change) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, code audit H1): not only max_/min_/threshold_ keys are checked."""
+    _edit(rules_copy, file, lambda d: change(_rule(d, rule_id)["params"]))
+    _expect_problem(rules_copy, rule_id, "is not a number the quoted source text states")
+
+
+def test_deadline_offset_must_be_in_the_quoted_text(rules_copy: Path) -> None:
+    """Regression (phase 0 iteration 3, code audit M2): removing the offset check must fail a test."""
+    _edit(rules_copy, "events.json", lambda d: _rule(d, "minors-registration").update(offset=61))
+    _expect_problem(rules_copy, "minors-registration", "offset 61 is not a number the quoted source text states")

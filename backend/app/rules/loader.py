@@ -160,7 +160,7 @@ def _number_in_text(number: int | float, text: str) -> bool:
         forms = [repr(number)]
     else:
         value = int(number)
-        forms = [str(value), f"{value:,}"]
+        forms = [str(value), f"{value:,}", f"{value}.00", f"{value:,}.00"]
         if value in NUMBER_WORDS:
             forms.append(NUMBER_WORDS[value])
     for form in forms:
@@ -170,16 +170,31 @@ def _number_in_text(number: int | float, text: str) -> bool:
     return False
 
 
+def _numbers(value: Any, path: str) -> list[tuple[str, int | float]]:
+    """Every number inside a params value (nested dicts and lists included), with its path."""
+    if isinstance(value, bool):
+        return []
+    if isinstance(value, (int, float)):
+        return [(path, value)]
+    if isinstance(value, dict):
+        return [item for key, inner in value.items() for item in _numbers(inner, f"{path}.{key}")]
+    if isinstance(value, list):
+        return [item for index, inner in enumerate(value) for item in _numbers(inner, f"{path}[{index}]")]
+    return []
+
+
 def _check_numbers(rule: Rule, where: str, problems: list[str]) -> None:
-    """Limits in params must be positive numbers, and for a rule marked 'read' every limit and every
-    deadline offset must be a number the quoted source text states."""
+    """Limits in params must be positive numbers, and for a rule marked 'read' every number in params
+    and every deadline offset must be a number the quoted source text states."""
     for key, value in rule.params.items():
-        if not key.startswith(LIMIT_PREFIXES):
-            continue
-        if isinstance(value, bool) or not isinstance(value, (int, float)) or not value > 0:
+        if key.startswith(LIMIT_PREFIXES) and (
+            isinstance(value, bool) or not isinstance(value, (int, float)) or not value > 0
+        ):
             problems.append(f"{where}: params.{key} must be a positive number, got {value!r}")
-        elif rule.verified == "read" and not _number_in_text(value, rule.source_text):
-            problems.append(f"{where}: params.{key} = {value} is not a number the quoted source text states")
+    if rule.verified == "read":
+        for path, number in _numbers(rule.params, "params"):
+            if not _number_in_text(number, rule.source_text):
+                problems.append(f"{where}: {path} = {number} is not a number the quoted source text states")
     if rule.kind == "deadline" and rule.offset is not None and rule.verified == "read":
         if not _number_in_text(rule.offset, rule.source_text):
             problems.append(f"{where}: offset {rule.offset} is not a number the quoted source text states")

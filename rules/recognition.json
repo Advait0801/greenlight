@@ -203,12 +203,14 @@
       "effective_date": "2026-11-12",
       "verified": "read",
       "severity": "red",
-      "message": "For each of the five officers, upload three documents: the Hazing Prevention 101 certificate, the Officer Learning Path certificate and the Commitment to Community form (15 in all).",
+      "message": "For each officer, upload three documents: the Hazing Prevention 101 certificate, the Officer Learning Path certificate and the Commitment to Community form.",
       "fix_template": "Missing: {missing_items}.",
       "applies_to": "Every recognition application",
       "params": {
         "items_per_officer": 3,
-        "officers": 5
+        "officer_rules": [
+          "recognition-five-officers"
+        ]
       },
       "conflicts_with": null
     },
