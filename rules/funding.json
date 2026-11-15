@@ -1438,6 +1438,26 @@
       "notes": "Open question in PROJECT_CONTEXT section 8 (approved vendor and caterer lists). Two tabs: Food Vendors and Other Vendors. Rows marked INACTIVE or NOT FOUND, or with a registration state (NONE, In Progress, Invited), need a check with USG: yellow. Being on the list does not make an expense eligible (the Other Vendors tab includes talent agencies, buses and balloon vendors, which the guidelines list as ineligible), so the vendor check and the eligibility check are separate."
     },
     {
+      "id": "usg-ineligible-expenses-list",
+      "domain": "funding",
+      "kind": "requirement",
+      "title": "Each expense must be checked against USG's list of expenses it does not fund",
+      "owner_office": "Undergraduate Student Government (USG) Funding Department",
+      "source": "USG 26-27 Funding Department Guidelines (current as of October 21, 2026)",
+      "source_section": "Section 5: General Fund Guidelines, list of items not eligible for funding",
+      "source_url": "https://docs.google.com/document/d/1noJFJ4SxrFGD1Zm-6EqUHpXSIOUuFIL-gIobWXcXCt0/edit",
+      "source_text": "The following are not eligible for funding: * Any reimbursements * Payments or donations to charity * Alcoholic beverages * Gifts and gift cards * Durable goods (Items that are not for one-time use such as electronics, uniforms, etc.) * Raw food items requiring refrigeration and/or preparation * Restaurant diners * Rideshare costs (Uber, Lyft, Buses, Vans, Amtrak cabins, Car rentals, etc.) * Any refundable deposits and fees pertaining to cleaning/damage * Peer to Peer Payments (Airbnb, VRBO, PayPal, Zelle, CashApp, etc.) * Payments to talent or performers * Monthly Subscriptions/Payments * Events that include ticket sales * On-campus events that are not open to all students * Events occurring in private residences * International travel * Jewelry * Balloons Any items critical to the function of the program may be considered as an exception to this rule at the board’s discretion.",
+      "effective_date": "2026-10-21",
+      "verified": "read",
+      "severity": "yellow",
+      "message": "Greenlight could not tell what kind of expense this is, so it cannot check it against USG's list of expenses it does not fund. A person needs to look at it.",
+      "fix_template": "Say what is being bought (choose a category for the line), then run the check again.",
+      "applies_to": "A budget line whose category is unknown, unsure or 'other'",
+      "check": "The line's category must be known before the ineligible-expense rules can be checked.",
+      "conflicts_with": null,
+      "notes": "Used by the money check for lines it cannot classify. Always yellow: an unknown category is never shown as a pass."
+    },
+    {
       "id": "usg-ineligible-reimbursements",
       "domain": "funding",
       "kind": "ineligible",
