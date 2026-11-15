@@ -92,7 +92,11 @@ def _check_obligation(where: str, ruleset: RuleSet, entry: dict[str, Any], start
                       problems: list[str]) -> None:
     rule = ruleset.get(entry["rule_id"])
     due = _iso(entry.get("due"))
-    if rule.kind == "deadline" and rule.direction == "before" and start and rule.unit in ("days", "weeks", "months", "business_days"):
+    if rule.kind == "deadline" and rule.direction == "before" and rule.anchor not in (None, "event_date"):
+        # Only deadlines counted from the event date are recomputed; any other dated one cannot be checked.
+        if entry.get("due") is not None:
+            problems.append(f"{where}: {rule.id} counts from {rule.anchor}, which the test set does not give; its due date must be null")
+    elif rule.kind == "deadline" and rule.direction == "before" and start and rule.unit in ("days", "weeks", "months", "business_days"):
         want = _back(start, rule.offset or 0, rule.unit)
         if due != want:
             problems.append(f"{where}: {rule.id} is due {entry.get('due')}, but {rule.offset} {rule.unit} before {start} is {want}")

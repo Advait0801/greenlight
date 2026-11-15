@@ -131,6 +131,8 @@ def _load(name: str) -> dict[str, Any]:
         # Regression (exit criterion 4 guard; test added after iteration 3, code audit M): a deadline counted
         # in academic weeks never gets a date until a source defines the unit.
         ("events", lambda d: d["cases"][16]["expected"]["obligations"][12].update(due="2027-01-20"), "counts academic weeks"),
+        # Regression (phase 0 iteration 3, code audit L): a deadline counted from another anchor cannot be dated.
+        ("events", lambda d: d["cases"][16]["expected"]["obligations"][12].update(due="2027-01-20"), "which the test set does not give"),
         ("constitutions", lambda d: d["cases"][0].update(file="texts/co-99.txt"), "not found"),
         ("constitutions", lambda d: d["cases"][0].update(file="texts/../../../etc.txt"), "does not match"),
         ("constitutions", lambda d: d["cases"][1]["expected"].update(seeded_faults=7), "seeded_faults"),
