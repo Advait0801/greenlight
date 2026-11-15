@@ -281,3 +281,20 @@ def test_personal_data_is_blanked_in_optional_and_list_fields_and_evidence() -> 
     saved = without_personal_data(trip).model_dump_json()
     assert "Jordan" not in saved and "Sam" not in saved, saved
     assert '"value":2' in saved.replace(" ", "")
+
+
+def test_live_mode_replays_a_saved_response_without_calling_the_api(tmp_path: Path) -> None:
+    """The demo's fallback: a recorded request is replayed in live mode, so the demo runs when the API is down."""
+    recorder = make(tmp_path, AIMode.RECORDED)
+    prepared = recorder.prepare(
+        task="selftest-contact", instructions="Extract the club name and the headcount.",
+        request="Fill in the structure from the document.",
+        documents=[UntrustedDocument(name="sentence.txt", text=INJECTION)], output_type=Contact,
+    )
+    recorder.save_recording(prepared, GOOD)
+    result = ask(make(tmp_path, AIMode.LIVE, sdk=ExplodingSDK(), key="k"))
+    assert result.output.headcount.value == 150
+    assert result.mode is AIMode.RECORDED
+    sdk = FakeSDK()
+    ask(make(tmp_path, AIMode.LIVE, sdk=sdk, key="k"), text="Another event, 40 people.")
+    assert len(sdk.calls) == 1  # an input with no recording is still read live

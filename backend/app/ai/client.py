@@ -7,7 +7,9 @@ The model reads and drafts; it never decides. Every call:
   - fails with a clear AIError instead of returning anything unvalidated.
 
 AI_MODE selects live calls, replay of saved responses (`recorded`, used by every test), or live
-calls that also save each response (`record`). Recorded mode never touches the network.
+calls that also save each response (`record`). Recorded mode never touches the network. Live mode
+replays a saved response when one exists for the exact request (the demo's fallback when the API is
+slow or down) and calls the API otherwise.
 """
 
 from __future__ import annotations
@@ -122,6 +124,10 @@ class ClaudeClient:
             model_role=model_role,
         )
         mode = self.settings.ai_mode
+        if mode is AIMode.LIVE and self.recording_path(prepared).is_file():
+            # The demo's and test sets' inputs are recorded: replay them so the demo runs the same way when
+            # the API is slow or down. Any other input is still read live.
+            mode = AIMode.RECORDED
         if mode is AIMode.RECORDED:
             raw_text, stop_reason, model = self._replay(prepared)
         else:
