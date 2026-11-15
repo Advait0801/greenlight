@@ -17,7 +17,7 @@ Final reviewers in Phase 7 must **not** read this file.
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | — | 0 | — | open |
-| 2 | Event packet | — | 0 | — | open |
+| 2 | Event packet | done (branch `phase-2/event-packet`) | 0 | — | open |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
@@ -37,6 +37,18 @@ What exists now:
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
 - **Tests**: 318 passing (`pytest`), including 105 adversarial tests from iterations 2 and 4.
+
+## Phase 2 build (2026-11-15, branch `phase-2/event-packet`)
+
+What exists now:
+- **Deadline calculator** (`backend/app/services/deadlines.py`): days, weeks, months (same day or the month's last day), business days (every weekday, earliest date); hours and academic weeks give no date (rule usg-academic-week-definition says no date until a person confirms USG's table). Earliest event date that meets a passed deadline; which of two disagreeing deadlines is stricter. `app/eval_sets.py` now uses it, so date logic lives in one place (closes the Phase 0 code-audit low).
+- **Rule engine** (`backend/app/services/rule_engine.py`, `app/schemas/events.py`): event facts -> packet. Selects rules by trigger (scope as in data/eval/README.md); status from certainty, severity and kind; date checks (first three weeks, study days and finals, alcohol weekdays, USG breaks and summer, tabling days, classroom week 4) from the calendar; conflicts with both citations and the stricter applied; hard blocks (date passed, blocked items, passed deadlines); fallbacks (earliest date, change of format, other funding); questions. Unsure details ("possible") add yellow items and never remove one. Green only for date checks passed on certain rules, through `finding_for`.
+- **Reading step** (`backend/app/services/event_intake.py`): the model reports date parts, venue, headcount and details with confidence; code builds the date and checks a stated weekday; unsure values become questions. 30 recorded readings in `data/ai_recordings/event_sentence/` (synthetic test sentences, force-added).
+- **API** (`backend/app/api/events.py`): `POST /events/parse`, `POST /events/packet`, `POST /events/packet.ics`, `GET /events/vocabulary`.
+- **Frontend**: `/events/packet` page (sentence -> check the details -> packet with hard blocks, questions, sources disagree, timeline, grouped checklist with rule text and source, .ics download).
+- **Evaluator** (`scripts/evaluators/events.py`): end to end on recorded readings 30/30 obligation lists match, 0 missed, 0 wrongly flagged; engine on the test set's attributes 30/30 with every due date, past-due flag and conflict; one deliberate status difference (ev-28: with no date, every date check is "check with the office", not "rule to keep").
+- **Shared code changed** (backward compatible): `app/eval_sets.py` (`_back`/`_forward` call the calculator), `tests/unit/test_architecture.py` (`event_intake.py` allowed to use the AI client), `frontend/src/routes.tsx` (one entry).
+- **Tests**: 386 passing.
 
 ## Iteration log
 
