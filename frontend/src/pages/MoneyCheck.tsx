@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useLocation } from "react-router-dom";
 
 import { VENUE_LABELS, type Finding, type VenueType } from "../api/events";
 import {
@@ -153,6 +154,16 @@ export function MoneyCheck() {
   const [approved, setApproved] = useState("");
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+
+  // Opened from the year plan: start from that event. Ticket sales and openness stay unknown unless the plan said so.
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as { event?: BudgetEvent; received?: string } | null;
+    if (state?.event) {
+      setEvent(state.event);
+      setClub((old) => ({ ...old, received: state.received ?? "" }));
+    }
+  }, [location.state]);
 
   useEffect(() => {
     getVocabulary().then((r) => (r.ok ? setVocab(r.data) : setError(r.error))).catch(() => undefined);

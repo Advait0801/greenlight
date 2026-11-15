@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useLocation } from "react-router-dom";
 
 import {
   VENUE_LABELS,
@@ -91,6 +92,16 @@ export function EventPacket() {
   const [details, setDetails] = useState<Detail[]>([]);
   const [busy, setBusy] = useState<"" | "reading" | "checking" | "ics">("");
   const [error, setError] = useState("");
+
+  // Opened from the year plan: start from that event's details. The officer still checks them before the packet runs.
+  const location = useLocation();
+  useEffect(() => {
+    const state = location.state as { facts?: EventFacts } | null;
+    if (state?.facts) {
+      setFacts({ ...EMPTY, ...state.facts, needs_officer_input: [] });
+      setNotes(["Opened from your year plan. Check the details, then build the packet."]);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     getDetails().then((result) => (result.ok ? setDetails(result.data) : setError(result.error))).catch(() => undefined);
