@@ -14,14 +14,14 @@ Read [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md), [PLAN.md](PLAN.md) and [docs/PROG
 
 ## Branches and commits
 
-- `main` always runs and passes the tests. Nobody commits to it directly: it changes only through merged pull requests.
-- Every phase works on its own branch from the latest `origin/main`, named `phase-<n>/<short-name>` (for example `phase-1/recognition`, `phase-2/event-packet`). Fixes outside a phase use `fix/<what>`, for example `fix/food-cap-rounding`.
-- At the end of a phase, rebase the branch on `origin/main`, push it, and open a pull request into `main`. The humans merge it.
+- `main` always runs and passes the tests. One person works on the repository, so phases and fixes are committed directly on `main`: no phase branches and no pull requests.
+- Before starting work: `git pull --rebase origin main`.
+- At the end of a phase: run the full suite, update `docs/PROGRESS.md`, `git pull --rebase origin main`, rerun the suite, `git push origin main`, and confirm CI passes on `main`. Never force-push.
 - Small commits: one per logical piece, and one per finding fixed (code plus its regression test).
 - Commit subjects are imperative and say what changed: `Fix per-person cap when headcount is zero`. The body can say why. Do not start a subject with `phase N` or `iter N`; phases and iterations are tracked in `docs/PROGRESS.md`.
 - During Phase 7: one finding, one small change, one test, one commit.
 
-## Before you open a pull request
+## Before you push
 
 ```bash
 cd backend && pytest
@@ -31,7 +31,7 @@ cd backend && pytest
 cd frontend && npm run build
 ```
 
-Then fill in the pull request template.
+Then push to `main` and check that CI passes.
 
 ## Changing a rule
 

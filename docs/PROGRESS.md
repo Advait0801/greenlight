@@ -243,6 +243,10 @@ Medium and low findings left open when Phase 1 closed (details in docs/reviews/p
 
 ## Phase ownership and branches
 
+## Phase ownership and branches (historical)
+
+Until 2026-11-15 each phase had its own branch and pull request; from then on phases work directly on `main` (see Decisions).
+
 | Phase | Who | Branch |
 |---|---|---|
 | 1 Recognition check | teammate (second laptop) | `phase-1/recognition` |
@@ -293,3 +297,4 @@ Record any change of scope or departure from PROJECT_CONTEXT here, with the reas
 - **Open questions from iteration 2 (no code change):** M10: the TES "no events in the first 3 weeks" rule is applied to Trojan Event Services venues only (its source is the TES booking FAQ); whether it also covers classroom or off-campus club events is a question for Campus Activities. L9: business-day counting cannot skip staff holidays outside a term (e.g. Christmas) because only academic holidays are known; business days stay unverified. L10: line items and funding options may hold negative amounts (discount lines); Phase 3 decides. L13: a finding or document can reference another club's event at the database level; access control is Phase 5.
 - **Branch-and-PR workflow (2026-11-15, the humans' decision).** From Phase 1 on, every phase works on its own branch (`phase-<n>/<short-name>`) cut from the latest `origin/main` and never commits to `main`. At its checkpoint it rebases on `origin/main`, pushes the branch and opens a pull request into `main`; the humans merge it. Phases 1 and 2 run in parallel: Phase 1 on a teammate's laptop (`phase-1/recognition`), Phase 2 here (`phase-2/event-packet`). PLAN.md (Branches, Phase checkpoint), CLAUDE.md and CONTRIBUTING.md updated.
 - **Effort and reviewer count (2026-11-15, the humans' decision).** Phase sessions and all sub-agents run at medium effort, not high. Each iteration uses exactly one fresh reviewer sub-agent, so a phase has three in all. The orchestrator does not review its own work. PLAN.md section 1 and CLAUDE.md updated.
+- **Push closed phases straight to main (2026-11-15, the user's decision, confirmed directly in the Phase 3 session).** Only one person works on the repository now, so phases work on `main`: no phase branches and no pull requests. At the checkpoint: full suite, PROGRESS.md, `git pull --rebase origin main`, rerun the suite, `git push origin main`, confirm CI on `main`; never force-push. PLAN.md (Checkpoint row, Branches, Phase checkpoint), CLAUDE.md (Conventions, Working with sub-agents) and CONTRIBUTING.md (Branches and commits) updated. Phase 3 was built on `phase-3/money-check` and lands on `main` by fast-forward.
