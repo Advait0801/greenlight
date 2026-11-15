@@ -22,9 +22,11 @@ from _common import DEMO_DIR, use_backend
 use_backend()
 
 from sqlalchemy import delete, select  # noqa: E402
+from sqlalchemy.exc import IntegrityError  # noqa: E402
 from sqlalchemy.orm import Session  # noqa: E402
 
 from app.db import get_engine, init_db  # noqa: E402
+from app.jsonutil import StrictJSONError, loads_strict  # noqa: E402
 from app.models import Club, Event, User, YearPlan  # noqa: E402
 
 
@@ -101,10 +103,22 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Load the demo club into the database.")
     parser.add_argument("--file", type=Path, default=DEMO_DIR / "club.json")
     args = parser.parse_args(argv)
-    demo = json.loads(args.file.read_text(encoding="utf-8"))
+    try:
+        demo = loads_strict(args.file.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, StrictJSONError) as exc:
+        raise SystemExit(f"{args.file}: not a readable demo file ({exc})") from exc
+    for event in demo.get("events", []) if isinstance(demo, dict) else []:
+        start, end = event.get("event_date"), event.get("end_date")
+        if start and end and end < start:
+            raise SystemExit(f"{args.file}: event '{event.get('name')}' has end_date {end} before event_date {start}; nothing was seeded")
     init_db()
     with Session(get_engine()) as session:
-        counts = seed(session, demo)
+        try:
+            counts = seed(session, demo)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise SystemExit(f"{args.file}: the demo data is incomplete or malformed ({exc!r}); nothing was seeded") from exc
+        except IntegrityError as exc:
+            raise SystemExit(f"{args.file}: the demo data breaks a database rule ({exc.orig}); nothing was seeded") from exc
     print("Seeded demo data: " + ", ".join(f"{count} {name}" for name, count in counts.items()))
     return 0
 
