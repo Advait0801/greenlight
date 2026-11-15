@@ -9,7 +9,8 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
 - **Phase 5 (supporting features and the USG screen):** closed 2026-11-15 after three iterations, pushed to `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut).
-- **Next action:** Phase 6 (ship). Set `USG_REVIEWER_KEY` in Replit secrets; record the demo's denial opening and gap email (AI_MODE=record).
+- **Phase 6 (ship):** in progress. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres). Iteration 1 (verify) done; iteration 2 (break) running.
+- **Next action:** a person adds `USG_REVIEWER_KEY` to Replit secrets, then redeploy (the USG screen answers 503 until then).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -22,7 +23,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 6 | Ship | — | 0 | — | open |
+| 6 | Ship | done (on `main`, deployed) | 1 | no (iteration 1: 0 blockers, 1 high: secret not set) | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
 ## Phase 0 build (2026-11-14)
@@ -38,6 +39,16 @@ What exists now:
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
 - **Tests**: 318 passing (`pytest`), including 105 adversarial tests from iterations 2 and 4.
+
+## Phase 6 build (2026-11-15, on `main`)
+
+- Deployed on Replit (autoscale) from GitHub: `.replit` runs `scripts/deploy/build.sh` (backend into `.venv-deploy/`, frontend build) and `scripts/deploy/start.sh` (seed the demo club, then `python -m app --site`). `app/site.py` serves `frontend/dist` with a single-page fallback and the API under `/api`, so one public address works. Keys only in Replit secrets.
+- Postgres: `psycopg[binary]` added; `postgres://` and `postgresql://` URLs are rewritten to the psycopg driver. Tables are created by `init_db()` at start-up; tested against Postgres 16 in Docker. The Replit dev database holds the tables, so publishing created a production database. `/health` shows `database_kind`.
+- Recorded fallback: in `AI_MODE=live` a saved recording for the exact request is replayed instead of calling the API, so the demo's inputs work when the API is slow or down. Recorded the demo's gap email and denial reason.
+- Sample constitution (`GET /constitution/demo`, test case co-05) and a "Fill in the demo club's example" button on the gap email, so a fresh visitor needs no file and the demo's AI steps are recorded.
+- Accuracy page (`/accuracy`, `GET /accuracy`) from `data/eval/results.json`; a test keeps that file equal to a fresh `run_eval.py --json`.
+- Accessibility spot-check at 375 px: no horizontal scroll on any page; every form field labelled; no empty buttons. "Pre-check, not a decision" notice on every page, including the accuracy page.
+- README: live link, 3-minute demo walk-through, accuracy, deployment and secrets.
 
 ## Phase 5 build (2026-11-15, on `main`)
 
@@ -102,6 +113,13 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 6, iteration 1 — verify
+
+Report: `docs/reviews/phase-6-iter-1-verifier.md`. 0 blockers, 1 high, 1 medium, 3 low. Journey replayed three times on the live link (25 s, 6 s, 5 s of API time); fresh visitor and no-secrets criteria pass.
+- H1 `USG_REVIEWER_KEY` not set on Replit, so the USG step answers 503: not a code fix; a person adds the secret, then redeploy. The passcode stays private, so the team drives the USG step in the demo.
+- M1 no "accept the fix" button; README now says to edit the red lines and that case-by-case items stay "the office decides". Left as is in code.
+- L1-L3 open (story figures vs app, adoption material, first live draft 23 s).
 
 ### Phase 5, iteration 3 — audit; phase closed
 Date/time: 2026-11-15
