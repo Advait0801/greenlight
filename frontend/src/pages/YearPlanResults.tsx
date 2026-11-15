@@ -57,21 +57,11 @@ function ProblemCard({ p, names }: { p: PlanProblem; names: Record<string, strin
   );
 }
 
-
-function DeadlineBullets({ d }: { d: TableDeadline }) {
+function deadlineText(d: TableDeadline): string {
   const table = d.table_date
     ? `USG's table (Greenlight's unconfirmed copy) says ${formatDay(d.table_date)}`
     : d.table_status === "not_in_table" ? "USG's table has no row for this week" : "USG's table lists no deadline for this week";
-  return (
-    <div className="mt-1 text-sm">
-      <p className="font-medium">Apply by</p>
-      <ul className="list-disc pl-5">
-        <li>{table}</li>
-        <li>Counted back in calendar weeks it is {formatDay(d.calendar_count)}</li>
-        <li>Apply by the earlier date, <strong>{formatDay(d.apply_by)}</strong></li>
-      </ul>
-    </div>
-  );
+  return `${table}; counted back in calendar weeks it is ${formatDay(d.calendar_count)}. Apply by the earlier date, ${formatDay(d.apply_by)}.`;
 }
 
 function weekOf(iso: string): string {
@@ -174,7 +164,7 @@ export function Strategy({ report }: { report: YearPlanReport }) {
               <details className="mt-3">
                 <summary className="cursor-pointer text-sm text-cardinal">Why?</summary>
                 <p className="mt-2 text-sm">{s.note}</p>
-                {s.apply_by ? <DeadlineBullets d={s.apply_by} /> : null}
+                {s.apply_by ? <p className="mt-1 text-sm"><span className="font-medium">Apply by: </span>{deadlineText(s.apply_by)}</p> : null}
                 <p className="mt-1 text-sm"><span className="font-medium">Fund: </span>{s.fund.fund_name ?? "Not chosen yet"}{s.fund.status === "unsure" ? " (needs a human look)" : ""}. {s.fund.explanation}</p>
                 {[...(s.apply_by ? [s.apply_by.citation, s.apply_by.table_citation] : []), ...s.fund.citations].filter((c): c is NonNullable<typeof c> => c !== null).map((c) => <SourceLink key={c.rule_id} citation={c} />)}
               </details>
@@ -344,7 +334,7 @@ export function EventsPane({ report, onOpenPacket, onOpenMoney, onOpenGap }: {
                 <StatusBadge state={e.verdict} label={e.verdict_label} />
               </div>
               <p className="text-sm">{e.packet.obligations.filter((o) => !o.superseded_by).length} items in its packet; {e.packet.hard_blocks.length} blocked as described.</p>
-              {e.usg_deadlines.map((d) => <details key={d.rule_id} className="text-sm"><summary className="cursor-pointer"><span className="font-medium">{d.title}:</span> {formatDay(d.apply_by)}</summary><DeadlineBullets d={d} /><SourceLink citation={d.citation} /></details>)}
+              {e.usg_deadlines.map((d) => <p key={d.rule_id} className="text-sm"><span className="font-medium">{d.title}: </span>{deadlineText(d)}</p>)}
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={() => onOpenPacket(e.key)} className="rounded-md bg-cardinal px-3 py-2 text-sm font-medium text-white">Open event packet</button>
                 <button type="button" onClick={() => onOpenMoney(e.key)} className="rounded-md border border-stone-400 px-3 py-2 text-sm">Open money check</button>
