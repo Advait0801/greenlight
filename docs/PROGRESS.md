@@ -6,12 +6,8 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
-- **Phase 3 (money check):** closed 2026-11-15 after three iterations; pushed to `main`. Phase 4 (year plan) can start.
-- **Phase 3 (branch `phase-3/money-check`):** built 2026-11-15; review iterations under way (see Iteration log).
-- **Phase 0:** closed 2026-11-15 (Foundation).
-- **Phase 2:** closed 2026-11-15 after three iterations; merged into `main` (pull request from `phase-2/event-packet`).
-- **Phase 1:** closed 2026-11-15 after three iterations; pull request from `phase-1/recognition` into `main` for the humans to merge.
-- **Next action:** the humans merge the Phase 1 pull request; Phase 3 (money check) can start once Phase 2 is on `main` (it is).
+- **Phase 0, 1, 2, 3:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
+- **Next action:** Phase 4 (year plan) can start, on `main`.
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -262,8 +258,6 @@ Medium and low findings left open when Phase 1 closed (details in docs/reviews/p
 - **Medium:** II.C.5 (dues) is yellow on every constitution because the reader answers "no" only at medium confidence.
 - **Low:** the five "elected or appointed" blanks in III.A.1 accept any word; a second Part with the same number leaves the clause it contradicts green (only the extra-text note turns yellow); scan transcriptions are stored whole in the audit log with no club; club questions and training labels are repeated in the frontend; co-09 VIII.A.2 shown "wording changed" where the key says "contradicts"; a changed cover-page clause shows no "your document says".
 
-## Phase ownership and branches
-
 ## Open findings after Phase 3
 
 Medium and low findings left open when Phase 3 closed (details in docs/reviews/phase-3-iter-{1,2,3}-*.md):
@@ -284,7 +278,7 @@ Until 2026-11-15 each phase had its own branch and pull request; from then on ph
 | 2 Event packet | this machine | `phase-2/event-packet` |
 | 3 Money check | this machine | `phase-3/money-check` |
 
-Both start from `origin/main` and end with a pull request into `main`. See "Decisions".
+Phases 1-3 started from `origin/main`; Phases 1 and 2 ended with a pull request into `main`, Phase 3 was pushed to `main`. See "Decisions".
 
 ## Carried to Phase 7
 
