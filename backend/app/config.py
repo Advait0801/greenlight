@@ -60,13 +60,18 @@ class Settings(BaseSettings):
     @field_validator("database_url")
     @classmethod
     def _anchor_sqlite_path(cls, value: str) -> str:
-        prefix = "sqlite:///"
-        if not value.startswith(prefix) or value.startswith(prefix + "/"):
+        scheme, sep, rest = value.partition(":///")
+        if not sep or not (scheme == "sqlite" or scheme.startswith("sqlite+")) or rest.startswith("/"):
             return value  # not SQLite, or already absolute (sqlite:////abs/path)
-        path = value[len(prefix) :]
-        if not path or path.startswith(":memory:") or path.startswith("file:"):
+        if not rest or rest.startswith(":memory:") or rest.startswith("file:"):
             return value
-        return prefix + str((BACKEND_DIR / path).resolve())
+        return f"{scheme}:///{(BACKEND_DIR / rest).resolve()}"
+
+    @field_validator("rules_dir", "ai_recordings_dir")
+    @classmethod
+    def _anchor_folder(cls, value: Path) -> Path:
+        """A relative folder is relative to the repository root, wherever the process starts."""
+        return value if value.is_absolute() else (REPO_ROOT / value).resolve()
 
     @property
     def allowed_origins(self) -> list[str]:

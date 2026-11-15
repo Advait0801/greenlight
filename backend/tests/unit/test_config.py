@@ -36,3 +36,15 @@ def test_cors_allows_the_dev_server_on_frontend_port() -> None:
 def test_bad_port_is_rejected() -> None:
     with pytest.raises(ValueError):
         Settings(_env_file=None, backend_port=70000)  # type: ignore[call-arg]
+
+
+def test_relative_folders_and_driver_urls_are_anchored() -> None:
+    """Regression (phase 0 iteration 2, L7)."""
+    from app.config import REPO_ROOT
+
+    settings = Settings(  # type: ignore[call-arg]
+        _env_file=None, rules_dir="rules", ai_recordings_dir="data/ai_recordings", database_url="sqlite+pysqlite:///./x.db"
+    )
+    assert settings.rules_dir == REPO_ROOT / "rules"
+    assert settings.ai_recordings_dir == REPO_ROOT / "data" / "ai_recordings"
+    assert settings.database_url == f"sqlite+pysqlite:///{BACKEND_DIR / 'x.db'}"
