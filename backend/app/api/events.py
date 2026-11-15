@@ -18,7 +18,7 @@ from app.api.deps import require_calendar, require_ruleset
 from app.db import get_session
 from app.rules import AcademicCalendar, RuleSet
 from app.schemas.events import EventFacts, EventPacket
-from app.services.event_intake import MAX_SENTENCE_CHARS, IntakeError, parse_sentence
+from app.services.event_intake import MAX_SENTENCE_CHARS, IntakeError, offered_names, parse_sentence
 from app.services.ics import packet_to_ics
 from app.services.rule_engine import UnknownAttribute, build_packet
 
@@ -49,6 +49,17 @@ class PacketRequest(BaseModel):
         if value is not None and abs((value - today_at_usc()).days) > 3 * 366:
             raise ValueError("as_of must be within three years of today")
         return value
+
+
+@router.get("/vocabulary")
+def vocabulary(ruleset: RuleSet = Depends(require_ruleset)) -> dict[str, Any]:
+    """The event details an officer can tick, with plain descriptions (rules/vocabulary.json)."""
+    names = offered_names(ruleset)
+    groups = ("event_attributes", "facts", "application_facts")
+    return {"details": [
+        {"name": name, "description": next(ruleset.vocabulary[g][name] for g in groups if name in ruleset.vocabulary.get(g, {}))}
+        for name in names
+    ]}
 
 
 @router.post("/parse")

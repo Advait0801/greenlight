@@ -77,3 +77,8 @@ def test_parse_route_rejects_empty_and_long_sentences(client) -> None:  # type: 
     assert client.post("/events/parse", json={"sentence": ""}).status_code == 422
     assert client.post("/events/parse", json={"sentence": "x" * 2001}).status_code == 422
 
+
+
+def test_vocabulary_lists_tickable_details(client) -> None:  # type: ignore[no-untyped-def]
+    details = {d["name"]: d["description"] for d in client.get("/events/vocabulary").json()["details"]}
+    assert "food" in details and "usg_funding" in details and "venue_outdoor" not in details
