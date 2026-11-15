@@ -24,3 +24,20 @@ Medium and low findings from the three final reviews. Phase 7 fixes blockers and
 - **The USG screen shows what the club entered.** Its findings come from budget lines and readings the club sent.
 - **No limit on the total size of one upload request;** files are written to disk before the size checks.
 - **Some unusual API client errors become plain 500 errors.** Never green.
+
+## From final review F3 (the whole product)
+
+- **USG screen needs the passcode.** Judges without it see only the passcode box; show that step in the video or give the passcode privately, and make sure the live queue holds a red application.
+- **Recorded mode has no recording for the application draft;** it returns the code-built draft with a note that the paragraphs could not be drafted. The live site is not affected.
+- **The year plan dates the USG application deadline** (Feb 17, 2027, yellow, from the unconfirmed table); the event packet and money check for the same event give no date.
+- **"Sources disagree" is noisy on a USG-funded packet** (four USG notes, one comparing the guidelines with themselves). Present the 3-week against 4-week cancellation note in the demo.
+- **All five year-plan event cards are red** because of the shared yearly-cap problem, with no reason on the card; the lantern-making workshop is labelled "Breaks the rule" when the cap is used up by larger requests.
+- **"Over the cap by $3,250" includes the banquet's $3,000**, which the same screen says USG cannot fund.
+- **The app differs from the section 11 script:** no one-click "accept the fixes"; the fixed budget ends as "the office decides", not green; the retreat deadline is Nov 18, 2026; the gap is $1,170, not $900; the plan asks USG for $5,250 while the fixed money check asks for $5,820. Align the spoken pitch.
+- **Approved texts keep placeholders** ("[Reviewer name]", "[Your name]", "Dear The manager,").
+- **"150 expected attendees" after "Expected attendance:"** in the application draft.
+- **Dates appear in two formats** (ISO on the money check, readiness checklist and gap helper).
+- **"This week" lists a Dec 25 item.**
+- **"How much of each fund is left" is not on the USG screen;** do not claim it.
+- **A local `.env` with `AI_MODE=live`** makes a local start run live, not recorded; check it before recording the demo video.
+- **The money check's line badge stays green above the opened vendor note** (badge covers eligibility only; the USG screen now shows such lines as needing a look).
