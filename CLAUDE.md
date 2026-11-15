@@ -103,17 +103,18 @@ docs/               progress log, review reports, research notes, submission mat
 - Secrets only in `.env` (ignored by git) or Replit secrets. Never commit a key.
 - Small local commits: one per logical piece (a component, a script, the CI fix, one finding fixed with its regression test), not one per iteration.
 - Commit subjects are imperative and say what changed, e.g. `Reject rule files with duplicate ids`. Never start a subject with `phase N` or `iter N`; phases and iterations are tracked in `docs/PROGRESS.md`.
-- Push to `origin main` at the end of every phase, once its gate passes, and before starting the next phase (PLAN.md, "Phase checkpoint"). Do not push at any other time, and never force-push.
+- Push to `origin main` at the end of every phase, once it is closed, and before starting the next phase (PLAN.md, "Phase checkpoint"). Do not push at any other time, and never force-push.
 
 ## Working with sub-agents
 
 PLAN.md section 1 is the rule book. In short:
 
+- At most **three iterations** per phase: verify, break, audit. Each iteration uses **one or two fresh reviewers**, never more.
 - Verifier, breaker and auditor are **fresh** agents every iteration. Give them the spec section, the exit criteria and the run commands. Do not give them your reasoning or tell them the code works.
 - They report; they do not fix. The breaker may add tests under `backend/tests/adversarial/` only.
 - Reports go in `docs/reviews/`.
-- A phase is done only when its gate passes. Do not move on before that.
-- When the gate passes: commit the remaining work (small commits, descriptive subjects), push, confirm the push, then start the next phase.
+- After the third iteration, fix its blockers and highs (each with a regression test), confirm the exit criteria and the full suite, and close the phase. Do not loop for a clean round. List open medium and low findings in `docs/PROGRESS.md`.
+- When the phase is closed: commit the remaining work (small commits, descriptive subjects), push, confirm the push, then start the next phase.
 - In Phase 7, change as little as possible. After the third final review, the code is frozen.
 
 ## Hackathon rules that bind the code

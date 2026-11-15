@@ -10,12 +10,10 @@ Read [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) first. It says what to build and w
 
 ## 1. How every phase runs
 
-Each phase has **one goal**: one main feature working to its exit criteria. A phase is one build step followed by **at least three verification iterations**.
+Each phase has **one goal**: one main feature working to its exit criteria. A phase is one build step followed by **at most three verification iterations** (verify, break, audit), each run by **one or two fresh reviewers**.
 
 ```
-BUILD ──> ITERATION 1: VERIFY ──> fix ──> ITERATION 2: BREAK ──> fix ──> ITERATION 3: AUDIT ──> fix ──> GATE
-                                                                                                        │
-                              goal not met: run another BREAK + AUDIT iteration  <──────────────────────┘
+BUILD ──> ITERATION 1: VERIFY ──> fix ──> ITERATION 2: BREAK ──> fix ──> ITERATION 3: AUDIT ──> fix ──> CLOSE
 ```
 
 | Step | Who | What they do |
@@ -25,50 +23,49 @@ BUILD ──> ITERATION 1: VERIFY ──> fix ──> ITERATION 2: BREAK ──>
 | **Iteration 2 — Break** | `breaker` sub-agent | Tries to make the feature fail: edge cases, hostile input, odd dates, bad files, prompt injection. Writes failing tests that reproduce each problem. |
 | **Iteration 3 — Audit** | `auditor` sub-agent | Reads the phase's code and rules. Checks rules against their sources, the trust rules, security, and that earlier fixes really work. |
 | **Fix** (after each iteration) | Orchestrator | Fixes every blocker and high finding. Adds a regression test for each. Reruns the full test suite. |
-| **Gate** | Orchestrator | Decides whether the goal is met (see below). |
-| **Checkpoint** | Orchestrator | Once the gate passes: commit, push to GitHub, then start the next phase. |
+| **Close** | Orchestrator | After the third iteration's fixes, closes the phase (see below). |
+| **Checkpoint** | Orchestrator | Once the phase is closed: commit, push to GitHub, then start the next phase. |
 
 ### Rules for sub-agents
 
 - **Fresh context.** Each sub-agent is a new agent that has not seen this conversation or the build. It gets only: the relevant section of `PROJECT_CONTEXT.md`, the phase's exit criteria, and how to run the app and tests. It does **not** get the orchestrator's explanation of how the code works or why it should pass.
 - **A new agent every iteration.** Never reuse a sub-agent across iterations. An agent that saw the last round is no longer independent.
+- **One or two reviewers per iteration.** Split an iteration between two agents only when its scope is clearly two pieces (for example rules and code); never more than two.
 - **Model.** Opus 5.5 (`model: opus`) for verifier, breaker and auditor. The orchestrator may use a cheaper model for mechanical work such as running a test set.
 - **Sub-agents do not fix application code.** The breaker may add tests under `backend/tests/adversarial/` only. Verifier and auditor write nothing except their report.
 - **Reports** go to `docs/reviews/phase-<n>-iter-<m>-<role>.md`. Each finding has: severity (blocker, high, medium, low), what was expected, what happened, exact steps or a failing test to reproduce.
 - Agent definitions are in [.claude/agents/](.claude/agents/).
 
-### The gate: when is the goal achieved?
+### Closing a phase
 
-A phase is complete only when **all** of these are true:
+A phase has at most three iterations: verify, break, audit. After the third iteration:
 
-1. At least three iterations have run (verify, break, audit).
-2. The **most recent** iteration found **no blocker or high** findings.
-3. Every exit criterion for the phase passes.
-4. The full test suite passes, including every earlier phase's tests.
+1. Fix every blocker and high finding from it, each with a regression test.
+2. Check that every exit criterion passes and the full test suite passes, including every earlier phase's tests.
+3. Close the phase. Do **not** run another review round, even if the third iteration found blockers or highs (they are fixed in step 1).
+4. List every medium and low finding left open in `docs/PROGRESS.md`.
 
-If the gate fails, run another iteration (break and audit together, with new agents) and try the gate again. **Do not stop and do not move to the next phase until the gate passes.**
-
-Safety valve, because the deadline is fixed: after **five** iterations on one phase, write the remaining findings to `docs/PROGRESS.md`, tell the humans, and let them choose to continue or cut scope.
+(Changed by the humans on 2026-11-15: the earlier "repeat break + audit until a clean round" rule and the five-iteration safety valve are removed.)
 
 ### Bookkeeping
 
-After every build step and every iteration, update [docs/PROGRESS.md](docs/PROGRESS.md): phase, iteration, findings count by severity, what was fixed, gate result. A new session must be able to resume from that file alone.
+After every build step and every iteration, update [docs/PROGRESS.md](docs/PROGRESS.md): phase, iteration, findings count by severity, what was fixed, close result. A new session must be able to resume from that file alone.
 
 Commit locally in small pieces as you go: one commit per logical change, and one per finding fixed (the fix and its regression test together). Subjects are imperative and say what changed, for example `Fix per-person food cap when headcount is zero`. Do not start a subject with the phase or iteration (`phase 2`, `iter 3`); record phases and iterations in `docs/PROGRESS.md`.
 
 ### Phase checkpoint: commit and push before moving on
 
-When a phase's gate passes, **pause before starting the next phase** and do this, in order:
+When a phase is closed, **pause before starting the next phase** and do this, in order:
 
 1. Run the full test suite one more time. It must pass.
-2. Update `docs/PROGRESS.md`: mark the phase's gate as passed.
+2. Update `docs/PROGRESS.md`: mark the phase as closed and list the medium and low findings left open.
 3. Check that nothing secret is staged (`.env`, keys, databases). `git status` must show only intended files.
-4. Commit what remains with a descriptive subject, for example `Record event packet gate as passed in progress log`. No phase prefix.
+4. Commit what remains with a descriptive subject, for example `Record event packet as closed in progress log`. No phase prefix.
 5. Push to `origin main`.
 6. Confirm the push succeeded, then start the next phase.
 
 Rules for the push:
-- Push **only** at a phase checkpoint, never in the middle of a phase. `main` on GitHub should always hold a phase that passed its gate.
+- Push **only** at a phase checkpoint, never in the middle of a phase. `main` on GitHub should always hold a closed phase.
 - If the push is rejected because the remote has new commits, run `git pull --rebase origin main`, rerun the full test suite, then push again.
 - If the rebase has conflicts, or the push fails for any other reason (sign-in, permissions), stop and tell the humans. Do not force-push, ever.
 - Do not start the next phase until the push has succeeded.
