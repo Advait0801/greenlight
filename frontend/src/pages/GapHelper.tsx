@@ -6,6 +6,7 @@ import { ASK_LABELS, approveEmail, draftEmail, gapOptions, type AskKind, type Em
 import { toCents } from "../api/money";
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
+import { PageHeader, Tabs } from "../components/ui";
 import { StatusBadge } from "../components/StatusBadge";
 
 interface Form {
@@ -94,16 +95,15 @@ export function GapHelper() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
-        <h2 className="text-2xl font-semibold">Close a funding gap</h2>
+      <PageHeader eyebrow="Each event" title="Close a funding gap">
         <p>
           When an event costs more than the club and USG (Undergraduate Student Government) can cover, Greenlight lists only the ways
           USC allows, each with its rule and when to start, and explains the ways USC does not allow. It can draft an outreach email
           for you to edit and approve. Greenlight never sends anything.
         </p>
-      </header>
+      </PageHeader>
 
-      <form onSubmit={check} className="grid gap-3 rounded-md border border-stone-300 bg-white p-4 sm:grid-cols-2">
+      <form onSubmit={check} className="grid gap-4 rounded-2xl border border-stone-300 bg-white p-5 sm:grid-cols-2 xl:grid-cols-3">
         <label className="block">Event name<input className={input} value={form.event_name} onChange={(e) => setForm({ ...form, event_name: e.target.value })} /></label>
         <label className="block">Event date<input type="date" className={input} value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} /></label>
         <label className="block">Venue
@@ -115,10 +115,10 @@ export function GapHelper() {
         <label className="block">Expected headcount<input inputMode="numeric" className={input} value={form.headcount} onChange={(e) => setForm({ ...form, headcount: e.target.value })} /></label>
         <label className="block">Shortfall (dollars)<input inputMode="decimal" className={input} value={form.shortfall} onChange={(e) => setForm({ ...form, shortfall: e.target.value })} /></label>
         <label className="flex items-center gap-2 self-end py-2"><input type="checkbox" className="h-5 w-5" checked={form.asks_usg} onChange={(e) => setForm({ ...form, asks_usg: e.target.checked })} /> This event also asks USG for money</label>
-        <label className="block sm:col-span-2">What you have in mind (optional)
+        <label className="block sm:col-span-2 xl:col-span-3">What you have in mind (optional)
           <textarea rows={2} className={input} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="For example: could a local restaurant provide the food?" />
         </label>
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-2 xl:col-span-3">
           <button type="submit" disabled={busy !== ""} className="rounded bg-cardinal px-4 py-2 font-medium text-white disabled:opacity-50">
             {busy === "options" ? "Checking…" : "Show the options USC allows"}
           </button>
@@ -133,6 +133,8 @@ export function GapHelper() {
           <PrecheckNotice text={report.notice} />
           {report.notes.map((n) => <p key={n} className="text-sm text-amber-950">! {n}</p>)}
 
+          <Tabs label="Funding options" tabs={[
+            { id: "allowed", label: "Ways USC allows", content: (
           <div>
             <h4 className="text-lg font-semibold">Ways USC allows</h4>
             <ul className="mt-2 space-y-3">
@@ -159,6 +161,8 @@ export function GapHelper() {
             </ul>
           </div>
 
+            ) },
+            { id: "banned", label: "Not allowed at USC", content: (
           <div>
             <h4 className="text-lg font-semibold">Not allowed at USC (a generic assistant may suggest these)</h4>
             <ul className="mt-2 space-y-3">
@@ -177,6 +181,8 @@ export function GapHelper() {
             </ul>
           </div>
 
+            ) },
+            { id: "email", label: "Draft an outreach email", content: (
           <div className="rounded-md border border-stone-300 bg-white p-4">
             <h4 className="text-lg font-semibold">Draft an outreach email</h4>
             <button type="button" className="mt-1 text-sm text-cardinal underline underline-offset-2"
@@ -225,6 +231,8 @@ export function GapHelper() {
               </div>
             ) : null}
           </div>
+            ) },
+          ]} />
         </section>
       ) : null}
     </div>
