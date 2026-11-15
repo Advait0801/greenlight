@@ -93,6 +93,7 @@ export function PlanResults({ report, onOpenPacket, onOpenMoney }: {
                   </div>
                   <p>{item.title}</p>
                   <p className="text-sm text-stone-600">{item.event_name}{item.unconfirmed ? " · date from an unconfirmed copy of USG's deadline table; confirm with usgfunds@usc.edu" : ""}</p>
+                  <Sources citations={[item.citation]} />
                 </li>
               );
             })}
@@ -206,6 +207,7 @@ export function PlanResults({ report, onOpenPacket, onOpenMoney }: {
                     </div>
                     <p className={item.kind === "event" ? "font-semibold" : ""}>{item.title}</p>
                     {item.kind !== "event" ? <p className="text-sm text-stone-600">{item.event_name}</p> : null}
+                    {item.citation ? <Sources citations={[item.citation]} /> : null}
                   </li>
                 );
               })}
