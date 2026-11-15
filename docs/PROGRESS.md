@@ -6,6 +6,7 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
+- **Phase 3 (money check):** closed 2026-11-15 after three iterations; pushed to `main`. Phase 4 (year plan) can start.
 - **Phase 3 (branch `phase-3/money-check`):** built 2026-11-15; review iterations under way (see Iteration log).
 - **Phase 0:** closed 2026-11-15 (Foundation).
 - **Phase 2:** closed 2026-11-15 after three iterations; merged into `main` (pull request from `phase-2/event-packet`).
@@ -20,7 +21,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | done | 3 | no (iteration 3: 0 blockers, 2 high, both fixed) | yes, 2026-11-15 (pull request from `phase-1/recognition`) |
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
-| 3 | Money check | done (branch `phase-3/money-check`) | 2 | no (iteration 2: 2 blockers, 1 high, fixed) | open |
+| 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
 | 6 | Ship | — | 0 | — | open |
@@ -83,6 +84,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 3, iteration 3 — audit; phase closed
+Date/time: 2026-11-15
+Agent and model: auditor (fresh), Opus 5.5, medium effort, on commit 5b1f33f
+Report: docs/reviews/phase-3-iter-3-audit.md
+Findings: 0/1/5/7 (every funding rule the money check uses matches its snapshot in number, unit and anchor; no prompt asks for arithmetic, a date, a cap comparison or a verdict; every earlier fix holds)
+Fixed: H1 the page started the club's USG money received and funded-events count at 0, so the $8,000 cap showed green for an unknown club; both now start empty and the check asks (regression test tests/unit/test_money_page_defaults.py reads the page's initial state, as the frontend has no test runner). Also M: a quote that contains instructions has no sure categories (test in tests/unit/test_money_reading.py).
+Left open: see "Open findings after Phase 3".
+Full test suite: pass (525, adversarial included); validate_rules.py OK; run_eval budgets 30/0/0 (fund 20/20, totals 20/20, draft 20/20), events 30/456/0/0; frontend build OK
+Close: Phase 3 closed after iteration 3 (PLAN.md section 1); no further review round
 
 ### Phase 3, iteration 2 — break
 Date/time: 2026-11-15
@@ -252,6 +263,16 @@ Medium and low findings left open when Phase 1 closed (details in docs/reviews/p
 - **Low:** the five "elected or appointed" blanks in III.A.1 accept any word; a second Part with the same number leaves the clause it contradicts green (only the extra-text note turns yellow); scan transcriptions are stored whole in the audit log with no club; club questions and training labels are repeated in the frontend; co-09 VIII.A.2 shown "wording changed" where the key says "contradicts"; a changed cover-page clause shows no "your document says".
 
 ## Phase ownership and branches
+
+## Open findings after Phase 3
+
+Medium and low findings left open when Phase 3 closed (details in docs/reviews/phase-3-iter-{1,2,3}-*.md):
+- **Scope of rules:** the $4,000 venue and personnel cap adds up venue, personnel and security lines whatever the venue (the source says on-campus; an off-campus venue or staffing line is flagged yellow as a contradiction, but an off-campus security line is not); the vocabulary's performer category includes "speakers' fees", which the guidelines do not name, so a speaker's fee is a certain red (M).
+- **Deadlines:** a USG deadline that has certainly passed is yellow (from the Phase 2 engine) and the headline can read "The office decides"; the draft is still blocked (M, carried from iteration 1).
+- **Test set:** the 20 budgets check typed lines; reading line items from PDFs, images or screenshots is not measured and recorded mode has no such readings (M). For the demo, record the culture-night quote and the draft once (AI_MODE=record) in Phase 6.
+- **Vendor list:** the vendor note is shown apart from the line's verdict and never changes it (by design while the list is unconfirmed) (M, iteration 1).
+- **Lows:** the currency pattern is broad ("won", "pounds of brisket" clear every amount in the document, which is the safe direction); drafted paragraphs are not filtered for claims such as "approved"; an unsure travel line drops the travel deadline from the dates list; `first_registered` is accepted but unused (new-club startup fund note not built); some constants are repeated; money routes log AI output with no club; unsure food lines are left out of food per person; an unknown funded-events count gives a question but no finding; "plan for at least N people" may invite overstating attendance.
+- **Questions for a person (breaker):** do mandatory per-night hotel fees count toward the $400 cap; do catering delivery or service fees count toward the $35 per person.
 
 ## Phase ownership and branches (historical)
 
