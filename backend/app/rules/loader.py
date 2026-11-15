@@ -30,6 +30,8 @@ from app.rules.snapshots import (
     text_in_snapshot,
 )
 
+# Only for telling which of two conflicting deadlines is stricter, never for computing a date.
+DAYS_PER_UNIT: dict[str, float] = {"hours": 1 / 24, "days": 1, "business_days": 1, "weeks": 7, "academic_weeks": 7, "months": 28}
 OTHER_RULE_FOLDER_FILES = {"vocabulary.json", "calendar.json"}
 RULE_FILES: dict[str, Domain] = {
     "funding.json": "funding",
@@ -87,6 +89,27 @@ class RuleSet:
         if not self.is_certain(rule_id):
             return "yellow"
         return rule.severity
+
+    def less_strict_side(self, rule_id: str) -> str | None:
+        """If sources disagree and this rule is not the stricter side, the rule that is stricter (or, when
+        the two cannot be compared, the other rule). Meeting the less strict rule is not a pass."""
+        rule = self.get(rule_id)
+        for other_id in rule.conflicts_with or []:
+            if other_id not in self.rules:
+                continue
+            other = self.get(other_id)
+            comparable = (
+                rule.kind == other.kind == "deadline" and rule.direction == other.direction
+                and rule.offset is not None and other.offset is not None
+                and rule.unit in DAYS_PER_UNIT and other.unit in DAYS_PER_UNIT
+            )
+            if not comparable:
+                return other_id
+            mine, theirs = rule.offset * DAYS_PER_UNIT[rule.unit or ""], other.offset * DAYS_PER_UNIT[other.unit or ""]
+            # Before an anchor, the longer lead time is stricter; after it, the shorter time is.
+            if (rule.direction == "before" and mine < theirs) or (rule.direction == "after" and mine > theirs):
+                return other_id
+        return None
 
     def uncertain_reasons(self, rule_id: str) -> list[str]:
         """Plain-language reasons a rule is shown yellow, including those inherited from dependencies."""

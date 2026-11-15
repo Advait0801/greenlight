@@ -48,6 +48,8 @@ class Citation(BaseModel):
     uncertain_reasons: list[str]
     # How the rule is shown: red, yellow, office_decides or info (yellow whenever it is uncertain).
     display_severity: str
+    # Rules from other sources that disagree with this one; a finding cites them too.
+    conflicts_with: list[str] = []
 
 
 class Finding(BaseModel):
@@ -74,15 +76,28 @@ class Finding(BaseModel):
         citation cannot claim a rule is verified."""
         if self.citation.rule_id != self.rule_id:
             raise ValueError("the citation must be for the finding's own rule")
+        if self.verdict is Verdict.RED and self.citation.display_severity != "red":
+            raise ValueError(
+                f"'{self.rule_id}' is shown {self.citation.display_severity}, so it cannot be a certain red; "
+                "use yellow (or office_decides)"
+            )
         if self.verdict is Verdict.GREEN:
             from app.rules import citation_for, get_ruleset
 
-            if self.citation != citation_for(get_ruleset(), self.rule_id):
+            ruleset = get_ruleset()
+            if self.citation != citation_for(ruleset, self.rule_id):
                 raise ValueError(f"the citation for '{self.rule_id}' does not match the rule table, so it cannot be green")
             if self.citation.verified != "read" or self.citation.uncertain_reasons:
                 raise ValueError(f"'{self.rule_id}' is not verified, so it cannot be green; use yellow")
             if self.citation.display_severity == "office_decides":
                 raise ValueError(f"'{self.rule_id}' is decided by the office, so it cannot be green")
-            if self.citation.display_severity == "info":
-                raise ValueError(f"'{self.rule_id}' is information, never a pass or fail, so it cannot be green")
+            if self.citation.display_severity != "red":
+                raise ValueError(
+                    f"'{self.rule_id}' is shown {self.citation.display_severity}, never a pass or fail, so it cannot be green"
+                )
+            stricter = ruleset.less_strict_side(self.rule_id)
+            if stricter is not None:
+                raise ValueError(
+                    f"'{self.rule_id}' is the less strict side of a disagreement with '{stricter}'; check the stricter rule"
+                )
         return self
