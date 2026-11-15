@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import time
 from collections.abc import Iterator
 from functools import lru_cache
 
 from sqlalchemy import Engine, create_engine, event
+from sqlalchemy.exc import IntegrityError, OperationalError, ProgrammingError
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.config import get_settings
@@ -44,7 +46,17 @@ def init_db(engine: Engine | None = None) -> None:
     after a schema change, delete the local SQLite file and start again."""
     from app import models  # noqa: F401  (registers the tables on Base.metadata)
 
-    Base.metadata.create_all(engine or get_engine())
+    target = engine or get_engine()
+    # Several instances can start at once on a fresh database (Replit autoscale); a table another instance created
+    # between the check and the CREATE is fine, so try again until every table exists (phase 6 iteration 2).
+    for attempt in range(5):
+        try:
+            Base.metadata.create_all(target)
+            return
+        except (OperationalError, ProgrammingError, IntegrityError):
+            if attempt == 4:
+                raise
+            time.sleep(0.2 * (attempt + 1))
 
 
 def get_session() -> Iterator[Session]:
