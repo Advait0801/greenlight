@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getJson } from "../api/client";
 import type { Health, Rule, RuleList } from "../api/types";
 import { PrecheckNotice } from "../components/PrecheckNotice";
+import { PageHeader } from "../components/ui";
 import { SourceLink } from "../components/SourceLink";
 import { StatusBadge, type BadgeState } from "../components/StatusBadge";
 
@@ -51,16 +52,13 @@ export function Home() {
 
   return (
     <div className="space-y-8">
-      <section aria-labelledby="intro-heading" className="space-y-3">
-        <h1 id="intro-heading" className="text-3xl font-bold tracking-tight">
-          Plan your club's year, and know every rule before USC tells you no.
-        </h1>
-        <p className="max-w-2xl text-stone-700">
+      <PageHeader eyebrow="Trust" title="System status">
+        <p>
           Greenlight checks event plans, budgets and constitutions against USC's published rules, and shows the rule text and
           source for every result. This page shows whether the rule table and calendar loaded.
         </p>
         <PrecheckNotice {...(body ? { text: body.notice } : {})} />
-      </section>
+      </PageHeader>
 
       <section aria-labelledby="status-heading" className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
         <h2 id="status-heading" className="text-xl font-semibold">
@@ -122,7 +120,7 @@ export function Home() {
           <h2 id="unverified-heading" className="text-xl font-semibold">
             Open questions for USC offices
           </h2>
-          <ul className="space-y-4">
+          <ul className="grid gap-4 xl:grid-cols-2">
             {unverified.map((rule) => (
               <li key={rule.id} className="rounded-lg border border-stone-200 bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">

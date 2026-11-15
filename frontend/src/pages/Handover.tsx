@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { approvePacket, buildHandover, type HandoverPacket } from "../api/handover";
 import { PrecheckNotice } from "../components/PrecheckNotice";
+import { PageHeader } from "../components/ui";
 import { loadSaved, toRequest } from "./YearPlan";
 
 const input = "mt-1 w-full rounded border border-stone-400 px-2 py-1";
@@ -39,14 +40,13 @@ export function Handover() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
-        <h2 className="text-2xl font-semibold">Handover packet</h2>
+      <PageHeader eyebrow="Your club" title="Handover packet">
         <p>
           At election time, Greenlight writes a packet for each officer role from your club's saved history: the year plan saved in this
           browser and the applications your club sent to the USG (Undergraduate Student Government) screen. Edit each packet and approve it
           before you pass it on. Greenlight sends nothing.
         </p>
-      </header>
+      </PageHeader>
 
       <section aria-labelledby="sent-heading" className="space-y-2 rounded-md border border-stone-300 bg-white p-4">
         <h3 id="sent-heading" className="text-lg font-semibold">Applications your club sent (optional)</h3>

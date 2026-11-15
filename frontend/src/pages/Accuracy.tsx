@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { getJson } from "../api/client";
 import { PrecheckNotice } from "../components/PrecheckNotice";
+import { PageHeader } from "../components/ui";
 
 interface SetResult {
   set: string;
@@ -41,17 +42,14 @@ export function Accuracy() {
 
   return (
     <div className="space-y-8">
-      <section aria-labelledby="accuracy-heading" className="space-y-3">
-        <h1 id="accuracy-heading" className="text-3xl font-bold tracking-tight">
-          How accurate is Greenlight?
-        </h1>
-        <p className="max-w-2xl text-stone-700">
+      <PageHeader eyebrow="Trust" title="How accurate is Greenlight?">
+        <p>
           Measured on test sets with known answers. <strong>Caught</strong>: problems and obligations Greenlight found.{" "}
           <strong>Missed</strong>: ones it did not find. <strong>Wrongly flagged</strong>: problems it reported that are not
           there.
         </p>
         <PrecheckNotice />
-      </section>
+      </PageHeader>
 
       {error ? (
         <p role="alert" className="rounded border border-red-300 px-3 py-2 text-red-900">
