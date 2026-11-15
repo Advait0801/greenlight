@@ -443,9 +443,27 @@
       "effective_date": "2026-08-25",
       "verified": "read",
       "severity": "red",
-      "message": "Only currently enrolled USC students can be voting members; alumni, staff, faculty and others may be non-voting members.",
+      "message": "Only currently enrolled USC students can be voting members.",
       "fix_template": "Limit voting membership to currently enrolled USC students.",
       "applies_to": "Voting membership criteria in the constitution",
+      "conflicts_with": null
+    },
+    {
+      "id": "participation-usc-community-only",
+      "domain": "recognition",
+      "kind": "banned",
+      "title": "Participation limited to USC students, faculty, staff and alumni",
+      "owner_office": "Campus Activities",
+      "source": "USC Student Handbook 2026-27 (August 25, 2026)",
+      "source_section": "Responsibilities of RSOs, item 4",
+      "source_url": "https://oec.usc.edu/wp-content/uploads/2026/08/Student-Handbook-2026-August-25-002.pdf",
+      "source_text": "4. Limit participation to students, faculty, staff, and alumni of the university.",
+      "effective_date": "2026-08-25",
+      "verified": "read",
+      "severity": "red",
+      "message": "A club limits participation to USC students, faculty, staff and alumni.",
+      "fix_template": "Limit membership to USC students, faculty, staff and alumni.",
+      "applies_to": "Membership criteria in the constitution",
       "conflicts_with": null
     },
     {
@@ -822,7 +840,8 @@
           "open-membership-no-barriers",
           "open-membership-no-other-org",
           "dues-required-banned",
-          "voting-members-enrolled-students"
+          "voting-members-enrolled-students",
+          "participation-usc-community-only"
         ]
       },
       "conflicts_with": null,
@@ -856,7 +875,8 @@
           "open-membership-no-academic-limits",
           "open-membership-no-barriers",
           "open-membership-no-other-org",
-          "dues-required-banned"
+          "dues-required-banned",
+          "participation-usc-community-only"
         ]
       },
       "conflicts_with": null,
@@ -1383,7 +1403,10 @@
         "section": "A",
         "part": "1",
         "clause_type": "fixed_and_fill",
-        "template_text": "Part 1. The following positions are required by Campus Activities for all RSOs to ensure there is leadership across all core areas, and each is either elected or appointed as noted here. The President is an {blank} position. Vice President is an {blank} position. Secretary is an {blank} position. Treasurer is an {blank} position. Programming Chair is an {blank} position."
+        "template_text": "Part 1. The following positions are required by Campus Activities for all RSOs to ensure there is leadership across all core areas, and each is either elected or appointed as noted here. The President is an {blank} position. Vice President is an {blank} position. Secretary is an {blank} position. Treasurer is an {blank} position. Programming Chair is an {blank} position.",
+        "contradicted_by_rules": [
+          "recognition-five-officers"
+        ]
       },
       "conflicts_with": null
     },
@@ -2075,26 +2098,26 @@
       "id": "clause-iii-f-1",
       "domain": "recognition",
       "kind": "clause",
-      "title": "Term of office",
+      "title": "Term of office, with its start and end",
       "owner_office": "Campus Activities",
       "source": "2026-27 RSO Constitution Template (Campus Activities)",
       "source_section": "Article III, Section F, Part 1",
       "source_url": "https://campusactivities.usc.edu/wp-content/uploads/2026/11/2026-27-RSO-Constitution-Template-1.pdf",
-      "source_text": "Part 1. The term of office shall be",
+      "source_text": "Part 1. The term of office shall be from to .",
       "effective_date": "2026-11-12",
       "verified": "read",
       "severity": "red",
-      "message": "Article III, Section F, Part 1 (Term of office) must be filled in.",
-      "fix_template": "Fill in {label}: {what_to_add}",
+      "message": "Article III, Section F, Part 1 (Term of office, with its start and end) must keep the template's wording, with the blank filled in.",
+      "fix_template": "Restore the template wording and fill in the blank: \"{template_text}\"",
       "applies_to": "A constitution for 2026-27 recognition",
-      "check": "blank filled in",
+      "check": "present, unaltered and filled in",
       "params": {
         "clause": "III.F.1",
         "article": "Article III. Officers",
         "section": "F",
         "part": "1",
-        "clause_type": "fill_in",
-        "template_text": "Part 1. The term of office shall be {blank}"
+        "clause_type": "fixed_and_fill",
+        "template_text": "Part 1. The term of office shall be {blank} from {blank} to {blank}."
       },
       "conflicts_with": null
     },
