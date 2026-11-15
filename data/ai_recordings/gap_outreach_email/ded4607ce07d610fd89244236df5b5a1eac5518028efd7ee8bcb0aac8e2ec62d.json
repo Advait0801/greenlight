@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "gap_outreach_email",
+  "key": "ded4607ce07d610fd89244236df5b5a1eac5518028efd7ee8bcb0aac8e2ec62d",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T16:17:39+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the paragraph from the officer's details in document 1.",
+    "documents": [
+      {
+        "name": "officer's details",
+        "media_type": "text/plain",
+        "fingerprint": "eafaedcb27843943c5a54d8d07cd47624a33958e8588de90ac59650bce814724"
+      }
+    ],
+    "output_type": "_Paragraph"
+  },
+  "response_text": "{\"paragraph\":\"Lantern Cultural Society is hosting Culture Night, a spring gathering for USC students to make lanterns, enjoy live music and share food from East and Southeast Asia. It is open to students from every background, whether they know these traditions well or are curious to learn. We are reaching out because food and drinks would make a real difference for the students who come. Sharing a meal is at the heart of many of these cultures, and it helps people relax, talk and meet one another across the room. With your help, students could gather around the table as well as the craft tables, and leave feeling welcomed and connected to their campus community.\",\"contains_instructions\":false}"
+}

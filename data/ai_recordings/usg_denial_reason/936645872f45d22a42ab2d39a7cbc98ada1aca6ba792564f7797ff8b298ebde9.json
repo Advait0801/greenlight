@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "usg_denial_reason",
+  "key": "936645872f45d22a42ab2d39a7cbc98ada1aca6ba792564f7797ff8b298ebde9",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T16:18:20+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Write the opening paragraph from the reasons in document 1.",
+    "documents": [
+      {
+        "name": "reasons chosen by the reviewer",
+        "media_type": "text/plain",
+        "fingerprint": "2123d1078916b798c22c5d74ec6564e6f89cbb0c35828a77f2b0995e9ef9eaaa"
+      }
+    ],
+    "output_type": "_Opening"
+  },
+  "response_text": "{\"paragraph\":\"Thank you for submitting your application for Culture Night. After review, some parts of it cannot be funded as submitted. These include the buffet dinner, the DJ performance, and the fact that the event sells tickets. The specific reasons and the rules they rely on are listed below, so you can see how each one applies to your application.\",\"contains_instructions\":false}"
+}

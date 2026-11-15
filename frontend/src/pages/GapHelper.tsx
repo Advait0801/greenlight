@@ -22,6 +22,14 @@ interface Form {
 const BLANK: Form = { event_name: "", event_date: "", venue: "", headcount: "", attributes: [], shortfall: "", asks_usg: false, note: "" };
 const input = "mt-1 w-full rounded border border-stone-400 px-2 py-1";
 
+// The demo club's example (data/demo); its drafted paragraph is recorded, so the demo works when the AI service is down.
+const DEMO_EMAIL: { club_name: string; recipient: string; description: string; ask: AskKind[] } = {
+  club_name: "Lantern Cultural Society",
+  recipient: "The manager, Golden Lantern Kitchen",
+  description: "Our spring culture night brings 150 USC students together for lantern-making, music and food from East and Southeast Asia.",
+  ask: ["food"],
+};
+
 export function GapHelper() {
   const [form, setForm] = useState<Form>(BLANK);
   const [report, setReport] = useState<GapReport | null>(null);
@@ -171,6 +179,10 @@ export function GapHelper() {
 
           <div className="rounded-md border border-stone-300 bg-white p-4">
             <h4 className="text-lg font-semibold">Draft an outreach email</h4>
+            <button type="button" className="mt-1 text-sm text-cardinal underline underline-offset-2"
+              onClick={() => { setEmailKind("in_kind_sponsor"); setEmail(DEMO_EMAIL); }}>
+              Fill in the demo club's example
+            </button>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
               <label className="block">Kind of help
                 <select className={input} value={emailKind} onChange={(e) => setEmailKind(e.target.value as EmailKind)}>
