@@ -21,16 +21,16 @@ export interface AppRoute {
 }
 
 export const routes: AppRoute[] = [
-  { path: "/", element: <Dashboard />, label: "Home", group: "Overview", icon: "⌂" },
-  { path: "/recognition", element: <Recognition />, label: "Recognition", group: "Your club", icon: "✎" },
-  { path: "/plan", element: <YearPlan />, label: "Year plan", group: "Your club", icon: "▦" },
-  { path: "/events/packet", element: <EventPacket />, label: "Events", group: "Each event", icon: "✦" },
-  { path: "/money/check", element: <MoneyCheck />, label: "Money check", group: "Each event", icon: "$" },
-  { path: "/money/gap", element: <GapHelper />, label: "Gap helper", group: "Each event", icon: "⇄" },
-  { path: "/usg", element: <UsgScreen />, label: "USG screen", group: "For USG reviewers", icon: "⚑" },
-  { path: "/accuracy", element: <Accuracy />, label: "Accuracy", group: "Trust", icon: "◎" },
-  { path: "/status", element: <Home />, label: "System status", group: "Trust", icon: "●" },
-  { path: "/handover", element: <Handover />, label: "Handover", group: "Your club", icon: "↻" },
+  { path: "/", element: <Dashboard />, label: "Home", group: "Overview", icon: "home" },
+  { path: "/recognition", element: <Recognition />, label: "Recognition", group: "Your club", icon: "document" },
+  { path: "/plan", element: <YearPlan />, label: "Year plan", group: "Your club", icon: "calendar" },
+  { path: "/events/packet", element: <EventPacket />, label: "Events", group: "Each event", icon: "event" },
+  { path: "/money/check", element: <MoneyCheck />, label: "Money check", group: "Each event", icon: "money" },
+  { path: "/money/gap", element: <GapHelper />, label: "Gap helper", group: "Each event", icon: "gap" },
+  { path: "/usg", element: <UsgScreen />, label: "USG screen", group: "For USG reviewers", icon: "flag" },
+  { path: "/accuracy", element: <Accuracy />, label: "Accuracy", group: "Trust", icon: "accuracy" },
+  { path: "/status", element: <Home />, label: "System status", group: "Trust", icon: "status" },
+  { path: "/handover", element: <Handover />, label: "Handover", group: "Your club", icon: "handover" },
 ];
 
 // The sidebar's sections, in the order a club works through them.
