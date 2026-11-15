@@ -27,6 +27,7 @@ import { sendToUsg, type SendResult } from "../api/usg";
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
 import { StatusBadge, type BadgeState } from "../components/StatusBadge";
+import { MasterDetail, PageHeader, SummaryStats, Tabs, Wizard } from "../components/ui";
 
 // Lines are edited as text so a half-typed amount is never turned into a number the officer did not mean.
 interface EditLine {
@@ -165,6 +166,8 @@ export function MoneyCheck() {
   const [clubName, setClubName] = useState("");
   const [consent, setConsent] = useState(false);
   const [sent, setSent] = useState<SendResult | null>(null);
+  const [step, setStep] = useState(0);
+  const [selectedLine, setSelectedLine] = useState<string | null>(null);
 
   // Opened from the year plan: start from that event. Ticket sales and openness stay unknown unless the plan said so.
   const location = useLocation();
@@ -173,6 +176,7 @@ export function MoneyCheck() {
     if (state?.event) {
       setEvent(state.event);
       setClub((old) => ({ ...old, received: state.received ?? "" }));
+      setStep(1);
     }
   }, [location.state]);
 
@@ -197,6 +201,7 @@ export function MoneyCheck() {
   }
 
   function loadDemo() {
+    setStep(1);
     setEvent(DEMO_EVENT);
     setLines(DEMO_LINES.map((l) => ({ ...l })));
     setAttachments(["esr", "hospitality_food_form", "food_health_permit_and_insurance", "food_justification"]);
@@ -283,6 +288,7 @@ export function MoneyCheck() {
       return;
     }
     setReport(result.data);
+    setStep(2);
   }
 
   async function makeDraft() {
@@ -332,20 +338,134 @@ export function MoneyCheck() {
 
   const input = "mt-1 w-full rounded border border-stone-400 px-2 py-1";
 
+  const reportView = report ? (
+    <section aria-labelledby="report-title" className="space-y-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 id="report-title" className="text-xl font-semibold">Report</h3>
+            <StatusBadge state={badge(report.verdict)} label={`Overall: ${report.verdict_label}`} />
+          </div>
+          <PrecheckNotice />
+          <dl className="grid gap-2 text-sm sm:grid-cols-3">
+            <div><dt className="text-stone-600">Total asked</dt><dd className="font-semibold">{dollars(report.totals.total_cents)}</dd></div>
+            {report.totals.food_per_person_text ? <div><dt className="text-stone-600">Food per person</dt><dd className="font-semibold">{report.totals.food_per_person_text}</dd></div> : null}
+            {report.totals.usg_year_total_cents !== null ? <div><dt className="text-stone-600">USG total this year with this request</dt><dd className="font-semibold">{dollars(report.totals.usg_year_total_cents)}</dd></div> : null}
+          </dl>
+          {report.questions.length ? (
+            <div className="rounded border border-amber-700 bg-amber-50 p-3"><p className="font-medium">Questions for you</p><ul className="list-disc pl-5">{report.questions.map((q) => <li key={q}>{q}</li>)}</ul></div>
+          ) : null}
+
+      <SummaryStats stats={[
+        { label: "Breaks a rule", value: report.counts.red ?? 0, tone: "red" },
+        { label: "Needs a human look", value: report.counts.yellow ?? 0, tone: "yellow" },
+        { label: "The office decides", value: report.counts.office_decides ?? 0, tone: "office_decides" },
+        { label: "Lines", value: report.lines.length, hint: dollars(report.totals.total_cents) + " asked" },
+      ]} />
+      <div className="flex flex-wrap items-center gap-2 rounded-xl bg-white p-3 text-sm ring-1 ring-stone-200">
+        <span>Change a line, the event or the documents, then check again.</span>
+        <button type="button" onClick={() => setStep(1)} className="rounded-md border border-stone-400 px-3 py-1.5 font-medium">← Fix the budget</button>
+        {report.draft_allowed ? <button type="button" onClick={() => setStep(3)} className="rounded-md bg-cardinal px-3 py-1.5 font-medium text-white">Draft the application →</button> : null}
+      </div>
+      <Tabs label="Report sections" tabs={[
+        { id: "lines", label: "Lines", count: report.lines.length, content: (
+          <MasterDetail
+            label="Budget lines"
+            items={report.lines}
+            selected={selectedLine}
+            onSelect={setSelectedLine}
+            itemKey={(l) => String(l.line)}
+            renderItem={(line) => (
+              <div className="space-y-1">
+                <p className="font-semibold">Line {line.line}: {line.item || "(no item)"}</p>
+                <p className="text-sm text-stone-600">{line.vendor || "No vendor"} · {dollars(line.amount_cents)}</p>
+                <StatusBadge state={badge(line.verdict)} />
+              </div>
+            )}
+            renderDetail={(line) => (
+              <div>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="font-semibold">Line {line.line}: {line.item || "(no item)"} — {dollars(line.amount_cents)}</p>
+                      <p className="text-sm text-stone-600">{line.vendor || "No vendor"} · {line.category_label ?? "Category not known"}</p>
+                    </div>
+                    <StatusBadge state={badge(line.verdict)} />
+                  </div>
+                  {line.findings.length ? <ul className="mt-2 space-y-2">{line.findings.map((f, i) => <FindingItem key={i} finding={f.finding} reason={f.reason} />)}</ul> : null}
+                  {line.passed.length ? (
+                    <details className="mt-2"><summary className="cursor-pointer text-sm">Rules this line meets ({line.passed.length})</summary>
+                      <ul className="mt-2 space-y-2">{line.passed.map((f) => <FindingItem key={f.rule_id} finding={f} />)}</ul></details>
+                  ) : null}
+                  <details className="mt-2" open={line.vendor_check.status !== "on_list"}><summary className="cursor-pointer text-sm">Vendor list check (separate from eligibility){VENDOR_STATUS[line.vendor_check.status] ?? ""}: needs a human look</summary>
+                    <ul className="mt-2"><FindingItem finding={line.vendor_check.finding} /></ul></details>
+              </div>
+            )}
+          />
+        ) },
+        { id: "application", label: "The application as a whole", count: report.application.length, content: <div className="rounded-2xl bg-white p-5 ring-1 ring-stone-200">
+          <div>
+            <h4 className="text-lg font-semibold">The application as a whole</h4>
+            {report.application.length ? <ul className="mt-2 space-y-2">{report.application.map((f: MoneyFinding, i) => <FindingItem key={i} finding={f.finding} reason={f.reason} />)}</ul> : <p>No findings.</p>}
+            {report.application_passed.length ? (
+              <details className="mt-2"><summary className="cursor-pointer text-sm">Rules the application meets ({report.application_passed.length})</summary>
+                <ul className="mt-2 space-y-2">{report.application_passed.map((f) => <FindingItem key={f.rule_id} finding={f} />)}</ul></details>
+            ) : null}
+          </div>
+
+</div> },
+        { id: "fund", label: "Fund", content: <div>
+          <div className="rounded-md border border-stone-300 bg-white p-4">
+            <h4 className="text-lg font-semibold">Fund</h4>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              {report.fund.verdict ? <StatusBadge state="yellow" /> : <StatusBadge state="info" label={report.fund.status === "officer_chose" ? "Your choice" : "Matched from the description"} />}
+              <span className="font-medium">{report.fund.fund_name ?? `Could be: ${report.fund.candidates.map(fundName).join(" or ")}`}</span>
+            </div>
+            <p className="mt-1">{report.fund.explanation}</p>
+            <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Fund descriptions and sources</summary>
+              {report.fund.citations.map((c) => <SourceLink key={c.rule_id} citation={c} />)}</details>
+          </div>
+
+</div> },
+        { id: "dates", label: "USG dates", count: report.dates.filter((o) => !o.superseded_by).length, content: <div>
+          <div>
+            <h4 className="text-lg font-semibold">USG dates for this event</h4>
+            <ul className="mt-2 space-y-2">
+              {report.dates.filter((o) => !o.superseded_by).map((o) => (
+                <li key={o.rule_id} className="rounded border border-stone-200 bg-white p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {o.finding ? <StatusBadge state={badge(o.finding.verdict)} /> : <StatusBadge state="info" label={o.status_label} />}
+                    <span className="font-medium">{o.title}</span>
+                  </div>
+                  <p className="mt-1 text-sm">{o.due ? `Due ${o.due}. ` : ""}{o.due_note ?? o.note ?? ""}</p>
+                  <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary><SourceLink citation={o.citation} /></details>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+</div> },
+      ]} />
+    </section>
+  ) : null;
+
   return (
-    <div className="space-y-8">
-      <header>
-        <h2 className="text-2xl font-semibold">Money check</h2>
+    <div className="space-y-6">
+      <PageHeader eyebrow="Each event" title="Money check" actions={
+        <button type="button" onClick={loadDemo} className="rounded-md bg-cardinal px-4 py-2 font-medium text-white">
+          Load the demo club's culture night budget
+        </button>
+      }>
         <p className="mt-1 max-w-3xl">
           Upload the quotes for one event. Greenlight checks every line against the Undergraduate Student Government (USG) funding
           rules, shows a fix for each problem, names the fund, and drafts the application once nothing is red. You approve the draft
           and paste it into EngageSC yourself: Greenlight never submits anything.
         </p>
-        <button type="button" onClick={loadDemo} className="mt-2 text-sm text-cardinal underline underline-offset-2">
-          Load the demo club's culture night budget
-        </button>
-      </header>
-
+      </PageHeader>
+      {error ? <p role="alert" className="rounded-xl border border-red-300 bg-red-50 p-3 text-red-900">{error}</p> : null}
+      <Wizard
+        label="Money check steps"
+        step={step}
+        onStep={setStep}
+        steps={[
+          { id: "quotes", label: "Upload quotes", content: (
       <form onSubmit={read} className="space-y-3 rounded-md border border-stone-300 bg-white p-4" aria-labelledby="read-title">
         <h3 id="read-title" className="text-lg font-semibold">1. Upload quotes (optional)</h3>
         <p className="text-sm text-stone-700">PDF, image or screenshot, Word file, or pasted text. Greenlight reads the lines into the budget below for you to check. Text inside a file is never followed as an instruction.</p>
@@ -376,7 +496,8 @@ export function MoneyCheck() {
           </ul>
         ) : null}
       </form>
-
+          ) },
+          { id: "budget", label: "Event and budget", count: lines.length, content: (
       <form onSubmit={check} className="space-y-6">
         <fieldset className="grid gap-3 rounded-md border border-stone-300 bg-white p-4 sm:grid-cols-2">
           <legend className="px-1 text-lg font-semibold">2. The event</legend>
@@ -497,85 +618,10 @@ export function MoneyCheck() {
           {busy === "checking" ? "Checking…" : "Check the budget"}
         </button>
       </form>
-
-      {error ? <p role="alert" className="rounded border border-red-700 bg-red-50 p-3 text-red-900">{error}</p> : null}
-
-      {report ? (
-        <section aria-labelledby="report-title" className="space-y-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <h3 id="report-title" className="text-xl font-semibold">Report</h3>
-            <StatusBadge state={badge(report.verdict)} label={`Overall: ${report.verdict_label}`} />
-          </div>
-          <PrecheckNotice />
-          <dl className="grid gap-2 text-sm sm:grid-cols-3">
-            <div><dt className="text-stone-600">Total asked</dt><dd className="font-semibold">{dollars(report.totals.total_cents)}</dd></div>
-            {report.totals.food_per_person_text ? <div><dt className="text-stone-600">Food per person</dt><dd className="font-semibold">{report.totals.food_per_person_text}</dd></div> : null}
-            {report.totals.usg_year_total_cents !== null ? <div><dt className="text-stone-600">USG total this year with this request</dt><dd className="font-semibold">{dollars(report.totals.usg_year_total_cents)}</dd></div> : null}
-          </dl>
-          {report.questions.length ? (
-            <div className="rounded border border-amber-700 bg-amber-50 p-3"><p className="font-medium">Questions for you</p><ul className="list-disc pl-5">{report.questions.map((q) => <li key={q}>{q}</li>)}</ul></div>
-          ) : null}
-
-          <div>
-            <h4 className="text-lg font-semibold">Lines</h4>
-            <ul className="mt-2 space-y-3">
-              {report.lines.map((line) => (
-                <li key={line.line} className="rounded-md border border-stone-300 bg-white p-4">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="font-semibold">Line {line.line}: {line.item || "(no item)"} — {dollars(line.amount_cents)}</p>
-                      <p className="text-sm text-stone-600">{line.vendor || "No vendor"} · {line.category_label ?? "Category not known"}</p>
-                    </div>
-                    <StatusBadge state={badge(line.verdict)} />
-                  </div>
-                  {line.findings.length ? <ul className="mt-2 space-y-2">{line.findings.map((f, i) => <FindingItem key={i} finding={f.finding} reason={f.reason} />)}</ul> : null}
-                  {line.passed.length ? (
-                    <details className="mt-2"><summary className="cursor-pointer text-sm">Rules this line meets ({line.passed.length})</summary>
-                      <ul className="mt-2 space-y-2">{line.passed.map((f) => <FindingItem key={f.rule_id} finding={f} />)}</ul></details>
-                  ) : null}
-                  <details className="mt-2" open={line.vendor_check.status !== "on_list"}><summary className="cursor-pointer text-sm">Vendor list check (separate from eligibility){VENDOR_STATUS[line.vendor_check.status] ?? ""}: needs a human look</summary>
-                    <ul className="mt-2"><FindingItem finding={line.vendor_check.finding} /></ul></details>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold">The application as a whole</h4>
-            {report.application.length ? <ul className="mt-2 space-y-2">{report.application.map((f: MoneyFinding, i) => <FindingItem key={i} finding={f.finding} reason={f.reason} />)}</ul> : <p>No findings.</p>}
-            {report.application_passed.length ? (
-              <details className="mt-2"><summary className="cursor-pointer text-sm">Rules the application meets ({report.application_passed.length})</summary>
-                <ul className="mt-2 space-y-2">{report.application_passed.map((f) => <FindingItem key={f.rule_id} finding={f} />)}</ul></details>
-            ) : null}
-          </div>
-
-          <div className="rounded-md border border-stone-300 bg-white p-4">
-            <h4 className="text-lg font-semibold">Fund</h4>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
-              {report.fund.verdict ? <StatusBadge state="yellow" /> : <StatusBadge state="info" label={report.fund.status === "officer_chose" ? "Your choice" : "Matched from the description"} />}
-              <span className="font-medium">{report.fund.fund_name ?? `Could be: ${report.fund.candidates.map(fundName).join(" or ")}`}</span>
-            </div>
-            <p className="mt-1">{report.fund.explanation}</p>
-            <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Fund descriptions and sources</summary>
-              {report.fund.citations.map((c) => <SourceLink key={c.rule_id} citation={c} />)}</details>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold">USG dates for this event</h4>
-            <ul className="mt-2 space-y-2">
-              {report.dates.filter((o) => !o.superseded_by).map((o) => (
-                <li key={o.rule_id} className="rounded border border-stone-200 bg-white p-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {o.finding ? <StatusBadge state={badge(o.finding.verdict)} /> : <StatusBadge state="info" label={o.status_label} />}
-                    <span className="font-medium">{o.title}</span>
-                  </div>
-                  <p className="mt-1 text-sm">{o.due ? `Due ${o.due}. ` : ""}{o.due_note ?? o.note ?? ""}</p>
-                  <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary><SourceLink citation={o.citation} /></details>
-                </li>
-              ))}
-            </ul>
-          </div>
-
+          ) },
+          { id: "findings", label: "Findings", content: reportView, ...(report ? {} : { locked: "Check the budget (step 2) to see the findings. Any change clears the last result." }) },
+          { id: "draft", label: "Draft and send", content: report ? (
+            <div className="grid gap-5 xl:grid-cols-2 xl:items-start">
           <div className="rounded-md border border-stone-300 bg-white p-4">
             <h4 className="text-lg font-semibold">Draft the application</h4>
             {report.draft_allowed ? (
@@ -631,8 +677,10 @@ export function MoneyCheck() {
               </div>
             ) : null}
           </div>
-        </section>
-      ) : null}
+            </div>
+          ) : null, ...(report ? {} : { locked: "Check the budget (step 2) first." }) },
+        ]}
+      />
     </div>
   );
 }
