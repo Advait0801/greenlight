@@ -32,22 +32,27 @@ function Sources({ citations }: { citations: (TableDeadline["citation"] | null)[
   if (!shown.length) return null;
   return (
     <details className="mt-2">
-      <summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary>
+      <summary className="cursor-pointer text-sm text-cardinal">Rule text and source</summary>
       {shown.map((c) => <SourceLink key={c.rule_id} citation={c} />)}
     </details>
   );
 }
 
 function ProblemCard({ p, names }: { p: PlanProblem; names: Record<string, string> }) {
+  const who = p.events.length > 2 ? `${p.events.length} events` : p.events.map((k) => names[k] ?? k).join(", ");
   return (
-    <li className="rounded-md border border-stone-300 bg-white p-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <p className="font-semibold">{p.events.map((k) => names[k] ?? k).join(", ")}</p>
+    <li className="border-b border-stone-200 py-4 last:border-b-0">
+      <div className="flex items-start justify-between gap-3">
+        <p className="font-medium" title={p.events.map((k) => names[k] ?? k).join(", ")}>{who}</p>
         <StatusBadge state={p.severity} label={p.severity_label} />
       </div>
-      <p className="mt-2">{p.note}</p>
-      {p.fix ? <p className="mt-2 text-sm"><span className="font-medium">What to do: </span>{p.fix}</p> : null}
-      {p.citation ? <Sources citations={[p.citation, ...p.also_cites]} /> : <p className="mt-2 text-xs text-stone-600">From your own plan, not a USC rule.</p>}
+      {p.fix ? <p className="mt-1 text-sm text-stone-700">{p.fix}</p> : null}
+      <details className="mt-1">
+        <summary className="cursor-pointer text-sm text-cardinal">Why?</summary>
+        <p className="mt-2 text-sm">{p.note}</p>
+        <p className="mt-1 text-sm text-stone-600">Events: {p.events.map((k) => names[k] ?? k).join(", ")}</p>
+        {p.citation ? [p.citation, ...p.also_cites].filter((c): c is NonNullable<typeof c> => c !== null).map((c) => <SourceLink key={c.rule_id} citation={c} />) : <p className="mt-2 text-xs text-stone-600">From your own plan, not a USC rule.</p>}
+      </details>
     </li>
   );
 }
@@ -82,13 +87,13 @@ export function planStats(report: YearPlanReport): Stat[] {
 function WeekItem({ item }: { item: CalendarItem }) {
   const badge = itemBadge(item);
   return (
-    <li className="rounded-xl border border-stone-200 bg-white p-3">
+    <li className="border-b border-stone-200 py-4 last:border-b-0">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-semibold"><time dateTime={item.day}>{formatDay(item.day)}</time></p>
+        <p className="text-sm font-medium text-stone-600"><time dateTime={item.day}>{formatDay(item.day)}</time></p>
         <StatusBadge state={badge.state} label={badge.label} />
       </div>
       <p>{item.title}</p>
-      <p className="text-sm text-stone-600">{item.event_name}{item.unconfirmed ? " · date from an unconfirmed copy of USG's deadline table; confirm with usgfunds@usc.edu" : ""}</p>
+      <p className="text-sm text-stone-600">{item.event_name}{item.unconfirmed ? " · unconfirmed date: check with usgfunds@usc.edu" : ""}</p>
       <Sources citations={[item.citation]} />
     </li>
   );
@@ -96,9 +101,9 @@ function WeekItem({ item }: { item: CalendarItem }) {
 
 export function ThisWeek({ report }: { report: YearPlanReport }) {
   return (
-    <Panel id="week-heading" title="This week: the next three things to do" intro={`As of ${formatDay(report.as_of)}.`}>
+    <Panel id="week-heading" title="This week" intro={`As of ${formatDay(report.as_of)}.`}>
       {report.this_week.length === 0 ? <p className="text-stone-700">Nothing dated is coming up.</p> : (
-        <ol className="space-y-2">
+        <ol>
           {report.this_week.map((item) => <WeekItem key={`${item.day}-${item.event_key}-${item.rule_id}`} item={item} />)}
         </ol>
       )}
@@ -110,9 +115,9 @@ export function Problems({ report }: { report: YearPlanReport }) {
   const names = namesOf(report);
   return (
     <Panel id="problems-heading" title={`Problems found early (${report.problems.length})`}
-      intro="Each problem shows the rule behind it. Fix the red ones first; yellow ones need a person to confirm.">
+      intro="Red first; yellow needs a person to confirm.">
       {report.problems.length === 0 ? <p className="text-stone-700">No problems found across the plan.</p> : (
-        <ul className="space-y-3">{report.problems.map((p, i) => <ProblemCard key={`${p.type}-${p.rule_id}-${i}`} p={p} names={names} />)}</ul>
+        <ul>{report.problems.map((p, i) => <ProblemCard key={`${p.type}-${p.rule_id}-${i}`} p={p} names={names} />)}</ul>
       )}
       {report.questions.length ? (
         <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm">
@@ -126,9 +131,9 @@ export function Problems({ report }: { report: YearPlanReport }) {
 
 export function PlanOverview({ report }: { report: YearPlanReport }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-10">
       <SummaryStats stats={planStats(report)} />
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <div className="grid gap-10 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <ThisWeek report={report} />
         <Problems report={report} />
       </div>
@@ -139,13 +144,14 @@ export function PlanOverview({ report }: { report: YearPlanReport }) {
 export function Strategy({ report }: { report: YearPlanReport }) {
   return (
     <Panel id="strategy-heading" title="Funding strategy: what to ask USG for, in this order">
-      <ul className="list-disc space-y-1 pl-5 text-sm text-stone-700">{report.strategy.explanation.map((t) => <li key={t}>{t}</li>)}</ul>
+      <details className="text-sm text-stone-700"><summary className="cursor-pointer font-medium text-cardinal">How the order is worked out</summary>
+        <ul className="mt-2 list-disc space-y-1 pl-5">{report.strategy.explanation.map((t) => <li key={t}>{t}</li>)}</ul></details>
       {report.strategy.steps.length === 0 ? <p className="mt-3 text-stone-700">No event is planned for USG funding.</p> : (
         <ol className="mt-4 space-y-3">
           {report.strategy.steps.map((s) => (
             <li key={s.key} className="rounded-xl border border-stone-200 bg-white p-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <p className="font-semibold"><span className="mr-2 inline-grid h-6 w-6 place-items-center rounded-full bg-cardinal text-xs text-white">{s.order}</span>{s.name}</p>
+                <p className="font-semibold"><span className="mr-2 tabular-nums text-stone-500">{s.order}.</span>{s.name}</p>
                 <StatusBadge state={s.status === "apply" ? "info" : "yellow"} label={s.status === "apply" ? `Ask for ${dollars(s.planned_cents)}` : `Ask for ${dollars(s.planned_cents)} of ${dollars(s.requested_cents)}`} />
               </div>
               <p className="mt-1 text-sm">{s.note}</p>
@@ -201,10 +207,11 @@ export function Budget({ report }: { report: YearPlanReport }) {
           </div>
         ))}
       </dl>
-      <ul className="mt-3 list-disc pl-5 text-sm text-stone-700">{b.explanation.map((t) => <li key={t}>{t}</li>)}</ul>
-      <div className="mt-4 overflow-x-auto rounded-xl border border-stone-200">
+      <details className="mt-3 text-sm text-stone-700"><summary className="cursor-pointer font-medium text-cardinal">How the budget is worked out</summary>
+        <ul className="mt-2 list-disc pl-5">{b.explanation.map((t) => <li key={t}>{t}</li>)}</ul></details>
+      <div className="mt-6 overflow-x-auto">
         <table className="w-full min-w-[32rem] text-sm">
-          <thead><tr><th scope="col" className="px-3 py-2">Event</th><th scope="col" className="px-3 py-2 text-right">Cost</th><th scope="col" className="px-3 py-2 text-right">USG (planned)</th><th scope="col" className="px-3 py-2 text-right">Club money</th><th scope="col" className="px-3 py-2 text-right">Still to find</th></tr></thead>
+          <thead><tr><th scope="col" className="py-3 pr-3">Event</th><th scope="col" className="px-3 py-2 text-right">Cost</th><th scope="col" className="px-3 py-2 text-right">USG (planned)</th><th scope="col" className="px-3 py-2 text-right">Club money</th><th scope="col" className="px-3 py-2 text-right">Still to find</th></tr></thead>
           <tbody className="divide-y divide-stone-200">
             {b.rows.map((r) => (
               <tr key={r.key}>
@@ -225,7 +232,7 @@ export function Budget({ report }: { report: YearPlanReport }) {
 
 export function BudgetAndFunding({ report }: { report: YearPlanReport }) {
   return (
-    <div className="grid gap-5 xl:grid-cols-2">
+    <div className="grid gap-10 xl:grid-cols-2">
       <Budget report={report} />
       <Strategy report={report} />
     </div>
@@ -241,7 +248,7 @@ export function YearCalendar({ report }: { report: YearPlanReport }) {
     months.set(label, [...(months.get(label) ?? []), item]);
   }
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,3fr)_minmax(16rem,1fr)]">
+    <div className="grid gap-10 xl:grid-cols-[minmax(0,3fr)_minmax(16rem,1fr)]">
       <Panel id="calendar-heading" title="Year calendar" intro="Every event's deadlines, worked back from its date by the event packet's rules. Busy weeks have many deadlines at once. Pick a month.">
         <Tabs label="Months" tabs={[...months.entries()].map(([month, items]) => ({
           id: month.replace(/\s+/g, "-"),
@@ -314,7 +321,7 @@ export function EventsPane({ report, onOpenPacket, onOpenMoney, onOpenGap }: {
             <div className="space-y-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h3 className="font-display text-2xl font-semibold">{e.name}</h3>
+                  <h3 className="text-xl font-semibold">{e.name}</h3>
                   <p className="text-sm text-stone-600">{e.event_date ? formatDay(e.event_date) : "No date yet"}{e.end_date ? ` to ${formatDay(e.end_date)}` : ""}</p>
                 </div>
                 <StatusBadge state={e.verdict} label={e.verdict_label} />
@@ -331,13 +338,16 @@ export function EventsPane({ report, onOpenPacket, onOpenMoney, onOpenGap }: {
               {due.length ? (
                 <div>
                   <h4 className="font-semibold">Its deadlines ({due.length})</h4>
-                  <ul className="mt-2 divide-y divide-stone-200 rounded-xl border border-stone-200">
+                  <ul className="mt-2 divide-y divide-stone-200 border-y border-stone-200">
                     {due.map((item, i) => {
                       const badge = itemBadge(item);
                       return (
-                        <li key={`${item.day}-${item.rule_id}-${i}`} className="flex flex-col gap-1 p-3 sm:flex-row sm:items-center sm:justify-between">
-                          <p><time dateTime={item.day} className="font-medium">{formatDay(item.day)}</time> · {item.title}</p>
-                          <StatusBadge state={badge.state} label={badge.label} />
+                        <li key={`${item.day}-${item.rule_id}-${i}`} className="py-3">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                            <p><time dateTime={item.day} className="font-medium">{formatDay(item.day)}</time> · {item.title}</p>
+                            <StatusBadge state={badge.state} label={badge.label} />
+                          </div>
+                          {item.citation ? <Sources citations={[item.citation]} /> : null}
                         </li>
                       );
                     })}

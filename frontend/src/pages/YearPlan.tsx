@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { VENUE_LABELS, getDetails, type Detail, type EventFacts, type VenueType } from "../api/events";
-import { dollars, toCents, type BudgetEvent, type FundId } from "../api/money";
+import { toCents, type BudgetEvent, type FundId } from "../api/money";
 import {
   computePlan,
   downloadPlanIcs,
@@ -409,7 +409,7 @@ export function YearPlan() {
           <button type="button" onClick={() => setEdit({ ...edit, events: [...edit.events, blankEvent(edit.events)] })} className="rounded-md border border-stone-400 px-4 py-2">Add an event</button>
         </div>
         {edit.events.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white/60 p-8 text-center text-stone-700">No events yet. Paste a list, add one by hand, or load the demo club.</div>
+          <div className="border-y border-stone-200 py-12 text-center text-stone-600">No events yet. Paste a list, add one by hand, or load the demo club.</div>
         ) : (
           <ul className="grid gap-3 2xl:grid-cols-2">
             {edit.events.map((e) => (
@@ -427,6 +427,7 @@ export function YearPlan() {
       <PageHeader
         eyebrow="Year plan"
         title="Your club's year plan"
+        lede="Your events, deadlines and budget for the year, worked out from USC's rules."
         actions={
           <>
             <button type="button" onClick={loadDemo} className="rounded-md bg-cardinal px-4 py-2 font-medium text-white">Load the demo club</button>
@@ -440,15 +441,10 @@ export function YearPlan() {
           your budget, plans what to ask Undergraduate Student Government (USG) for within its caps, and flags problems early.
           Change anything and the whole plan is worked out again.
         </p>
-        <PrecheckNotice {...(report ? { text: report.notice } : {})} />
       </PageHeader>
+      <PrecheckNotice {...(report ? { text: report.notice } : {})} />
       {error ? <p role="alert" className="rounded-xl border border-red-300 bg-red-50 p-3 text-red-900">{error}</p> : null}
       {status}
-      {ready ? (
-        <p className="font-medium">
-          {ready.counts.red ?? 0} red, {ready.counts.yellow ?? 0} to check · {dollars(ready.budget.shortfall_cents)} still to find
-        </p>
-      ) : null}
       <Wizard
         label="Year plan steps"
         step={step}

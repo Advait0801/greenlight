@@ -45,7 +45,7 @@ function badgeFor(o: PacketObligation): { state: BadgeState; label: string } {
 function ObligationCard({ o, describe }: { o: PacketObligation; describe: (name: string) => string }) {
   const badge = badgeFor(o);
   return (
-    <li id={`ob-${o.rule_id}`} className="rounded-md border border-stone-300 bg-white p-4">
+    <li id={`ob-${o.rule_id}`} className="border-b border-stone-200 py-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h4 className="font-semibold">{o.title}</h4>
@@ -61,13 +61,11 @@ function ObligationCard({ o, describe }: { o: PacketObligation; describe: (name:
           {o.past_due ? " (passed)" : ""}
         </p>
       ) : null}
-      {o.due_note ? <p className="text-sm text-stone-600">{o.due_note}</p> : null}
       {o.contact_by ? (
         <p className="mt-2 font-medium">
           Contact them well before <time dateTime={o.contact_by}>{formatDay(o.contact_by)}</time>, when every approval must be in place
         </p>
       ) : null}
-      {o.note ? <p className="mt-2 text-sm">{o.note}</p> : null}
       {o.fix && (o.violated || o.past_due) ? <p className="mt-2 text-sm"><span className="font-medium">Fix: </span>{o.fix}</p> : null}
       {o.fallbacks.length ? (
         <div className="mt-2 text-sm">
@@ -75,9 +73,11 @@ function ObligationCard({ o, describe }: { o: PacketObligation; describe: (name:
           <ul className="list-disc pl-5">{o.fallbacks.map((f) => <li key={f.kind + f.text}>{f.text}</li>)}</ul>
         </div>
       ) : null}
-      <p className="mt-2 text-xs text-stone-600">Applies because of: {o.triggered_by.map(describe).join("; ")}</p>
       <details className="mt-2">
-        <summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary>
+        <summary className="cursor-pointer text-sm text-cardinal">Why? Rule text and source</summary>
+        {o.due_note ? <p className="mt-2 text-sm text-stone-700">{o.due_note}</p> : null}
+        {o.note ? <p className="mt-2 text-sm">{o.note}</p> : null}
+        <p className="mt-2 text-sm text-stone-600">Applies because of: {o.triggered_by.map(describe).join("; ")}</p>
         <SourceLink citation={o.citation} />
         {o.contact_by_citation ? <SourceLink citation={o.contact_by_citation} /> : null}
       </details>
@@ -187,7 +187,7 @@ export function EventPacket() {
         </button>
       </div>
       <PrecheckNotice text={packet.notice} />
-      <p className="text-sm text-stone-700">Worked out on {formatDay(packet.as_of)}. {packet.obligations.length} items: {ORDER.map((s) => `${packet.counts[s] ?? 0} ${GROUP_TITLES[s].toLowerCase()}`).join(", ")}.</p>
+      <p className="text-sm text-stone-600">Worked out on {formatDay(packet.as_of)}. {packet.obligations.length} items.</p>
       <SummaryStats stats={ORDER.map((st) => ({ label: GROUP_TITLES[st], value: packet.counts[st] ?? 0, tone: (st === "blocked" ? "red" : st === "check_with_office" ? "yellow" : st === "office_decides" ? "office_decides" : "info") as BadgeState }))} />
           {packet.hard_blocks.length ? (
             <div role="alert" className="rounded-md border-2 border-red-700 bg-red-50 p-4">
@@ -244,7 +244,8 @@ export function EventPacket() {
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Events" title="Event packet">
+      <PageHeader eyebrow="Events" title="Event packet"
+        lede="Every form, approval and deadline for one event, with dates and sources.">
         <p>
           Describe one event in a sentence. Greenlight reads it, asks about anything unclear, then lists every form, approval and
           deadline that applies, with dates counted back from the event and the rule text behind each.

@@ -42,14 +42,15 @@ export function Accuracy() {
 
   return (
     <div className="space-y-8">
-      <PageHeader eyebrow="Trust" title="How accurate is Greenlight?">
+      <PageHeader eyebrow="Trust" title="How accurate is Greenlight?"
+        lede="Caught, missed and wrongly flagged on test sets with known answers.">
         <p>
           Measured on test sets with known answers. <strong>Caught</strong>: problems and obligations Greenlight found.{" "}
           <strong>Missed</strong>: ones it did not find. <strong>Wrongly flagged</strong>: problems it reported that are not
           there.
         </p>
-        <PrecheckNotice />
       </PageHeader>
+      <PrecheckNotice />
 
       {error ? (
         <p role="alert" className="rounded border border-red-300 px-3 py-2 text-red-900">

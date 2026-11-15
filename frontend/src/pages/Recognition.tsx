@@ -63,7 +63,7 @@ export function Recognition() {
   }
 
   const form = (
-      <form onSubmit={submit} className="grid gap-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6 xl:grid-cols-2" aria-busy={busy}>
+      <form onSubmit={submit} className="grid gap-6 rounded-2xl border border-stone-200 bg-white p-5 xl:grid-cols-2" aria-busy={busy}>
         <div className="space-y-5">
         <div className="space-y-1">
           <button type="button" onClick={loadSample} className="text-sm text-cardinal underline underline-offset-2">
@@ -154,7 +154,8 @@ export function Recognition() {
   const locked = report ? undefined : "Check a constitution first (step 1). No file to hand? Try the sample constitution.";
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Recognition" title="Recognition check">
+      <PageHeader eyebrow="Recognition" title="Recognition check"
+        lede="Check your constitution against this year's Campus Activities template.">
         <p>
           Compare your constitution with the 2026-27 Campus Activities template before you submit. Greenlight marks each required
           clause as present, missing, changed or in conflict with a rule, and shows the template's wording and its source.
@@ -162,8 +163,8 @@ export function Recognition() {
         <p>
           The application's key dates, with their sources, are in the readiness checklist below.
         </p>
-        <PrecheckNotice />
       </PageHeader>
+      <PrecheckNotice />
 
       <Wizard
         label="Recognition steps"

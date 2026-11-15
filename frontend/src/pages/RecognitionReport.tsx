@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 
 import type { Verdict } from "../api/types";
-import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
 import { StatusBadge, type BadgeState } from "../components/StatusBadge";
 import { MasterDetail, SummaryStats } from "../components/ui";
@@ -134,7 +133,6 @@ export function RecognitionReport({ report, view = "report" }: { report: Constit
         {report.reader.message ? <p className="mt-3 text-sm text-stone-600">{report.reader.message}</p> : null}
       </div>
 
-      <PrecheckNotice text={report.notice} />
 
       {report.notes.length > 0 ? (
         <ul className="space-y-3">
@@ -157,7 +155,7 @@ export function RecognitionReport({ report, view = "report" }: { report: Constit
         </ul>
       ) : null}
 
-      <fieldset className="flex flex-wrap gap-2 rounded-xl bg-white p-2 ring-1 ring-stone-200">
+      <fieldset className="flex flex-wrap gap-2">
         <legend className="sr-only">Which clauses to show</legend>
         {(["problems", "all"] as const).map((value) => (
           <label key={value} className={`flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm ${filter === value ? "bg-cardinal-50 text-cardinal" : ""}`}>

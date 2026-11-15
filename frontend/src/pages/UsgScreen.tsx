@@ -139,7 +139,8 @@ export function UsgScreen() {
 
   return (
     <div className="space-y-8">
-      <PageHeader eyebrow="For USG reviewers" title="USG screen">
+      <PageHeader eyebrow="For USG reviewers" title="USG screen"
+        lede="Applications clubs chose to send, already checked. A person approves every reason.">
         <p>
           For the USG (Undergraduate Student Government) Funding Department. Applications arrive already checked by Greenlight, but only
           the ones a club chose to send. A reviewer can draft a reason for not funding an application, citing the guideline; nothing
@@ -172,7 +173,7 @@ export function UsgScreen() {
                       </div>
                       <div className="flex items-center gap-2">
                         <StatusBadge state={a.verdict} label={a.verdict_label} />
-                        <button type="button" onClick={() => select(a.id)} className="rounded border border-cardinal px-3 py-2 text-sm font-medium text-cardinal">Open</button>
+                        <button type="button" onClick={() => select(a.id)} aria-label={`Open ${a.event_name} from ${a.club_name} (${a.reference})`} className="rounded border border-cardinal px-3 py-2 text-sm font-medium text-cardinal">Open</button>
                       </div>
                     </div>
                   </li>
@@ -198,7 +199,7 @@ export function UsgScreen() {
                           onChange={(e) => setChosen(e.target.checked ? [...chosen, r.rule_id] : chosen.filter((x) => x !== r.rule_id))} />
                         <span><StatusBadge state={r.verdict} label={r.verdict_label} /> <span className="font-medium">{r.where}:</span> {r.message}</span>
                       </label>
-                      <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary><SourceLink citation={r.citation} /></details>
+                      <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal">Rule text and source</summary><SourceLink citation={r.citation} /></details>
                     </li>
                   ))}
                 </ul>
@@ -220,7 +221,7 @@ export function UsgScreen() {
                 </div>
               ) : null}
             </section>
-          ) : <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white/60 p-8 text-center text-stone-700">Open an application from the queue to see Greenlight's findings and draft a reason.</div>}
+          ) : <div className="border-y border-stone-200 py-12 text-center text-stone-600">Open an application from the queue to see Greenlight's findings and draft a reason.</div>}
           </div>
           {stats ? <FailureChart stats={stats} /> : null}
         </>

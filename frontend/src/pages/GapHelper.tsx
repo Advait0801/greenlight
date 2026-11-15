@@ -95,7 +95,8 @@ export function GapHelper() {
 
   return (
     <div className="space-y-8">
-      <PageHeader eyebrow="Each event" title="Close a funding gap">
+      <PageHeader eyebrow="Each event" title="Close a funding gap"
+        lede="The ways USC allows to cover a shortfall, and the ones it does not.">
         <p>
           When an event costs more than the club and USG (Undergraduate Student Government) can cover, Greenlight lists only the ways
           USC allows, each with its rule and when to start, and explains the ways USC does not allow. It can draft an outreach email
@@ -175,7 +176,7 @@ export function GapHelper() {
                   </div>
                   <p className="mt-1">{b.why}</p>
                   {b.instead ? <p className="mt-1 text-sm"><span className="font-medium">Instead: </span>{b.instead}</p> : null}
-                  <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary><SourceLink citation={b.citation} /></details>
+                  <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal">Rule text and source</summary><SourceLink citation={b.citation} /></details>
                 </li>
               ))}
             </ul>

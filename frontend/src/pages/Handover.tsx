@@ -40,7 +40,8 @@ export function Handover() {
 
   return (
     <div className="space-y-8">
-      <PageHeader eyebrow="Your club" title="Handover packet">
+      <PageHeader eyebrow="Your club" title="Handover packet"
+        lede="A packet for each officer role, written from your club's saved history.">
         <p>
           At election time, Greenlight writes a packet for each officer role from your club's saved history: the year plan saved in this
           browser and the applications your club sent to the USG (Undergraduate Student Government) screen. Edit each packet and approve it

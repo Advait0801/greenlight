@@ -103,7 +103,7 @@ const REASON_LABELS: Record<string, string> = {
 
 function FindingItem({ finding, reason }: { finding: Finding; reason?: string }) {
   return (
-    <li className="rounded border border-stone-200 bg-stone-50 p-3">
+    <li className="border-b border-stone-200 py-3 last:border-b-0">
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge state={badge(finding.verdict)} />
         {reason && reason !== "rule" ? <span className="text-sm text-stone-700">{REASON_LABELS[reason] ?? reason}</span> : null}
@@ -111,7 +111,7 @@ function FindingItem({ finding, reason }: { finding: Finding; reason?: string })
       <p className="mt-1">{finding.message}</p>
       {finding.fix ? <p className="mt-1 text-sm"><span className="font-medium">Fix: </span>{finding.fix}</p> : null}
       <details className="mt-1">
-        <summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary>
+        <summary className="cursor-pointer text-sm text-cardinal">Why? Rule text and source</summary>
         <SourceLink citation={finding.citation} />
       </details>
     </li>
@@ -355,12 +355,12 @@ export function MoneyCheck() {
           ) : null}
 
       <SummaryStats stats={[
-        { label: "Breaks a rule", value: report.counts.red ?? 0, tone: "red" },
-        { label: "Needs a human look", value: report.counts.yellow ?? 0, tone: "yellow" },
-        { label: "The office decides", value: report.counts.office_decides ?? 0, tone: "office_decides" },
-        { label: "Lines", value: report.lines.length, hint: dollars(report.totals.total_cents) + " asked" },
+        { label: "Lines that break a rule", value: report.counts.red ?? 0, tone: "red" },
+        { label: "Lines that need a human look", value: report.counts.yellow ?? 0, tone: "yellow" },
+        { label: "Lines the office decides", value: report.counts.office_decides ?? 0, tone: "office_decides" },
+        { label: "Lines in all", value: report.lines.length },
       ]} />
-      <div className="flex flex-wrap items-center gap-2 rounded-xl bg-white p-3 text-sm ring-1 ring-stone-200">
+      <div className="flex flex-wrap items-center gap-3 text-sm">
         <span>Change a line, the event or the documents, then check again.</span>
         <button type="button" onClick={() => setStep(1)} className="rounded-md border border-stone-400 px-3 py-1.5 font-medium">← Fix the budget</button>
         {report.draft_allowed ? <button type="button" onClick={() => setStep(3)} className="rounded-md bg-cardinal px-3 py-1.5 font-medium text-white">Draft the application →</button> : null}
@@ -400,7 +400,7 @@ export function MoneyCheck() {
             )}
           />
         ) },
-        { id: "application", label: "The application as a whole", count: report.application.length, content: <div className="rounded-2xl bg-white p-5 ring-1 ring-stone-200">
+        { id: "application", label: "The application as a whole", count: report.application.length, content: <div>
           <div>
             <h4 className="text-lg font-semibold">The application as a whole</h4>
             {report.application.length ? <ul className="mt-2 space-y-2">{report.application.map((f: MoneyFinding, i) => <FindingItem key={i} finding={f.finding} reason={f.reason} />)}</ul> : <p>No findings.</p>}
@@ -435,7 +435,7 @@ export function MoneyCheck() {
                     <span className="font-medium">{o.title}</span>
                   </div>
                   <p className="mt-1 text-sm">{o.due ? `Due ${o.due}. ` : ""}{o.due_note ?? o.note ?? ""}</p>
-                  <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary><SourceLink citation={o.citation} /></details>
+                  <details className="mt-1"><summary className="cursor-pointer text-sm text-cardinal">Rule text and source</summary><SourceLink citation={o.citation} /></details>
                 </li>
               ))}
             </ul>
@@ -448,7 +448,8 @@ export function MoneyCheck() {
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Each event" title="Money check" actions={
+      <PageHeader eyebrow="Each event" title="Money check"
+        lede="Check one event's budget against USG's funding rules before you apply." actions={
         <button type="button" onClick={loadDemo} className="rounded-md bg-cardinal px-4 py-2 font-medium text-white">
           Load the demo club's culture night budget
         </button>

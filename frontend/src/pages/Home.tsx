@@ -52,13 +52,14 @@ export function Home() {
 
   return (
     <div className="space-y-8">
-      <PageHeader eyebrow="Trust" title="System status">
+      <PageHeader eyebrow="Trust" title="System status"
+        lede="Whether the rules and calendar loaded, and what still needs a person to confirm.">
         <p>
           Greenlight checks event plans, budgets and constitutions against USC's published rules, and shows the rule text and
           source for every result. This page shows whether the rule table and calendar loaded.
         </p>
-        <PrecheckNotice {...(body ? { text: body.notice } : {})} />
       </PageHeader>
+      <PrecheckNotice {...(body ? { text: body.notice } : {})} />
 
       <section aria-labelledby="status-heading" className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
         <h2 id="status-heading" className="text-xl font-semibold">
