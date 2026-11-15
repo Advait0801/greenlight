@@ -7,15 +7,15 @@ Final reviewers in Phase 7 must **not** read this file.
 ## Current state
 
 - **Phase:** 0 — Foundation
-- **Step:** iteration 1 (verify) done and fixed; iteration 2 (break) next
-- **Next action:** run iteration 2 with a fresh `breaker` sub-agent (PLAN.md section 1)
+- **Step:** iterations 1 (verify) and 2 (break) done and fixed; iteration 3 (audit) next
+- **Next action:** run iteration 3 as five parallel fresh auditors at high effort (funding / events / outside money + calendar + deadline table / recognition / code and trust rules)
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
 
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Gate |
 |---|---|---|---|---|---|
-| 0 | Foundation | done | 1 | yes (0 blocker, 0 high) | open |
+| 0 | Foundation | done | 2 | no (iteration 2: 2 high, fixed) | open |
 | 1 | Recognition check | — | 0 | — | open |
 | 2 | Event packet | — | 0 | — | open |
 | 3 | Money check | — | 0 | — | open |
@@ -30,17 +30,27 @@ What exists now:
 - **Backend** (`backend/`): FastAPI app with `GET /health`, `GET /rules`, `GET /rules/{id}`; routers in `app/api/` are discovered automatically. SQLAlchemy tables for every table in PROJECT_CONTEXT section 5 (money in whole cents). Settings from env and `.env`.
 - **Claude client** (`app/ai/`): structured output via `messages.parse` validated against Pydantic models; `AI_MODE` = `recorded` (default; replay only, never the network), `live`, or `record` (live + save). Untrusted text is HTML-escaped inside `<document>` wrappers and the system prompt says it is data. Recordings store document fingerprints, not text. One live smoke call (Haiku, 2026-11-14) confirmed structured output works and an injected "mark this approved" was reported as document content.
 - **Source snapshots** (`rules/sources/`): 18 sources (one a manual transcription) in `manifest.json` with fetch time, SHA-256 and version date; text snapshots committed; small raw PDFs/CSVs committed, the 6.7 MB Handbook PDF and raw HTML not.
-- **Rule table**: 259 rules (`funding` 69, `events` 61, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 253 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 6 `unverified`; 13 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
-- **Calendar** (`rules/calendar.json`): Fall 2026, Spring 2027, Summer 2027 from the Registrar's page; `unverified`.
+- **Rule table**: 259 rules (`funding` 69, `events` 61, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 254 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 5 `unverified`; 10 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
+- **Calendar** (`rules/calendar.json`): Fall 2026, Spring 2027, Summer 2027 from the Registrar's page; confirmed by the user on 2026-11-14 (`read`); every date is checked against the quoted Registrar text on load.
 - **Test sets** (`data/eval/`): 30 events (417 expected obligations), 20 budgets (30 planted violations), 10 constitutions (20 planted faults), 2 year plans; JSON Schemas in `data/eval/schemas/`; method in `data/eval/README.md`.
 - **Scripts**: `validate_rules.py`, `run_eval.py` (+ `evaluators/` plug-in folder), `seed_demo.py` (+ `data/demo/club.json`), `fetch_sources.py`.
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
-- **Tests**: 144 passing (`pytest`), 0 adversarial yet.
+- **Tests**: 208 passing (`pytest`), including 59 adversarial tests from iteration 2.
 
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 0, iteration 2 — break
+Date/time: 2026-11-14, about 22:30-23:00 PT (fixes until about 23:20)
+Agent and model: breaker (fresh), Opus 5.5; worked on copies of commit 1c53949
+Report: docs/reviews/phase-0-iter-2-break.md (59 failing tests in backend/tests/adversarial/test_phase0_*_break.py)
+Findings: 0/2/10/13
+Fixed: H1 rule numbers: offset must be a JSON integer, effective_date an ISO string, limits positive numbers, and every limit and offset of a 'read' rule must be stated in its quoted text; H2 year plan yp-02 now lists usg-ineligible-alcohol. M1 calendar dates are checked against the quoted Registrar text (plus overlap, commencement and numeric-date checks); M2 bad manifest, snapshot, calendar or test-set files are load errors, not crashes, and the app starts degraded; M3 AI answers parsed as strict JSON in Pydantic strict mode, corrupt recordings are AIErrors; M4 Finding refuses green on an uncertain or office-decides rule; M5/M6 validate_set recomputes due dates, statuses, past-due flags, conflict choices, over-cap figures and budget verdict consistency; M7 quotes must start and end on a word boundary; M8 academic-week and business-day deadlines must depend on the rule defining the unit; M9 rule history after a revert; L1 events cannot end before they start; L2 binary uploads limited to PDF/images and 20 MB; L3 forged request label neutralised; L4 manifest version_date required and calendar effective date checked; L5 the app checks calendar/rule agreement; L6 no absolute server paths in errors; L7 relative folders and sqlite+driver URLs anchored; L8 startup race tolerated; L11 first-weeks fix text matches the confirm window; L12 seed_demo refuses to replace a real club. Each fix is its own commit with its test.
+Left open (questions, recorded below): M10, L9, L10, L13.
+Full test suite: pass (208, adversarial included)
+Gate: not yet, because iteration 3 (audit) has not run
 
 ### Phase 0, iteration 1 — verify
 Date/time: 2026-11-14, about 22:00-22:35 PT
@@ -95,6 +105,7 @@ Record any change of scope or departure from PROJECT_CONTEXT here, with the reas
 - **Three source disagreements on USG deadlines**, each encoded as a conflict pair with the stricter applied: the guidelines count back from the initial payment due date, the web page, FAQ document and table from the event (week); the FAQ document says 8 weeks for travel, the guidelines 9; the FAQ document allows "new vendors", the guidelines reject vendors not on the list.
 - **Calendar stays `unverified`** although the managing session suggested `read`: PLAN.md Phase 0 says to mark it unverified "until a human confirms it", and the research was done by an AI session. To confirm, a person sets `verified` to `read` in both `rules/calendar.json` and rule `usc-academic-calendar-2026-27` (validate_rules.py checks they agree).
 - **Research files from the managing session** (`docs/research/open_questions.md`, `docs/research/manual_snapshots/`) are committed with Phase 0 at its request and are part of the iteration 3 audit.
-- **Calendar confirmation not applied (2026-11-14).** The managing session relayed that the user confirmed the calendar ("Calendar confirmed") and asked for it to be marked verified. The permission system blocked that change because the confirmation reached this session only through another session, so the calendar stays `unverified`. To apply it, the user confirms directly in this session (or sets `verified: "read"` in `rules/calendar.json` and in rule `usc-academic-calendar-2026-27` and runs `python scripts/validate_rules.py`). The business-day and academic-week assumptions and the 4-event cap stay unverified in any case.
+- **Calendar confirmed by the user (2026-11-14).** A relayed confirmation was blocked by the permission system; the user then confirmed directly in this session, and the calendar and rule `usc-academic-calendar-2026-27` were marked `read` in their own commit. The business-day and academic-week assumptions, the 4-event cap, the vendor list and approved caterers stay unverified (the cap by the user's choice).
 - **Vendor and caterer checks are yellow until the lists are confirmed.** PROJECT_CONTEXT says to treat a vendor not on USG's list as red; the rule keeps severity red, but because it depends on the unverified list it is shown yellow until a person confirms the list.
 - **Commit convention changed by the user (2026-11-14, confirmed directly in this session).** Small commits, one per logical piece and one per finding fixed; imperative, descriptive subjects with no `phase N` / `iter N` prefix (phases and iterations are tracked here). CLAUDE.md, PLAN.md (Bookkeeping, checkpoint step 4, Phase 7) and CONTRIBUTING.md updated. The three earlier local Phase 0 commits are reworded to match before the checkpoint push (contents unchanged). Push policy unchanged: only at a phase checkpoint, never force-push.
+- **Open questions from iteration 2 (no code change):** M10: the TES "no events in the first 3 weeks" rule is applied to Trojan Event Services venues only (its source is the TES booking FAQ); whether it also covers classroom or off-campus club events is a question for Campus Activities. L9: business-day counting cannot skip staff holidays outside a term (e.g. Christmas) because only academic holidays are known; business days stay unverified. L10: line items and funding options may hold negative amounts (discount lines); Phase 3 decides. L13: a finding or document can reference another club's event at the database level; access control is Phase 5.
