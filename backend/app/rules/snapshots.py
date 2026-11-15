@@ -20,6 +20,7 @@ import json
 import re
 import unicodedata
 from dataclasses import dataclass
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urldefrag
@@ -70,6 +71,8 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
         raw = loads_strict(path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise ManifestError(f"{path}: source manifest not found") from exc
+    except UnicodeDecodeError as exc:
+        raise ManifestError(f"{path}: not UTF-8 text ({exc.reason})") from exc
     except (json.JSONDecodeError, StrictJSONError) as exc:
         raise ManifestError(f"{path}: not valid JSON ({exc})") from exc
     if not isinstance(raw, dict) or not isinstance(raw.get("sources"), list):
@@ -80,9 +83,18 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
         where = f"{path}: sources[{index}]"
         if not isinstance(entry, dict):
             raise ManifestError(f"{where}: expected an object")
-        for key in ("id", "title", "owner", "url"):
+        for key in ("id", "title", "owner", "url", "version_date"):
             if not isinstance(entry.get(key), str) or not entry[key].strip():
-                raise ManifestError(f"{where}: '{key}' is required")
+                raise ManifestError(f"{where}: '{key}' is required (a non-empty string)")
+        for key in ("snapshot", "fetched_at", "sha256", "note"):
+            if entry.get(key) is not None and not isinstance(entry[key], str):
+                raise ManifestError(f"{where}: '{key}' must be a string")
+        if not isinstance(entry.get("fetchable", True), bool):
+            raise ManifestError(f"{where}: 'fetchable' must be true or false")
+        try:
+            date.fromisoformat(entry["version_date"])
+        except ValueError as exc:
+            raise ManifestError(f"{where}: version_date '{entry['version_date']}' is not a real date") from exc
         source = Source(
             id=entry["id"],
             title=entry["title"],
@@ -104,7 +116,10 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
 
 @lru_cache(maxsize=64)
 def _read_body(path: str, mtime_ns: int) -> str:
-    text = Path(path).read_text(encoding="utf-8")
+    try:
+        text = Path(path).read_text(encoding="utf-8")
+    except UnicodeDecodeError as exc:
+        raise ManifestError(f"{path}: snapshot is not UTF-8 text ({exc.reason})") from exc
     head, sep, body = text.partition(HEADER_END)
     if not sep:
         raise ManifestError(f"{path}: snapshot header end marker not found")
@@ -124,6 +139,18 @@ def snapshot_text(sources_dir: Path, source: Source) -> str:
 
 
 def text_in_snapshot(quote: str, snapshot: str) -> bool:
-    """True if `quote` appears in the (already normalised) snapshot text, after normalisation."""
+    """True if `quote` appears in the (already normalised) snapshot text, after normalisation,
+    starting and ending on a word boundary: a quote may not cut a word or number in half
+    ("exceed a $3" is not a quote of "exceed a $35")."""
     needle = normalize(quote)
-    return bool(needle) and needle in snapshot
+    if not needle:
+        return False
+    start = snapshot.find(needle)
+    while start >= 0:
+        end = start + len(needle)
+        clean_start = start == 0 or not (snapshot[start - 1].isalnum() and needle[0].isalnum())
+        clean_end = end == len(snapshot) or not (snapshot[end].isalnum() and needle[-1].isalnum())
+        if clean_start and clean_end:
+            return True
+        start = snapshot.find(needle, start + 1)
+    return False

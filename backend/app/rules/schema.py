@@ -8,9 +8,21 @@ from __future__ import annotations
 
 import re
 from datetime import date
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, StrictInt, field_validator, model_validator
+
+
+def _iso_date_string(value: Any) -> Any:
+    """Dates must be written as ISO strings ("2026-10-21"); a number such as a Unix timestamp is refused."""
+    if isinstance(value, date):
+        return value
+    if not isinstance(value, str):
+        raise ValueError("must be a date written as YYYY-MM-DD")
+    return value
+
+
+IsoDate = Annotated[date, BeforeValidator(_iso_date_string)]
 
 Domain = Literal["funding", "events", "outside_money", "recognition"]
 
@@ -67,7 +79,7 @@ class Rule(BaseModel):
     source_section: str | None = None
     source_url: str
     source_text: str = Field(min_length=10)
-    effective_date: date
+    effective_date: IsoDate
     verified: Verified
     verification_note: str | None = None
     severity: Severity
@@ -84,7 +96,7 @@ class Rule(BaseModel):
     #   keys ending in "_rules" hold lists of rule ids that must exist.
     params: dict[str, Any] = Field(default_factory=dict)
     anchor: Anchor | None = None
-    offset: int | None = Field(default=None, ge=0, le=730)
+    offset: StrictInt | None = Field(default=None, ge=0, le=730)
     unit: Unit | None = None
     direction: Direction | None = None
     conflicts_with: list[str] | None = None

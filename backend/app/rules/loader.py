@@ -118,6 +118,8 @@ def _read_json(path: Path, problems: list[str]) -> Any:
         problems.append(f"{path.name}: {exc}")
     except UnicodeDecodeError as exc:
         problems.append(f"{path.name}: not UTF-8 text ({exc.reason})")
+    except IsADirectoryError:
+        problems.append(f"{path.name}: is a folder, not a file")
     return None
 
 
@@ -133,6 +135,59 @@ def _load_vocabulary(rules_dir: Path, problems: list[str]) -> dict[str, dict[str
         problems.append("vocabulary.json: expected groups of {name: description} objects")
         return {}
     return groups
+
+
+# A deadline counted in one of these units rests on a definition no source gives; the rule that
+# records that definition must be in depends_on, so the deadline is never shown as certain.
+UNIT_DEFINITIONS = {
+    "academic_weeks": "usg-academic-week-definition",
+    "business_days": "usc-business-days-definition",
+}
+NUMBER_WORDS = {
+    0: "zero", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight",
+    9: "nine", 10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
+    16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
+}
+LIMIT_PREFIXES = ("max_", "min_", "threshold_")
+
+
+def _number_in_text(number: int | float, text: str) -> bool:
+    """True if the number is written in the text, as digits (with or without thousands commas) or
+    as an English word, not as part of a longer number."""
+    import re
+
+    if isinstance(number, float) and not number.is_integer():
+        forms = [repr(number)]
+    else:
+        value = int(number)
+        forms = [str(value), f"{value:,}"]
+        if value in NUMBER_WORDS:
+            forms.append(NUMBER_WORDS[value])
+    for form in forms:
+        pattern = rf"(?<![\w.,]){re.escape(form)}(?![\w]|[.,]\d)" if form[0].isdigit() else rf"\b{re.escape(form)}\b"
+        if re.search(pattern, text, flags=re.IGNORECASE):
+            return True
+    return False
+
+
+def _check_numbers(rule: Rule, where: str, problems: list[str]) -> None:
+    """Limits in params must be positive numbers, and for a rule marked 'read' every limit and every
+    deadline offset must be a number the quoted source text states."""
+    for key, value in rule.params.items():
+        if not key.startswith(LIMIT_PREFIXES):
+            continue
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not value > 0:
+            problems.append(f"{where}: params.{key} must be a positive number, got {value!r}")
+        elif rule.verified == "read" and not _number_in_text(value, rule.source_text):
+            problems.append(f"{where}: params.{key} = {value} is not a number the quoted source text states")
+    if rule.kind == "deadline" and rule.offset is not None and rule.verified == "read":
+        if not _number_in_text(rule.offset, rule.source_text):
+            problems.append(f"{where}: offset {rule.offset} is not a number the quoted source text states")
+    definition = UNIT_DEFINITIONS.get(rule.unit or "")
+    if definition and definition not in rule.depends_on:
+        problems.append(
+            f"{where}: a deadline in {rule.unit} must depend on '{definition}' (the unit is not defined by any source)"
+        )
 
 
 def _check_params(rule: Rule, where: str, problems: list[str]) -> None:
@@ -265,11 +320,15 @@ def load_rules(rules_dir: Path) -> RuleSet:
             if rule.trigger_mode == "all" and len(rule.triggers) < 2:
                 problems.append(f"{where}: trigger_mode 'all' needs at least two triggers")
             _check_params(rule, where, problems)
+            _check_numbers(rule, where, problems)
             _check_source(rule, where, sources, sources_dir, problems)
             rules[rule.id] = rule
             files[rule.id] = file_name
 
     _check_references(rules, files, problems)
+    for unit, definition in UNIT_DEFINITIONS.items():
+        if any(rule.unit == unit for rule in rules.values()) and definition not in rules:
+            problems.append(f"rule '{definition}' (the definition of {unit}) is missing")
     if problems:
         raise RuleLoadError(problems)
     return RuleSet(rules=rules, sources=sources, files=files, vocabulary=vocabulary)
