@@ -78,8 +78,10 @@ def send(body: SendRequest, ruleset: RuleSet = Depends(require_ruleset), calenda
          session: Session = Depends(get_session)) -> dict[str, Any]:
     """The club sends one application. The report is worked out again here from the budget, never taken from the page,
     and uploaded documents are not kept."""
+    # Checked with the club's documents (their findings, such as a quote total that does not match, must reach the
+    # reviewer), then stored without them (phase 5 iteration 2).
+    report = _check(body.check.model_copy(update={"as_of": None}), ruleset, calendar)
     request = body.check.model_copy(update={"documents": [], "as_of": None})
-    report = _check(request, ruleset, calendar)
     token = secrets.token_urlsafe(24)
     reference = "G-" + secrets.token_hex(5).upper()
     stored_report = report.model_dump(mode="json")
