@@ -29,7 +29,7 @@ These must work from Phase 0 onward. If you change one, change it here.
 # backend (from backend/), inside a virtual environment:
 #   python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}
+python -m app       # http://127.0.0.1:${BACKEND_PORT:-8000}; reads ports from the shell or .env
 pytest
 pytest tests/adversarial
 
@@ -47,16 +47,22 @@ python scripts/fetch_sources.py    # re-snapshot the official documents (mainten
 
 ### Ports and addresses
 
-Two copies of the app can run at once (for example two worktrees) by setting these, in the shell or in `.env`:
+Two copies of the app can run at once (for example two worktrees) by setting these, in the shell or in `.env` (both `python -m app` and the Vite config read `.env`; a shell value wins):
 
 | Variable | Default | Used by |
 |---|---|---|
-| `BACKEND_PORT` | `8000` | the `uvicorn` command above; the dev proxy's default target |
-| `FRONTEND_PORT` | `5173` | `npm run dev` and `npm run preview` (fails if the port is taken) |
+| `BACKEND_PORT` | `8000` | `python -m app`; the dev proxy's default target |
+| `BACKEND_HOST` | `127.0.0.1` | `python -m app` (use `0.0.0.0` when deployed) |
+| `FRONTEND_PORT` | `5173` | `npm run dev` and `npm run preview` (fails if the port is taken); the backend always allows this origin for CORS |
 | `API_PROXY_TARGET` | `http://localhost:$BACKEND_PORT` | where the Vite dev server forwards `/api` |
 | `VITE_API_BASE_URL` | `/api` | base URL the browser uses for API calls |
+| `FRONTEND_ORIGIN` | (none) | extra origins allowed to call the backend directly (comma-separated), e.g. a deployed frontend |
 
-The frontend calls `/api/...`; the dev server strips `/api` and forwards to the backend, so no CORS setup is needed locally. Backend routes have no `/api` prefix.
+The frontend calls `/api/...`; the dev server strips `/api` and forwards to the backend, so no CORS setup is needed locally. Backend routes have no `/api` prefix. If you set `VITE_API_BASE_URL` to the backend's own address instead, the browser calls it directly; the dev server's origin (`FRONTEND_PORT`) is allowed automatically, any other origin must be listed in `FRONTEND_ORIGIN`.
+
+`uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}` also works, but the shell expands `${BACKEND_PORT}` itself and never reads `.env`.
+
+A relative SQLite path in `DATABASE_URL` (the default `sqlite:///./greenlight.db`) is relative to `backend/`, so the app and every script use the same file wherever they are started.
 
 ### Adding a feature without touching shared files
 

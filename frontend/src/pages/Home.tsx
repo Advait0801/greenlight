@@ -129,7 +129,13 @@ export function Home() {
                   <h3 className="font-medium">{rule.title}</h3>
                   <StatusBadge state={rule.display_severity} />
                 </div>
-                <p className="mt-1 text-sm text-stone-700">{rule.verification_note}</p>
+                <p className="mt-1 text-sm text-stone-700">{rule.message}</p>
+                {rule.verification_note ? (
+                  <p className="mt-1 text-sm text-stone-600">
+                    <span className="font-medium">Why it needs a check: </span>
+                    {rule.verification_note}
+                  </p>
+                ) : null}
                 <SourceLink citation={rule.citation} />
               </li>
             ))}

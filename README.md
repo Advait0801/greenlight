@@ -47,7 +47,7 @@ cd backend && python3.12 -m venv .venv && source .venv/bin/activate && pip insta
 ```
 
 ```bash
-uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}
+python -m app
 ```
 
 Frontend, in a second terminal:
@@ -58,12 +58,28 @@ cd frontend && npm install && npm run dev
 
 Open http://localhost:5173. The start page shows whether the rule table and calendar loaded.
 
-To run a second copy at the same time, set `BACKEND_PORT` and `FRONTEND_PORT` (for example `8001` and `5174`) in both terminals; the frontend's proxy follows `BACKEND_PORT`. See [CLAUDE.md](CLAUDE.md#ports-and-addresses).
+To run a second copy at the same time, set `BACKEND_PORT` and `FRONTEND_PORT` (for example `8001` and `5174`) in `.env` or in both terminals; the backend and the frontend's proxy both follow them. See [CLAUDE.md](CLAUDE.md#ports-and-addresses).
 
-Run the tests (from `backend/`, virtual environment active):
+Load the demo club (from the repository root, virtual environment active):
+
+```bash
+python scripts/seed_demo.py
+```
+
+Run the tests (from `backend/`, virtual environment active), including the adversarial tests the review agents add:
 
 ```bash
 pytest
+```
+
+```bash
+pytest tests/adversarial
+```
+
+Build the frontend the way CI does (from `frontend/`):
+
+```bash
+npm run build
 ```
 
 Check the rule table against its sources, and the test sets against their schemas (from the repository root, same virtual environment):

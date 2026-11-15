@@ -14,7 +14,7 @@
       "source_text": "Review the Funding Application Deadlines to see the event dates that are eligible for funding and the submission deadline for the application.",
       "effective_date": "2026-10-21",
       "verified": "unverified",
-      "verification_note": "The guidelines do not define an academic week (PROJECT_CONTEXT section 8, open question). The Funding Application Deadlines table they link needs a USC sign-in; a hand transcription made in a signed-in browser on 2026-11-14 is in rules/sources/usg-funding-deadlines.txt. Code cannot check that transcription against the sheet, so every academic-week deadline is shown yellow until a person confirms it.",
+      "verification_note": "USG's guidelines do not say how academic weeks are counted. Its deadline table needs a USC sign-in, and Greenlight's copy of it has not been confirmed. Check the date in USG's Funding Application Deadlines table or with usgfunds@usc.edu.",
       "severity": "yellow",
       "message": "USG deadlines are counted in academic weeks, but the guidelines do not define an academic week. They point to USG's Funding Application Deadlines table.",
       "fix_template": "Check the date in USG's Funding Application Deadlines table or ask USG (usgfunds@usc.edu).",
@@ -24,7 +24,7 @@
         "deadline_table_snapshot": "usg-funding-deadlines.txt"
       },
       "conflicts_with": null,
-      "notes": "The transcribed table is keyed by event week and gives a 6-week and a 9-week deadline (always a Wednesday). It does not follow a simple count of weeks, so deadlines should be looked up in it, not computed. Weeks with no deadline (winter recess, study days, finals, spring recess) have no USG funding."
+      "notes": "Open question in PROJECT_CONTEXT section 8. A hand transcription of the table, made in a signed-in browser on 2026-11-14, is in rules/sources/usg-funding-deadlines.txt; code cannot check it against the sheet. The transcribed table is keyed by event week and gives a 6-week and a 9-week deadline (always a Wednesday). It does not follow a simple count of weeks, so deadlines should be looked up in it, not computed. Weeks with no deadline (winter recess, study days, finals, spring recess) have no USG funding."
     },
     {
       "id": "usg-deadline-vendor",
@@ -263,7 +263,8 @@
       "direction": "after",
       "conflicts_with": null,
       "depends_on": [
-        "usc-academic-calendar-2026-27"
+        "usc-academic-calendar-2026-27",
+        "usc-business-days-definition"
       ]
     },
     {
@@ -312,7 +313,8 @@
       "direction": "after",
       "conflicts_with": null,
       "depends_on": [
-        "usc-academic-calendar-2026-27"
+        "usc-academic-calendar-2026-27",
+        "usc-business-days-definition"
       ]
     },
     {
@@ -588,7 +590,8 @@
         "usg-incomplete-48-hours"
       ],
       "depends_on": [
-        "usc-academic-calendar-2026-27"
+        "usc-academic-calendar-2026-27",
+        "usc-business-days-definition"
       ]
     },
     {
@@ -757,7 +760,7 @@
       "source_text": "Each RSO can have up to 4 events funded per semester as long as it remains under $8,000 from the USG Funding Department per year.",
       "effective_date": "2026-10-30",
       "verified": "unverified",
-      "verification_note": "Stated in the USG web page FAQ but not in the Funding Department Guidelines (PROJECT_CONTEXT section 8, open question: 'Is the cap four funded events per semester?'). Confirm with a USG funding officer.",
+      "verification_note": "The 4-event limit is on USG's web page but not in its Funding Department Guidelines. Confirm it with usgfunds@usc.edu.",
       "severity": "red",
       "message": "The USG web page says a club can have up to 4 events funded per semester. This is not in the Funding Department Guidelines, so Greenlight shows it as needing confirmation.",
       "fix_template": "Plan at most 4 USG-funded events this semester, or confirm the limit with USG.",
@@ -769,7 +772,8 @@
       "params": {
         "max_funded_events_per_semester": 4
       },
-      "conflicts_with": null
+      "conflicts_with": null,
+      "notes": "Open question in PROJECT_CONTEXT section 8 ('Is the cap four funded events per semester?'). Kept yellow by the user's choice (2026-11-14)."
     },
     {
       "id": "usg-fund-professional-academic",
@@ -1174,6 +1178,9 @@
       "conflicts_with": [
         "usg-faq-deadline-new-vendors-travel"
       ],
+      "depends_on": [
+        "usg-vendor-list"
+      ],
       "notes": "PROJECT_CONTEXT section 7: which deadline applies to vendors not on the list is not stated in the guidelines, so a vendor not on the list is red. Sources disagree: USG's FAQ document allows new vendors with 8 academic weeks' notice; Greenlight applies the guidelines (the stricter) and shows both."
     },
     {
@@ -1188,7 +1195,7 @@
       "source_text": "Note: These vendors need to be checked if a PO is accepted & if we can create a PO on our system as their registration has not been completed.",
       "effective_date": "2026-11-14",
       "verified": "unverified",
-      "verification_note": "The approved vendor and caterer lists are an open question (PROJECT_CONTEXT section 8). The guidelines say the list 'is not exhaustive' and statuses 'may change at any time'; approved caterers are confirmed by phone with Purchasing Services.",
+      "verification_note": "USG says its vendor list is not complete and that a vendor's status can change at any time. Confirm the vendor with usgfunds@usc.edu before applying.",
       "severity": "yellow",
       "message": "Greenlight has a copy of USG's vendor list from November 14, 2026. The list changes and is not complete, so a match or a miss needs a human check with USG or Purchasing Services.",
       "fix_template": "Confirm the vendor's status with USG (usgfunds@usc.edu) or Purchasing Services (213-740-2281).",
@@ -1200,7 +1207,7 @@
         ]
       },
       "conflicts_with": null,
-      "notes": "Two tabs: Food Vendors and Other Vendors. Rows marked INACTIVE or NOT FOUND, or with a registration state (NONE, In Progress, Invited), need a check with USG: yellow. Being on the list does not make an expense eligible (the Other Vendors tab includes talent agencies, buses and balloon vendors, which the guidelines list as ineligible), so the vendor check and the eligibility check are separate."
+      "notes": "Open question in PROJECT_CONTEXT section 8 (approved vendor and caterer lists). Two tabs: Food Vendors and Other Vendors. Rows marked INACTIVE or NOT FOUND, or with a registration state (NONE, In Progress, Invited), need a check with USG: yellow. Being on the list does not make an expense eligible (the Other Vendors tab includes talent agencies, buses and balloon vendors, which the guidelines list as ineligible), so the vendor check and the eligibility check are separate."
     },
     {
       "id": "usg-ineligible-reimbursements",

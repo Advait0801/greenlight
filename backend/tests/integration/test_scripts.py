@@ -81,3 +81,28 @@ def test_fetch_sources_rejects_unknown_ids_without_network() -> None:
     result = run(str(SCRIPTS / "fetch_sources.py"), "no-such-source")
     assert result.returncode == 2
     assert "Unknown source id" in result.stderr
+
+
+def test_validate_rules_fails_when_business_day_rule_and_calendar_disagree(rules_copy: Path) -> None:
+    path = rules_copy / "calendar.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["business_days"]["verified"] = "read"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    result = run(str(SCRIPTS / "validate_rules.py"), "--rules-dir", str(rules_copy))
+    assert result.returncode == 1
+    assert "usc-business-days-definition" in result.stderr
+
+
+def test_seed_demo_and_app_share_one_database_file(tmp_path: Path) -> None:
+    """Regression (phase 0 iteration 1, M2): a relative DATABASE_URL means backend/<file> for everyone."""
+    from app.config import BACKEND_DIR, Settings
+
+    name = f"seed-check-{tmp_path.name}.db"
+    target = BACKEND_DIR / name
+    try:
+        result = run(str(SCRIPTS / "seed_demo.py"), env={"DATABASE_URL": f"sqlite:///./{name}"})
+        assert result.returncode == 0, result.stderr
+        assert target.is_file()
+        assert Settings(_env_file=None, database_url=f"sqlite:///./{name}").database_url == f"sqlite:///{target}"  # type: ignore[call-arg]
+    finally:
+        target.unlink(missing_ok=True)

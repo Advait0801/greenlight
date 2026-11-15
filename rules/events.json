@@ -14,13 +14,33 @@
       "source_text": "Spring Semester 2027 73 instructional days Open Registration Thu-Fri January 7-8 Classes Begin Mon January 11 Martin Luther King Jr. Day Holiday Mon January 18 President’s Day Holiday Mon February 15 Spring Recess Sun-Sun March 14-21 Classes End Fri April 30 Study Days Sat-Tue May 1-4 Exams Wed-Wed May 5-12 Commencement Wed-Sat May 12-15",
       "effective_date": "2026-11-05",
       "verified": "unverified",
-      "verification_note": "Read from the Registrar's public calendar page on 2026-11-14, but PLAN.md Phase 0 requires a person to confirm the Spring 2027 calendar before it is treated as certain (PROJECT_CONTEXT section 8).",
+      "verification_note": "The calendar dates were copied from USC's public academic calendar and have not yet been confirmed by a person.",
       "severity": "info",
-      "message": "Greenlight uses USC's 2026-27 academic calendar (rules/calendar.json) for holidays, breaks, study days and finals. It has not yet been confirmed by a person, so dates that depend on it are shown yellow.",
+      "message": "Greenlight uses USC's 2026-27 academic calendar for holidays, breaks, study days and finals. The dates have not yet been confirmed by a person, so dates that depend on them are shown as needing a check.",
       "fix_template": null,
       "applies_to": "Every date computed from the academic calendar",
       "conflicts_with": null,
-      "notes": "rules/calendar.json holds the dates. This rule exists so that every rule which depends on the calendar inherits its verification status."
+      "notes": "rules/calendar.json holds the dates; its verification must match this rule's (scripts/validate_rules.py checks). PLAN.md Phase 0 requires a person to confirm the Spring 2027 calendar before it is marked read."
+    },
+    {
+      "id": "usc-business-days-definition",
+      "domain": "events",
+      "kind": "info",
+      "title": "What counts as a business day",
+      "owner_office": "Office of Academic Records and Registrar",
+      "source": "USC Academic Calendar (Office of Academic Records and Registrar)",
+      "source_section": "Academic Calendar 2026-2027",
+      "source_url": "https://academics.usc.edu/calendar/",
+      "source_text": "The Academic Calendar identifies those instructional days and those days regarded as holidays for students, graduate students and graduate student workers.",
+      "effective_date": "2026-11-05",
+      "verified": "unverified",
+      "verification_note": "No USC source defines business days for these deadlines. Greenlight assumes Monday to Friday, minus university holidays, with recess days counted. Confirm with the office that owns the deadline.",
+      "severity": "yellow",
+      "message": "Some deadlines are counted in business days, but no USC source defines them. Greenlight counts Monday to Friday and skips university holidays; it counts recess days as business days. Check any business-day date with the office.",
+      "fix_template": "Confirm the date with the office that set the deadline.",
+      "applies_to": "Every deadline counted in business days",
+      "conflicts_with": null,
+      "notes": "rules/calendar.json business_days holds the same assumption and must carry the same verification (scripts/validate_rules.py checks). Holidays come from the academic calendar; the staff holiday calendar may differ."
     },
     {
       "id": "tes-space-request",
@@ -386,7 +406,7 @@
     {
       "id": "tes-decorations-prohibited",
       "domain": "events",
-      "kind": "requirement",
+      "kind": "banned",
       "title": "Decorations that are never allowed",
       "owner_office": "Trojan Event Services (TES)",
       "source": "Trojan Event Services (TES): Frequently Asked Questions",
@@ -484,7 +504,7 @@
     {
       "id": "classroom-requests-week-4",
       "domain": "events",
-      "kind": "requirement",
+      "kind": "blocked_period",
       "title": "Classroom requests open in week 4",
       "owner_office": "Department of Classroom Scheduling",
       "source": "Campus Activities: RSO Resources",
@@ -1001,9 +1021,34 @@
       "effective_date": "2026-06-24",
       "verified": "read",
       "severity": "red",
-      "message": "Food may be served only by an on-campus provider, an approved USC food vendor, or an approved self-catered event. Every event with food pays a cleaning deposit. Approved caterers are confirmed by phone with Purchasing Services (213-740-2281).",
+      "message": "Food may be served only by an on-campus provider, an approved USC food vendor, or an approved self-catered event. Every event with food pays a cleaning deposit.",
       "fix_template": "Confirm {vendor} is an approved USC food vendor with Purchasing Services.",
       "applies_to": "An event with food",
+      "triggers": [
+        "food"
+      ],
+      "conflicts_with": null,
+      "depends_on": [
+        "usc-approved-caterers"
+      ]
+    },
+    {
+      "id": "usc-approved-caterers",
+      "domain": "events",
+      "kind": "info",
+      "title": "Approved USC food vendors are confirmed by phone",
+      "owner_office": "Purchasing Services",
+      "source": "Trojan Event Services (TES): Frequently Asked Questions",
+      "source_section": "Frequently Asked Questions: Who are the University approved caterers?",
+      "source_url": "https://trojanevents.usc.edu/frequently-asked-questions/",
+      "source_text": "To find out if your preferred caterer is approved please contact Purchasing Services at 213-740-2281.",
+      "effective_date": "2026-09-17",
+      "verified": "unverified",
+      "verification_note": "USC does not publish its approved caterer list; Purchasing Services confirms a caterer by phone. Greenlight cannot check this itself.",
+      "severity": "yellow",
+      "message": "There is no public list of approved USC food vendors. Purchasing Services confirms a caterer by phone (213-740-2281).",
+      "fix_template": "Call Purchasing Services (213-740-2281) to confirm {vendor} is approved.",
+      "applies_to": "Checking whether a caterer is an approved USC food vendor",
       "triggers": [
         "food"
       ],

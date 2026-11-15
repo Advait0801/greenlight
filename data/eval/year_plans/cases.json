@@ -157,7 +157,7 @@
           {
             "event": "welcome-mixer",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -211,7 +211,7 @@
           {
             "event": "welcome-mixer",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -235,52 +235,52 @@
           {
             "event": "workshop",
             "rule_id": "food-approved-provider",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-deadline-vendor",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-page-deadline-event-date",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-no-funding-breaks",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-post-event-evaluation",
+            "status": "check_with_office",
+            "due": "2027-03-01"
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-final-invoices",
+            "status": "check_with_office",
+            "due": "2027-03-01"
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-incomplete-two-business-days",
+            "status": "check_with_office",
+            "due": null
+          },
+          {
+            "event": "workshop",
+            "rule_id": "usg-incomplete-48-hours",
             "status": "to_do",
             "due": null
           },
           {
-            "event": "workshop",
-            "rule_id": "usg-deadline-vendor",
-            "status": "check_with_office",
-            "due": null
-          },
-          {
-            "event": "workshop",
-            "rule_id": "usg-page-deadline-event-date",
-            "status": "check_with_office",
-            "due": null
-          },
-          {
-            "event": "workshop",
-            "rule_id": "usg-no-funding-breaks",
-            "status": "check_with_office",
-            "due": null
-          },
-          {
-            "event": "workshop",
-            "rule_id": "usg-post-event-evaluation",
-            "status": "check_with_office",
-            "due": "2027-03-01"
-          },
-          {
-            "event": "workshop",
-            "rule_id": "usg-final-invoices",
-            "status": "check_with_office",
-            "due": "2027-03-01"
-          },
-          {
-            "event": "workshop",
-            "rule_id": "usg-incomplete-two-business-days",
-            "status": "check_with_office",
-            "due": null
-          },
-          {
-            "event": "workshop",
-            "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
-            "due": null
-          },
-          {
             "event": "retreat",
             "rule_id": "usg-deadline-vendor",
             "status": "check_with_office",
@@ -319,7 +319,7 @@
           {
             "event": "retreat",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -403,7 +403,7 @@
           {
             "event": "culture-night",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -481,7 +481,7 @@
           {
             "event": "culture-night",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -577,7 +577,7 @@
           {
             "event": "spring-banquet",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -631,7 +631,7 @@
           {
             "event": "spring-banquet",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -868,7 +868,7 @@
           {
             "event": "speaker-series-1",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -910,7 +910,7 @@
           {
             "event": "speaker-series-1",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -934,7 +934,7 @@
           {
             "event": "resume-workshop",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -976,7 +976,7 @@
           {
             "event": "resume-workshop",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -1054,7 +1054,7 @@
           {
             "event": "case-competition",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1108,7 +1108,7 @@
           {
             "event": "case-competition",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -1204,7 +1204,7 @@
           {
             "event": "networking-night",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1282,7 +1282,7 @@
           {
             "event": "networking-night",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           },
           {
@@ -1342,7 +1342,7 @@
           {
             "event": "speaker-series-2",
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null
           },
           {
@@ -1384,7 +1384,7 @@
           {
             "event": "speaker-series-2",
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null
           }
         ],

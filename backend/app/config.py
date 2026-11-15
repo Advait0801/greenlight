@@ -6,7 +6,7 @@ from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -34,7 +34,14 @@ class Settings(BaseSettings):
     )
 
     app_env: str = "dev"
+    # A relative SQLite path is resolved against backend/, so the app, the scripts and the tests
+    # agree on one file whatever directory they are started from.
     database_url: str = "sqlite:///./greenlight.db"
+
+    # Ports (also read by the frontend's Vite config). `python -m app` uses backend_port.
+    backend_host: str = "127.0.0.1"
+    backend_port: int = Field(default=8000, ge=1, le=65535)
+    frontend_port: int = Field(default=5173, ge=1, le=65535)
 
     # Claude. Model names come from the environment so they can change without a code change.
     ai_mode: AIMode = AIMode.RECORDED
@@ -44,15 +51,28 @@ class Settings(BaseSettings):
     ai_timeout_seconds: float = 60.0
     ai_recordings_dir: Path = REPO_ROOT / "data" / "ai_recordings"
 
-    # Comma-separated list of browser origins allowed to call the API directly.
-    # The Vite dev server proxies /api to the backend, so local development does not need this.
-    frontend_origin: str = "http://localhost:5173"
+    # Extra browser origins allowed to call the API directly (comma-separated). The dev server on
+    # FRONTEND_PORT is always allowed; with the /api proxy, none is needed.
+    frontend_origin: str = ""
 
     rules_dir: Path = REPO_ROOT / "rules"
 
+    @field_validator("database_url")
+    @classmethod
+    def _anchor_sqlite_path(cls, value: str) -> str:
+        prefix = "sqlite:///"
+        if not value.startswith(prefix) or value.startswith(prefix + "/"):
+            return value  # not SQLite, or already absolute (sqlite:////abs/path)
+        path = value[len(prefix) :]
+        if not path or path.startswith(":memory:") or path.startswith("file:"):
+            return value
+        return prefix + str((BACKEND_DIR / path).resolve())
+
     @property
     def allowed_origins(self) -> list[str]:
-        return [origin.strip() for origin in self.frontend_origin.split(",") if origin.strip()]
+        local = [f"http://localhost:{self.frontend_port}", f"http://127.0.0.1:{self.frontend_port}"]
+        extra = [origin.strip() for origin in self.frontend_origin.split(",") if origin.strip()]
+        return list(dict.fromkeys(local + extra))
 
 
 @lru_cache

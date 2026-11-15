@@ -69,6 +69,8 @@ def test_open_questions_are_unverified_and_yellow(ruleset) -> None:  # type: ign
         "usc-academic-calendar-2026-27",
         "usg-vendor-list",
         "usg-events-per-semester-cap",
+        "usc-business-days-definition",
+        "usc-approved-caterers",
     ):
         assert ruleset.get(rule_id).verified == "unverified"
         assert ruleset.display_severity(rule_id) == "yellow"
@@ -137,7 +139,9 @@ def test_normalize_collapses_whitespace_and_line_break_hyphens() -> None:
     assert normalize("fund‐\nraise") == "fund‐raise"
     assert normalize("a  \n\t b c") == "a b c"
     assert normalize("Sat - \nTue") == "Sat - Tue"  # a spaced dash is not a broken word
-    assert normalize("ﬁle") == "file"  # ligature from PDF extraction
+    assert normalize("\ufb01le") != "file"  # no compatibility folding: a ligature is not "fi"
+    assert normalize("\uff13\uff15") != "35"  # nor are full-width digits
+    assert normalize("cafe\u0301") == normalize("caf\u00e9")  # same character, composed or not
 
 
 # ---- malformed rules are rejected with clear errors --------------------------------------------
@@ -297,3 +301,58 @@ def test_nan_in_params_is_rejected(rules_copy: Path) -> None:
 def test_empty_rule_file_is_rejected(rules_copy: Path) -> None:
     _edit(rules_copy, "outside_money.json", lambda d: d.update(rules=[]))
     _expect_problem(rules_copy, "outside_money.json", "has no rules")
+
+
+def test_raw_files_match_the_manifest_and_re_derive_the_snapshots() -> None:
+    """Every committed raw download has the recorded SHA-256 and re-extracts to the committed text."""
+    import hashlib
+    import importlib.util
+    import sys
+
+    spec = importlib.util.spec_from_file_location("fetch_sources", RULES_DIR.parent / "scripts" / "fetch_sources.py")
+    assert spec and spec.loader
+    sys.path.insert(0, str(RULES_DIR.parent / "scripts"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    entries = json.loads((RULES_DIR / "sources" / "manifest.json").read_text())["sources"]
+    for entry in entries:
+        if entry.get("manual"):
+            continue
+        raw = (RULES_DIR / "sources" / entry["raw"]).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == entry["sha256"], entry["id"]
+        committed = (RULES_DIR / "sources" / entry["snapshot"]).read_text(encoding="utf-8").partition(HEADER_END)[2]
+        derived = module.to_text(raw, entry["format"]).replace("\r\n", "\n").replace("\r", "\n")
+        assert derived.strip() == committed.strip(), entry["id"]
+
+
+def test_vendor_and_caterer_rules_rest_on_their_unverified_lists(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 1, M3): a rule that uses an unverified list must not show as certain."""
+    assert "usg-vendor-list" in ruleset.get("usg-approved-vendor").depends_on
+    assert "usc-approved-caterers" in ruleset.get("food-approved-provider").depends_on
+    assert ruleset.display_severity("usg-approved-vendor") == "yellow"
+    assert ruleset.display_severity("food-approved-provider") == "yellow"
+
+
+def test_business_day_deadlines_rest_on_the_business_day_assumption(ruleset) -> None:  # type: ignore[no-untyped-def]
+    business_day_rules = [rule for rule in ruleset if rule.unit == "business_days"]
+    assert business_day_rules
+    for rule in business_day_rules:
+        assert "usc-business-days-definition" in rule.depends_on, rule.id
+        assert ruleset.display_severity(rule.id) == "yellow", rule.id
+
+
+def test_every_figure_in_a_message_is_in_the_quoted_source(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 1, L4): phone numbers in a message must come from the rule's own source text."""
+    import re
+
+    for rule in ruleset:
+        for phone in re.findall(r"\d{3}-\d{3}-\d{4}", rule.message):
+            assert phone in rule.source_text, (rule.id, phone)
+
+
+def test_verification_notes_are_plain_language(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 1, L3): notes shown to officers carry no file paths or planning references."""
+    for rule in ruleset:
+        note = rule.verification_note or ""
+        for developer_text in ("PROJECT_CONTEXT", "PLAN.md", "rules/", ".json", ".txt"):
+            assert developer_text not in note, (rule.id, developer_text)

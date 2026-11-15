@@ -5,12 +5,13 @@ FastAPI service. Python 3.12.
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}
+python -m app          # reads BACKEND_PORT / BACKEND_HOST from the shell or .env
 pytest
 ```
 
 ```
 app/
+  __main__.py        `python -m app`: runs uvicorn on BACKEND_HOST:BACKEND_PORT with reload
   main.py            app factory; includes every router in api/ automatically
   config.py          settings from environment variables and the repository's .env
   db.py              engine, sessions, init_db() (no migrations: delete greenlight.db after a schema change)

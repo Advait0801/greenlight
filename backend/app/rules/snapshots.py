@@ -4,13 +4,14 @@ The snapshots live in rules/sources/. Each `<id>.txt` starts with a short header
 with HEADER_END; everything after it is the document text. rules/sources/manifest.json maps
 each source URL to its snapshot file.
 
-"Matches its snapshot exactly" means: after Unicode NFKC normalisation and collapsing every
-run of whitespace to a single space, the rule's `source_text` is a contiguous substring of
-the snapshot text. Whitespace is not meaningful in text extracted from PDFs and web pages
-(line breaks fall wherever the layout put them); every other character must be identical.
-One layout artefact is also undone: a word that the PDF broke across two lines at a hyphen
-("full-" at the end of a line, "time" on the next) is joined back ("full-time"). The hyphen
-itself is kept.
+"Matches its snapshot exactly" means: after collapsing every run of whitespace to a single
+space, the rule's `source_text` is a contiguous substring of the snapshot text. Whitespace is
+not meaningful in text extracted from PDFs and web pages (line breaks fall wherever the layout
+put them); every other character must be identical. Two layout artefacts are also undone:
+a word that the PDF broke across two lines at a hyphen ("full-" at the end of a line, "time" on
+the next) is joined back ("full-time", hyphen kept), and text is put in Unicode NFC form (the
+same characters, composed the same way). No compatibility folding is done: a ligature, a
+full-width digit or a curly quote must match exactly.
 """
 
 from __future__ import annotations
@@ -27,16 +28,14 @@ from app.jsonutil import StrictJSONError, loads_strict
 
 HEADER_END = "==== END OF SNAPSHOT HEADER ===="
 
-# Characters that carry no text: soft hyphen, zero-width space/joiners, byte-order mark.
-_INVISIBLE = dict.fromkeys(map(ord, "­​‌‍⁠﻿"), None)
 # A hyphen (ASCII or U+2010) right after a non-space character, followed by a line break.
 _LINE_BREAK_HYPHEN = re.compile(r"(?<=\S)([-‐])[ \t]*\r?\n\s*")
 
 
 def normalize(text: str) -> str:
-    """Normalise text for exact matching: NFKC, invisible characters removed, words broken at a
-    line-end hyphen joined, whitespace collapsed."""
-    text = unicodedata.normalize("NFKC", text).translate(_INVISIBLE)
+    """Normalise text for exact matching: NFC, words broken at a line-end hyphen joined,
+    whitespace collapsed. A byte-order mark at the very start is dropped."""
+    text = unicodedata.normalize("NFC", text.removeprefix("\ufeff"))
     text = _LINE_BREAK_HYPHEN.sub(r"\1", text)
     return " ".join(text.split())
 

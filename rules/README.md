@@ -48,13 +48,13 @@ python scripts/validate_rules.py
 | `fetched` | the source was only seen through a summarising tool; the wording is not checked | yellow |
 | `unverified` | an open question for a person (PROJECT_CONTEXT section 8) | yellow |
 
-"Verbatim" means: after Unicode NFKC normalisation and collapsing whitespace, `source_text` is a contiguous substring of the snapshot text. A word the PDF split across two lines at a hyphen is joined back. Every other character, including curly quotes and the source's own typos, must match.
+"Verbatim" means: after collapsing whitespace (and Unicode NFC composition), `source_text` is a contiguous substring of the snapshot text. A word the PDF split across two lines at a hyphen is joined back. Every other character, including curly quotes, ligatures and the source's own typos, must match.
 
-Unverified today (each with its note): the academic-week definition behind every USG deadline (a hand transcription of USG's sign-in-only deadline table is in `sources/usg-funding-deadlines.txt`, not checkable by code), the 4-funded-events-per-semester limit, the USG vendor list, and the academic calendar. Eleven more rules depend on them and are shown yellow too.
+Unverified today (each with its note): the academic-week definition behind every USG deadline (a hand transcription of USG's sign-in-only deadline table is in `sources/usg-funding-deadlines.txt`, not checkable by code), the 4-funded-events-per-semester limit, the USG vendor list, USC's approved caterers (confirmed only by phone), the business-day assumption, and the academic calendar. Thirteen more rules depend on them and are shown yellow too.
 
 ## Sources
 
-`sources/manifest.json` lists each document: URL, fetch time, SHA-256 of the raw file and the version date. `scripts/fetch_sources.py` re-downloads them; small raw files are kept in `sources/raw/` (the 6.7 MB Student Handbook PDF and the HTML pages are not committed; their text snapshots are). The USG Funding Application Deadlines table needs a USC sign-in; its snapshot is a hand transcription marked `"manual": true` in the manifest, and `fetch_sources.py` skips it.
+`sources/manifest.json` lists each document: URL, fetch time, SHA-256 of the raw file and the version date. `scripts/fetch_sources.py` re-downloads them; every raw download is kept in `sources/raw/`, so each text snapshot can be re-derived offline. The USG Funding Application Deadlines table needs a USC sign-in; its snapshot is a hand transcription marked `"manual": true` in the manifest, and `fetch_sources.py` skips it.
 
 The app never calls USC websites at run time.
 

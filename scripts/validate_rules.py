@@ -57,6 +57,19 @@ def main(argv: list[str] | None = None) -> int:
             )
             failed = True
 
+    if ruleset is not None and calendar is not None:
+        business = ruleset.rules.get("usc-business-days-definition")
+        if business is None:
+            print("No rule 'usc-business-days-definition' carries the business-day assumption.", file=sys.stderr)
+            failed = True
+        elif business.verified != calendar.business_days.verified:
+            print(
+                f"Rule 'usc-business-days-definition' is marked '{business.verified}' but rules/calendar.json "
+                f"business_days is marked '{calendar.business_days.verified}'. They must agree.",
+                file=sys.stderr,
+            )
+            failed = True
+
     if ruleset is not None and not args.quiet:
         print(f"{len(ruleset)} rules loaded.")
         for domain, count in sorted(Counter(rule.domain for rule in ruleset).items()):

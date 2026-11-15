@@ -101,7 +101,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -240,7 +240,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -713,7 +713,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -855,7 +855,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1125,7 +1125,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1519,7 +1519,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1639,7 +1639,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1752,7 +1752,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -1968,7 +1968,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2102,7 +2102,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2152,7 +2152,7 @@
           },
           {
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2253,7 +2253,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2324,7 +2324,7 @@
           },
           {
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2430,7 +2430,7 @@
           },
           {
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2608,7 +2608,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2671,7 +2671,7 @@
           },
           {
             "rule_id": "usg-incomplete-48-hours",
-            "status": "check_with_office",
+            "status": "to_do",
             "due": null,
             "violated": false,
             "past_due": false
@@ -2836,7 +2836,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -3377,7 +3377,7 @@
           },
           {
             "rule_id": "tes-decorations-prohibited",
-            "status": "to_do",
+            "status": "blocked",
             "due": null,
             "violated": true,
             "past_due": false,
@@ -3502,7 +3502,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false
@@ -3728,7 +3728,7 @@
           },
           {
             "rule_id": "food-approved-provider",
-            "status": "to_do",
+            "status": "check_with_office",
             "due": null,
             "violated": false,
             "past_due": false

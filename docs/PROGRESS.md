@@ -7,15 +7,15 @@ Final reviewers in Phase 7 must **not** read this file.
 ## Current state
 
 - **Phase:** 0 — Foundation
-- **Step:** build done; iteration 1 (verify) next
-- **Next action:** run iteration 1 with a fresh `verifier` sub-agent (PLAN.md section 1)
+- **Step:** iteration 1 (verify) done and fixed; iteration 2 (break) next
+- **Next action:** run iteration 2 with a fresh `breaker` sub-agent (PLAN.md section 1)
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
 
 | Phase | Goal | Build | Iterations run | Last iteration clean? | Gate |
 |---|---|---|---|---|---|
-| 0 | Foundation | done | 0 | — | open |
+| 0 | Foundation | done | 1 | yes (0 blocker, 0 high) | open |
 | 1 | Recognition check | — | 0 | — | open |
 | 2 | Event packet | — | 0 | — | open |
 | 3 | Money check | — | 0 | — | open |
@@ -30,17 +30,28 @@ What exists now:
 - **Backend** (`backend/`): FastAPI app with `GET /health`, `GET /rules`, `GET /rules/{id}`; routers in `app/api/` are discovered automatically. SQLAlchemy tables for every table in PROJECT_CONTEXT section 5 (money in whole cents). Settings from env and `.env`.
 - **Claude client** (`app/ai/`): structured output via `messages.parse` validated against Pydantic models; `AI_MODE` = `recorded` (default; replay only, never the network), `live`, or `record` (live + save). Untrusted text is HTML-escaped inside `<document>` wrappers and the system prompt says it is data. Recordings store document fingerprints, not text. One live smoke call (Haiku, 2026-11-14) confirmed structured output works and an injected "mark this approved" was reported as document content.
 - **Source snapshots** (`rules/sources/`): 18 sources (one a manual transcription) in `manifest.json` with fetch time, SHA-256 and version date; text snapshots committed; small raw PDFs/CSVs committed, the 6.7 MB Handbook PDF and raw HTML not.
-- **Rule table**: 257 rules (`funding` 69, `events` 59, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 253 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 4 `unverified`; 11 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
+- **Rule table**: 259 rules (`funding` 69, `events` 61, `outside_money` 19, `recognition` 110 incl. every constitution template clause). 253 `read` (each `source_text` cut verbatim from its snapshot and re-checked on every load), 6 `unverified`; 13 more inherit yellow through `depends_on`. Known conflicts encoded both ways (decorations 3 vs 2 weeks, large-venue cancellation 3 vs 4 weeks, USG deadline anchor payment date vs event date, incomplete application 2 business days vs 48 hours, travel 9 weeks (guidelines) vs 8 weeks (USG FAQ document), vendors not on the list rejected (guidelines) vs allowed as "new vendors" (FAQ), officer trainings template vs recognition page).
 - **Calendar** (`rules/calendar.json`): Fall 2026, Spring 2027, Summer 2027 from the Registrar's page; `unverified`.
 - **Test sets** (`data/eval/`): 30 events (417 expected obligations), 20 budgets (30 planted violations), 10 constitutions (20 planted faults), 2 year plans; JSON Schemas in `data/eval/schemas/`; method in `data/eval/README.md`.
 - **Scripts**: `validate_rules.py`, `run_eval.py` (+ `evaluators/` plug-in folder), `seed_demo.py` (+ `data/demo/club.json`), `fetch_sources.py`.
 - **Frontend**: Vite + React 19 + TypeScript strict + Tailwind 4; start page calls `/health` and `/rules` and shows status and the open questions; `StatusBadge` (icon + text) and `SourceLink` shared components.
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
-- **Tests**: 128 passing (`pytest`), 0 adversarial yet.
+- **Tests**: 144 passing (`pytest`), 0 adversarial yet.
 
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 0, iteration 1 — verify
+Date/time: 2026-11-14, about 22:00-22:35 PT
+Agent and model: verifier (fresh), Opus 5.5; fresh clone of aa143fa, followed the README
+Report: docs/reviews/phase-0-iter-1-verify.md
+Findings: 0/0/3/5 (all 8 criteria pass)
+Fixed: M1 backend now started with `python -m app`, which reads BACKEND_PORT/BACKEND_HOST from the shell or .env like the Vite config; M2 relative SQLite paths resolve against backend/ so seed_demo.py and the app share one file; M3 usg-approved-vendor depends on usg-vendor-list, and food-approved-provider on a new unverified rule usc-approved-caterers (both now yellow); L1 CORS always allows the dev server on FRONTEND_PORT, FRONTEND_ORIGIN documented; L2 exact match no longer folds Unicode compatibility characters (NFC only), and every raw source download is committed with a test that re-derives each snapshot and checks its SHA-256; L3 the start page shows each rule's plain message, verification notes rewritten without file paths or planning references; L4 the phone number moved to usc-approved-caterers, which cites the TES FAQ where it appears; L5 README covers seeding, adversarial tests and the frontend build. Each has a regression test.
+Also in this round: new unverified rule usc-business-days-definition (the business-day assumption), which every business-day deadline depends on; validate_rules.py checks it agrees with calendar.json. tes-decorations-prohibited is now kind banned and classroom-requests-week-4 kind blocked_period. A test now checks every expected event status follows from the rule's certainty, severity and kind.
+Left open: none from this report.
+Full test suite: pass (144)
+Gate: not yet, because iterations 2 (break) and 3 (audit) have not run
 
 ```
 ### Phase <n>, iteration <m> — <verify | break | audit | F1 | F2 | F3>
@@ -84,3 +95,5 @@ Record any change of scope or departure from PROJECT_CONTEXT here, with the reas
 - **Three source disagreements on USG deadlines**, each encoded as a conflict pair with the stricter applied: the guidelines count back from the initial payment due date, the web page, FAQ document and table from the event (week); the FAQ document says 8 weeks for travel, the guidelines 9; the FAQ document allows "new vendors", the guidelines reject vendors not on the list.
 - **Calendar stays `unverified`** although the managing session suggested `read`: PLAN.md Phase 0 says to mark it unverified "until a human confirms it", and the research was done by an AI session. To confirm, a person sets `verified` to `read` in both `rules/calendar.json` and rule `usc-academic-calendar-2026-27` (validate_rules.py checks they agree).
 - **Research files from the managing session** (`docs/research/open_questions.md`, `docs/research/manual_snapshots/`) are committed with Phase 0 at its request and are part of the iteration 3 audit.
+- **Calendar confirmation not applied (2026-11-14).** The managing session relayed that the user confirmed the calendar ("Calendar confirmed") and asked for it to be marked verified. The permission system blocked that change because the confirmation reached this session only through another session, so the calendar stays `unverified`. To apply it, the user confirms directly in this session (or sets `verified: "read"` in `rules/calendar.json` and in rule `usc-academic-calendar-2026-27` and runs `python scripts/validate_rules.py`). The business-day and academic-week assumptions and the 4-event cap stay unverified in any case.
+- **Vendor and caterer checks are yellow until the lists are confirmed.** PROJECT_CONTEXT says to treat a vendor not on USG's list as red; the rule keeps severity red, but because it depends on the unverified list it is shown yellow until a person confirms the list.

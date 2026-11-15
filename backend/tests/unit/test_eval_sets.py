@@ -178,3 +178,23 @@ def test_duplicate_keys_in_a_test_set_are_rejected(tmp_path) -> None:  # type: i
     with pytest.raises(EvalSetError) as caught:
         load_set("events", eval_dir=tmp_path)
     assert "appears twice" in str(caught.value)
+
+
+def test_event_statuses_follow_from_the_rules(sets, ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Status is not a free choice: it follows from the rule's certainty, severity and kind.
+    The only exceptions are date-dependent checks the case explains in a note."""
+    for case in sets["events"]["cases"]:
+        for o in case["expected"]["obligations"]:
+            rule = ruleset.get(o["rule_id"])
+            if not ruleset.is_certain(rule.id) or rule.severity == "yellow":
+                want = "check_with_office"
+            elif rule.severity == "office_decides":
+                want = "office_decides"
+            elif o["violated"]:
+                want = "blocked"
+            elif rule.kind in ("deadline", "requirement"):
+                want = "to_do"
+            else:
+                want = "condition"
+            if o["status"] != want:
+                assert o["status"] == "check_with_office" and o.get("note"), (case["id"], rule.id, o["status"], want)

@@ -335,7 +335,8 @@
       "direction": "after",
       "conflicts_with": null,
       "depends_on": [
-        "usc-academic-calendar-2026-27"
+        "usc-academic-calendar-2026-27",
+        "usc-business-days-definition"
       ],
       "notes": "The Handbook names the AVP for Leadership and Community; the Campus Activities FAQ names the AVP for Student Culture and Community. Both say ten business days."
     },
