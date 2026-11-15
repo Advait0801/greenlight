@@ -22,6 +22,7 @@ export interface EventFacts {
   end_date: string | null;
   venue: VenueType | null;
   headcount: number | null;
+  tent_area_sqft?: number | null;
   attributes: string[];
   possible_attributes: string[];
   needs_officer_input: InputField[];
@@ -61,6 +62,8 @@ export interface PacketObligation {
   from_possible_attribute: boolean;
   fallbacks: Fallback[];
   superseded_by: string | null;
+  contact_by: string | null;
+  contact_by_citation: Citation | null;
 }
 
 export interface SourceConflict {

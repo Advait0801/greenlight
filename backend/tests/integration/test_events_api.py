@@ -89,3 +89,11 @@ def test_ics_leaves_out_the_date_not_applied_in_a_conflict(client) -> None:  # t
     text = client.post("/events/packet.ics", json={"event": EVENT, "as_of": "2026-11-15"}).text.replace("\r\n ", "")
     assert "tes-cancellation-large-faq@greenlight" in text
     assert "tes-cancellation-large-terms@greenlight" not in text
+
+
+def test_ics_lists_office_decides_contact_by_dates_and_the_api_takes_tent_size(client) -> None:  # type: ignore[no-untyped-def]
+    text = client.post("/events/packet.ics", json={"event": EVENT, "as_of": "2026-11-15"}).text.replace("\r\n ", "")
+    assert "special-event-insurance-contact@greenlight" in text and "SUMMARY:Contact by: " in text
+    small = client.post("/events/packet", json={"event": {**EVENT, "attributes": ["tent"], "tent_area_sqft": 300}, "as_of": "2026-11-15"}).json()
+    assert "lafd-division-5-permit" not in {o["rule_id"] for o in small["obligations"]}
+    assert client.post("/events/packet", json={"event": {**EVENT, "tent_area_sqft": -1}}).status_code == 422

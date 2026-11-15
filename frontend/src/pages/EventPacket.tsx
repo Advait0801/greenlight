@@ -60,6 +60,11 @@ function ObligationCard({ o, describe }: { o: PacketObligation; describe: (name:
         </p>
       ) : null}
       {o.due_note ? <p className="text-sm text-stone-600">{o.due_note}</p> : null}
+      {o.contact_by ? (
+        <p className="mt-2 font-medium">
+          Contact them well before <time dateTime={o.contact_by}>{formatDay(o.contact_by)}</time>, when every approval must be in place
+        </p>
+      ) : null}
       {o.note ? <p className="mt-2 text-sm">{o.note}</p> : null}
       {o.fix && (o.violated || o.past_due) ? <p className="mt-2 text-sm"><span className="font-medium">Fix: </span>{o.fix}</p> : null}
       {o.fallbacks.length ? (
@@ -72,6 +77,7 @@ function ObligationCard({ o, describe }: { o: PacketObligation; describe: (name:
       <details className="mt-2">
         <summary className="cursor-pointer text-sm text-cardinal underline underline-offset-2">Rule text and source</summary>
         <SourceLink citation={o.citation} />
+        {o.contact_by_citation ? <SourceLink citation={o.contact_by_citation} /> : null}
       </details>
     </li>
   );
@@ -201,6 +207,12 @@ export function EventPacket() {
               <span className="font-medium">Expected people {ask.has("headcount") ? <StatusBadge state="yellow" label="Please answer" /> : null}</span>
               <input type="number" min={0} max={1000000} value={facts.headcount ?? ""} onChange={(e) => setFacts({ ...facts, headcount: e.target.value === "" ? null : Number(e.target.value) })} className="mt-1 w-full rounded-md border border-stone-400 p-2" />
             </label>
+            {facts.attributes.includes("tent") || facts.possible_attributes.includes("tent") ? (
+              <label className="block">
+                <span className="font-medium">Largest tent or canopy, in square feet (if known)</span>
+                <input type="number" min={0} max={1000000} value={facts.tent_area_sqft ?? ""} onChange={(e) => setFacts({ ...facts, tent_area_sqft: e.target.value === "" ? null : Number(e.target.value) })} className="mt-1 w-full rounded-md border border-stone-400 p-2" />
+              </label>
+            ) : null}
             <fieldset className="sm:col-span-2">
               <legend className="font-medium">What the event has {ask.has("attributes") ? <StatusBadge state="yellow" label="Please answer" /> : null}</legend>
               <ul className="mt-2 grid gap-1 sm:grid-cols-2">

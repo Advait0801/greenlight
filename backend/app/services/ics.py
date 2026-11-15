@@ -80,6 +80,12 @@ def packet_to_ics(packet: EventPacket, *, now: datetime | None = None) -> str:
         description = (f"{o.message}\n\nOwner: {o.owner_office}\nWhy this date: {o.due_note or ''}\n"
                        f"Source: {o.citation.source}\n{o.link}\n\n{packet.notice}")
         lines += _vevent(f"{key}-{o.rule_id}@greenlight", o.due, o.due + timedelta(days=1), summary, description, o.link, stamp)
+    for o in packet.obligations:
+        if o.due is not None or o.contact_by is None or o.superseded_by is not None:
+            continue
+        description = (f"{o.message}\n\n{o.note or ''}\nOwner: {o.owner_office}\nSource: {o.citation.source}\n{o.link}\n\n{packet.notice}")
+        lines += _vevent(f"{key}-{o.rule_id}-contact@greenlight", o.contact_by, o.contact_by + timedelta(days=1),
+                         f"Contact by: {o.title}", description, o.link, stamp)
     lines.append("END:VCALENDAR")
     folded = [part for line in lines for part in _fold(line)]
     return "\r\n".join(folded) + "\r\n"
