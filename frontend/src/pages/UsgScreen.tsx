@@ -134,7 +134,7 @@ export function UsgScreen() {
     await refresh(key);
   }
 
-  const uniqueRules = current ? Array.from(new Map(current.reasons.map((r) => [r.rule_id, r])).values()) : [];
+  const uniqueRules = current ? Array.from(new Map(current.reasons.map((r) => [`${r.rule_id}|${r.where}`, r])).values()) : [];
 
   return (
     <div className="space-y-8">
@@ -192,7 +192,7 @@ export function UsgScreen() {
                 <legend className="font-semibold">Reasons you may cite (Greenlight's findings)</legend>
                 <ul className="mt-2 space-y-3">
                   {uniqueRules.map((r) => (
-                    <li key={r.rule_id} className="rounded border border-stone-200 p-3">
+                    <li key={`${r.rule_id}|${r.where}`} className="rounded border border-stone-200 p-3">
                       <label className="flex items-start gap-2">
                         <input type="checkbox" className="mt-1 h-5 w-5" checked={chosen.includes(r.rule_id)}
                           onChange={(e) => setChosen(e.target.checked ? [...chosen, r.rule_id] : chosen.filter((x) => x !== r.rule_id))} />
