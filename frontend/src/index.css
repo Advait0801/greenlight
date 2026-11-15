@@ -222,6 +222,19 @@ main tbody :is(td, th) {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
+/* An opened "Why?" or "Rule text and source" sits in a light tinted card. */
+main details[open]:has(> figure),
+main details[open]:has(> div > figure) {
+  background: var(--color-cardinal-50);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem 0.75rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+main details[open]:has(> figure) > summary,
+main details[open]:has(> div > figure) > summary {
+  font-weight: 600;
+}
 main details > summary::before {
   content: "";
   flex: none;
