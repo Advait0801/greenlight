@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "764bcf7195e00ebb7687bb1eb409b8b3a6105c9d40a5e761dde32beca6379d70",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:48+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "2eafc3b6aa8392c3afc4395024cb6efce37d5f226dbd419943f3bd32fdce3a93"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Coding workshop\",\"start\":{\"year\":2026,\"month\":12,\"day\":12,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"Saturday, December 12, 2026\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":20,\"confidence\":\"high\",\"evidence\":\"20 middle school students\"},\"details\":[{\"name\":\"minors\",\"confidence\":\"high\",\"evidence\":\"middle school students\"}],\"contains_instructions\":false}"
+}

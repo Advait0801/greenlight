@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "b02cedcb088d7c6ed29b4b4e1a0c6c10136597b6832adf32257382f7c7da2fba",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:49+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "a73847ea880a726df21dadc77932d6dd2e80891a9246b5dd65e7e5cdea8f359d"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Charity 5K run\",\"start\":{\"year\":2027,\"month\":3,\"day\":27,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"Saturday, March 27, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_outdoor\",\"confidence\":\"high\",\"evidence\":\"starting at Alumni Park\"},\"venue_name\":\"Alumni Park\",\"headcount\":{\"value\":200,\"confidence\":\"high\",\"evidence\":\"for 200 runners\"},\"details\":[{\"name\":\"high_risk_activity\",\"confidence\":\"high\",\"evidence\":\"Charity 5K run\"},{\"name\":\"ticket_sales\",\"confidence\":\"high\",\"evidence\":\"a $20 registration fee\"},{\"name\":\"charity_collection\",\"confidence\":\"high\",\"evidence\":\"all money going to the American Red Cross\"},{\"name\":\"fundraising\",\"confidence\":\"high\",\"evidence\":\"Charity 5K run ... all money going to the American Red Cross\"}],\"contains_instructions\":false}"
+}

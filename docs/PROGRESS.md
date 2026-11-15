@@ -6,6 +6,7 @@ Final reviewers in Phase 7 must **not** read this file.
 
 ## Current state
 
+- **Phase 2 (this branch):** closed 2026-11-15 after three iterations; pull request from `phase-2/event-packet` into `main` for the humans to merge.
 - **Phase:** 0 — Foundation
 - **Step:** closed. Iterations 1-4 ran; every blocker and high from iteration 4 is fixed; the humans ended the review loop there (see Decisions, 2026-11-15)
 - **Next action:** paused at the user's request after the Phase 0 push. Phase 1 (recognition check) starts only when the humans say so, under the new process (at most 3 iterations, 1-2 reviewers each)
@@ -17,7 +18,7 @@ Final reviewers in Phase 7 must **not** read this file.
 |---|---|---|---|---|---|
 | 0 | Foundation | done | 4 | no (iteration 4: 3 blockers, 17 high, all fixed) | yes, 2026-11-15 (by the humans' decision) |
 | 1 | Recognition check | — | 0 | — | open |
-| 2 | Event packet | — | 0 | — | open |
+| 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | — | 0 | — | open |
 | 4 | Year plan | — | 0 | — | open |
 | 5 | Supporting features and USG screen | — | 0 | — | open |
@@ -38,9 +39,56 @@ What exists now:
 - **CI**: job-level `hashFiles()` removed (the cause of the zero-job failure); backend job runs `validate_rules.py`, `run_eval.py`, `pytest`, `pytest tests/adversarial`; frontend job runs `npm ci` and `npm run build` on Node 20.
 - **Tests**: 318 passing (`pytest`), including 105 adversarial tests from iterations 2 and 4.
 
+## Phase 2 build (2026-11-15, branch `phase-2/event-packet`)
+
+What exists now:
+- **Deadline calculator** (`backend/app/services/deadlines.py`): days, weeks, months (same day or the month's last day), business days (every weekday, earliest date); hours and academic weeks give no date (rule usg-academic-week-definition says no date until a person confirms USG's table). Earliest event date that meets a passed deadline; which of two disagreeing deadlines is stricter. `app/eval_sets.py` now uses it, so date logic lives in one place (closes the Phase 0 code-audit low).
+- **Rule engine** (`backend/app/services/rule_engine.py`, `app/schemas/events.py`): event facts -> packet. Selects rules by trigger (scope as in data/eval/README.md); status from certainty, severity and kind; date checks (first three weeks, study days and finals, alcohol weekdays, USG breaks and summer, tabling days, classroom week 4) from the calendar; conflicts with both citations and the stricter applied; hard blocks (date passed, blocked items, passed deadlines); fallbacks (earliest date, change of format, other funding); questions. Unsure details ("possible") add yellow items and never remove one. Green only for date checks passed on certain rules, through `finding_for`.
+- **Reading step** (`backend/app/services/event_intake.py`): the model reports date parts, venue, headcount and details with confidence; code builds the date and checks a stated weekday; unsure values become questions. 30 recorded readings in `data/ai_recordings/event_sentence/` (synthetic test sentences, force-added).
+- **API** (`backend/app/api/events.py`): `POST /events/parse`, `POST /events/packet`, `POST /events/packet.ics`, `GET /events/vocabulary`.
+- **Frontend**: `/events/packet` page (sentence -> check the details -> packet with hard blocks, questions, sources disagree, timeline, grouped checklist with rule text and source, .ics download).
+- **Evaluator** (`scripts/evaluators/events.py`): end to end on recorded readings 30/30 obligation lists match, 0 missed, 0 wrongly flagged; engine on the test set's attributes 30/30 with every due date, past-due flag and conflict; one deliberate status difference (ev-28: with no date, every date check is "check with the office", not "rule to keep").
+- **Shared code changed** (backward compatible): `app/eval_sets.py` (`_back`/`_forward` call the calculator), `tests/unit/test_architecture.py` (`event_intake.py` allowed to use the AI client), `frontend/src/routes.tsx` (one entry).
+- **Tests**: 386 passing.
+
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 2, after closing — five open mediums fixed at the humans' request
+Date/time: 2026-11-15, about 02:10-02:30 PT
+Fixed (each with a regression test; no fresh reviewer has seen these, so Phase 7 F1 covers them): audit M6 the LAFD fire permit follows the tent size the officer enters (over 450 sq ft or unknown: listed with a note; 450 or less with no open flame: not listed); audit M8 / verify M3 office-decides approvals with no lead time of their own show the date every approval must be in place (rule approvals-two-weeks, cited), on the page and in the .ics; audit M1 the rule not applied in a source conflict is marked "not applied" and left out of the timeline, the .ics and the hard blocks; audit M4 / verify L2 "move the event" suggestions skip breaks, holidays, study days, finals and the spring 2027 start block, and name the passed USG deadlines a new date cannot settle; audit M5 the year, month, day and headcount the model reports must be written in the sentence, or the officer is asked.
+Full test suite: pass (432, adversarial included); run_eval.py events 30/456/0/0; frontend build OK
+
+### Phase 2, iteration 3 — audit; phase closed
+Date/time: 2026-11-15, about 01:35-01:50 PT
+Agent and model: auditor (fresh), Opus 5.5, medium effort, on commit cf5b22e
+Report: docs/reviews/phase-2-iter-3-audit.md
+Findings: 0/1/8/9 (every date-producing rule matches its snapshot in number, unit and anchor; earlier fixes hold)
+Fixed: H1 a summer date was green on "no USG funding during breaks"; dates outside the fall and spring semesters are now "check with the office" (regression test in tests/unit/test_rule_engine.py).
+Left open: see "Open findings after Phase 2".
+Full test suite: pass (413, adversarial included); validate_rules.py OK; run_eval.py events 30/456/0/0; frontend build OK
+Close: Phase 2 closed after iteration 3 (PLAN.md section 1); no further review round
+
+### Phase 2, iteration 2 — break
+Date/time: 2026-11-15, about 01:10-01:30 PT
+Agent and model: breaker (fresh), Opus 5.5, medium effort, on commit 62bc37d
+Report: docs/reviews/phase-2-iter-2-break.md (23 failing tests in backend/tests/adversarial/test_phase2_iter2_{engine,intake_api}_break.py)
+Findings: 3/2/3/3
+Fixed (all, each covered by the breaker's tests): B1 the first-three-weeks rule is no longer green outside spring 2027 (calendar coverage checked; the first three weeks of other terms are "check with Trojan Event Services"); B2/B3 tabling hours and the alcohol weekday rule are checked only in part (time of day unknown), so they are never green; H1 a ban comes in from its breaking fact alone (for example "alcohol is the main focus" without "alcohol"); H2 a USG academic-week deadline that has certainly passed (6 academic weeks are at least 42 days) is past due, a hard block, with the other-funding option; M abbreviated weekdays that contradict the date are asked; M an end more than a year after the start becomes a question, not a 500; M dates outside 2000-2100 are refused (422); L impossible headcounts are asked; L control characters dropped from .ics text; L the parse error no longer shows server paths.
+Left open: the breaker's questions (should a due date on a holiday or weekend move earlier; does the first-three-weeks rule cover classrooms and off campus; should the packet mention USG's ineligible line items) are for a person.
+Full test suite: pass (412, adversarial included); run_eval.py events 30/456/0/0
+Gate: iteration 3 (audit) next
+
+### Phase 2, iteration 1 — verify
+Date/time: 2026-11-15, about 00:50-01:05 PT
+Agent and model: verifier (fresh), Opus 5.5, medium effort, on commit a5ac5e7
+Report: docs/reviews/phase-2-iter-1-verify.md
+Findings: 0/0/3/6 (all 6 exit criteria pass; 30/30 obligation lists match end to end)
+Fixed: M1 with no venue, every on-campus venue's steps are listed as "check with the office" (they were missing); M2 the evaluator counts a miss as silent unless the packet asks the officer; L1 deadlines after the event are past due once passed; L4 "USG" written out in the fallback texts. Each with a regression test.
+Left open: M3 most "office decides" items have no contact-by date (no source gives one); L2 "move the date" can suggest a blocked period (the text says to check the new date); L3 an .ics with no dated items is empty (the page disables the button); L4 DPS and GSG appear without full names in rule titles; L5 three more cautious statuses than the test set (ev-23 unsure performers, ev-28); L6 the repository's local .env sets AI_MODE=live (a developer setting, not committed).
+Full test suite: pass (389)
+Gate: iteration 2 (break) next
 
 ### Phase 0, iteration 4 — break and audit (six reviewers in parallel); phase closed
 Date/time: 2026-11-15, about 00:00-02:30 PT
@@ -104,6 +152,15 @@ Medium and low findings left open when Phase 0 closed (details in the iteration 
 - **Outside money and calendar:** ticket-sales-cover-costs is information with no fact (M); the deadline-table test checks only the after-recess rows (M); lows on club-to-club co-hosting conditions, sponsorship wording, emblem-product and silent-auction passages, payment dates in blank table rows, the Nov 11 deadline on Veterans Day, no free-drawing case in the event set.
 - **Recognition:** co-06's deleted officer is "weak" where "contradicts" may fit; template wording shows raw {blank} markers and VIII.B.1 is split across a page; blank positions and the continuation's position are not validated; VI.B.2 and VI.C.2 quotes differ only in underscores; some messages state facts outside the quoted passage; no test that each constitution text differs from co-01 only in its listed clauses; the Appendix is not encoded.
 - **Code:** 9 of 62 single-guard removals still leave the suite green (number checks inside lists, relative imports in the architecture test); status and deadline logic is written in more than one place until Phase 2 builds the calculator; the start page miscounts unconfirmed rules; a re-fetched source keeps its old version date; SourceLink does not mark a read rule resting on an unverified one.
+
+## Open findings after Phase 2
+
+Medium and low findings left open when Phase 2 closed (details in docs/reviews/phase-2-iter-{1,2,3}-*.md):
+- **Conflicts:** the parking pair and USG payment-vs-event pair give no applied rule although the rule messages say which applies (M2); the outdoor deposit ($100 vs $200) and late-travel conflicts are not event obligations, so never reach the packet (M3).
+- **Rule scope:** the reading step does not read tent size (the officer enters it); the first-three-weeks rule is applied to Trojan Event Services venues only (M7, an open question since Phase 0 M10); final payment leaves out meeting rooms (L); the officer-facing text says the source gives first-three-weeks dates for spring 2027 only, but it also gives fall dates (L).
+- **Office decides:** off campus (no approvals rule) office-decides items still have no contact-by date; passed contact-by dates are not hard blocks (L).
+- **Lows:** ev-28's answer key expects "condition" where the engine (more cautiously) says "check with the office"; the stricter-rule choice and date checks still appear in eval_sets.py's validator; no test parses the .ics with an independent iCalendar library (the verifier did, by hand); hard blocks carry no citation; the "certainly passed" check assumes the first vendor payment is never after the event; /events/parse has no rate limit and logs audit rows with no club; an .ics with no dated items is empty; DPS and GSG appear without full names in some rule titles; the repository's local .env sets AI_MODE=live (developer setting).
+- **Questions for a person (breaker):** should a due date on a holiday or weekend move earlier; does the first-three-weeks rule cover classrooms and off campus; should the packet mention USG's ineligible line items.
 
 ## Phase ownership and branches
 

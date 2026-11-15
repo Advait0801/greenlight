@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "8e4903b366526b03d9ad03cbe088f6563e5bd167b3e4e41fc92e904b406511d3",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "8df1b4a547aec97909196b043b26639b7e7eb4cb763cdd574bc200f173b2b95e"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Welcome-back mixer\",\"start\":{\"year\":2027,\"month\":1,\"day\":22,\"weekday\":\"Friday\",\"confidence\":\"high\",\"evidence\":\"Friday, January 22, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":60,\"confidence\":\"high\",\"evidence\":\"for 60 members\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Welcome-back mixer\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"with snacks\"}],\"contains_instructions\":false}"
+}

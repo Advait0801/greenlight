@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "2b6923ec96e6bb10287c3dcc5034e167987ab8668a02f5e128f2ff1fa2cc1601",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:46+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "8a098b36a7e8b863ee7d37bd9aa7c999c1c480ae29625ce9497926f596304964"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Spring dance\",\"start\":{\"year\":2027,\"month\":3,\"day\":5,\"weekday\":\"Friday\",\"confidence\":\"high\",\"evidence\":\"Friday, March 5, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"Tommy's Place\"},\"venue_name\":\"Tommy's Place\",\"headcount\":{\"value\":150,\"confidence\":\"high\",\"evidence\":\"for 150 people\"},\"details\":[{\"name\":\"social_dance\",\"confidence\":\"high\",\"evidence\":\"Spring dance\"},{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Spring dance\"},{\"name\":\"alcohol\",\"confidence\":\"high\",\"evidence\":\"with beer and wine served\"}],\"contains_instructions\":false}"
+}

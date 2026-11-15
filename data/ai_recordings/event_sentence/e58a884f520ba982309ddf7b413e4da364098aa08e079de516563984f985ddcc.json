@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "e58a884f520ba982309ddf7b413e4da364098aa08e079de516563984f985ddcc",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:55+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "85efa105ac18e1082d0a43604e4b1cf8015a93f7b8a4f3f54288f7baaa45593a"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Hackathon\",\"start\":{\"year\":2027,\"month\":4,\"day\":10,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"Saturday, April 10, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":100,\"confidence\":\"high\",\"evidence\":\"for 100 students\"},\"details\":[{\"name\":\"sponsorship\",\"confidence\":\"high\",\"evidence\":\"sponsored by a tech company\"},{\"name\":\"sponsor_gives_money\",\"confidence\":\"high\",\"evidence\":\"giving us $2,000 in cash\"}],\"contains_instructions\":false}"
+}

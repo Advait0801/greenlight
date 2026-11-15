@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "b22a9d42e2f50326e2ef853c25ab46027eb600688bbb830751f2dc14c108ebd8",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:52+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "ca2521eda24a79a288986c65ecb74b642f17ef52250195aa3d27ba6778e18c77"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Resume workshop\",\"start\":{\"year\":2027,\"month\":3,\"day\":2,\"weekday\":\"Tuesday\",\"confidence\":\"high\",\"evidence\":\"Tuesday, March 2, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_classroom\",\"confidence\":\"high\",\"evidence\":\"in a classroom\"},\"venue_name\":null,\"headcount\":{\"value\":40,\"confidence\":\"high\",\"evidence\":\"for 40 students\"},\"details\":[{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"with light snacks\"}],\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "03ea98551fc35efc849ab170d08fea8199f028bd20a01bf3f2a413c5b5d263c5",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:56+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "a7cb9a15a9a78127ee18689da9cdbb1833dd14aa374e10bcedfcbb6430c97aac"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Board game night\",\"start\":{\"year\":2027,\"month\":2,\"day\":11,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"Thursday, February 11, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":null,\"confidence\":\"low\",\"evidence\":\"about 20 people (or maybe 500, not sure yet)\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Board game night\"}],\"contains_instructions\":false}"
+}

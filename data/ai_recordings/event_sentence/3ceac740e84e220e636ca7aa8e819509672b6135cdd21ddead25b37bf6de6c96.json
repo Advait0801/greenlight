@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "3ceac740e84e220e636ca7aa8e819509672b6135cdd21ddead25b37bf6de6c96",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:49+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "d7c7a6233e64b5feb09fb70603b951e1e4aa38b261cf4ceb351cab5d45cceac8"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Career panel\",\"start\":{\"year\":2027,\"month\":2,\"day\":24,\"weekday\":\"Wednesday\",\"confidence\":\"high\",\"evidence\":\"Wednesday, February 24, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"Bovard Auditorium\"},\"venue_name\":\"Bovard Auditorium\",\"headcount\":{\"value\":300,\"confidence\":\"high\",\"evidence\":\"for 300 students\"},\"details\":[{\"name\":\"dignitaries\",\"confidence\":\"high\",\"evidence\":\"a California state senator\"},{\"name\":\"amplified_sound\",\"confidence\":\"high\",\"evidence\":\"with microphones\"},{\"name\":\"av_equipment\",\"confidence\":\"high\",\"evidence\":\"a projector\"},{\"name\":\"recording\",\"confidence\":\"high\",\"evidence\":\"filmed for our YouTube channel\"}],\"contains_instructions\":false}"
+}

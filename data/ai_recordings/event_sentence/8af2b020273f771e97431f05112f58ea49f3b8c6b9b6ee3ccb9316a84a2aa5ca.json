@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "8af2b020273f771e97431f05112f58ea49f3b8c6b9b6ee3ccb9316a84a2aa5ca",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "2722808c7a5db4259f53315f51d188a5548c8c3252a93127b6e9c8cc6e9d84e6"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Study session\",\"start\":{\"year\":2027,\"month\":1,\"day\":27,\"weekday\":\"Wednesday\",\"confidence\":\"high\",\"evidence\":\"Wednesday, January 27, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_classroom\",\"confidence\":\"high\",\"evidence\":\"in a classroom in Taper Hall\"},\"venue_name\":\"Taper Hall\",\"headcount\":{\"value\":25,\"confidence\":\"high\",\"evidence\":\"25 members\"},\"details\":[],\"contains_instructions\":false}"
+}

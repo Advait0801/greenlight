@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "e10d0286b494b3fe27f3ab17b49fe3946b5199216b0502a2ee40c1965e5f7b3e",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:46+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "64fac8ddbceeedcea267c95188a2578d13772cf5e330a8dbbc6d9b764a269694"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Networking mixer\",\"start\":{\"year\":2027,\"month\":2,\"day\":25,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"Thursday, February 25, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"at Traditions\"},\"venue_name\":\"Traditions\",\"headcount\":{\"value\":80,\"confidence\":\"high\",\"evidence\":\"for 80 graduate students\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Networking mixer\"},{\"name\":\"alcohol\",\"confidence\":\"high\",\"evidence\":\"beer and wine\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"catered by USC Hospitality\"}],\"contains_instructions\":false}"
+}

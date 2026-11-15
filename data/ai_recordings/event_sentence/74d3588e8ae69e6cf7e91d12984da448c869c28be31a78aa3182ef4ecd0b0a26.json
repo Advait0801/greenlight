@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "74d3588e8ae69e6cf7e91d12984da448c869c28be31a78aa3182ef4ecd0b0a26",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:56+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "1e88e31d22e1537784d9d16d267c4c1f4ba47207a4fc139000214fe0fab74a9b"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Spring showcase\",\"start\":{\"year\":2027,\"month\":4,\"day\":23,\"weekday\":\"Friday\",\"confidence\":\"high\",\"evidence\":\"Friday, April 23, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"Bovard Auditorium\"},\"venue_name\":\"Bovard Auditorium\",\"headcount\":{\"value\":500,\"confidence\":\"high\",\"evidence\":\"for 500 people\"},\"details\":[{\"name\":\"prize_drawing\",\"confidence\":\"high\",\"evidence\":\"with a raffle: $5 tickets for a chance to win an iPad\"},{\"name\":\"drawing_requires_purchase\",\"confidence\":\"high\",\"evidence\":\"$5 tickets for a chance to win an iPad\"},{\"name\":\"cash_collection\",\"confidence\":\"high\",\"evidence\":\"$5 tickets for a chance to win an iPad\"},{\"name\":\"fundraising\",\"confidence\":\"high\",\"evidence\":\"$5 tickets for a chance to win an iPad\"}],\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "d7b7c0644db3029365374e21ea1027a0c1eac9907973cb2b77878fa60b52c1aa",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:48+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "cc8b1ae64868c375d01d18c3c8744e089e7582f6276cea740b31526aec54a5f8"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"STEM outreach day\",\"start\":{\"year\":2027,\"month\":4,\"day\":3,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"Saturday, April 3, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":60,\"confidence\":\"high\",\"evidence\":\"60 local high school students\"},\"details\":[{\"name\":\"minors\",\"confidence\":\"high\",\"evidence\":\"60 local high school students\"}],\"contains_instructions\":false}"
+}

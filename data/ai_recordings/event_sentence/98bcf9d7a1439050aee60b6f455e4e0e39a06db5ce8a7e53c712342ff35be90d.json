@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "98bcf9d7a1439050aee60b6f455e4e0e39a06db5ce8a7e53c712342ff35be90d",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:54+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "b7322a704082068c3132d31f332824a6b2812595eab75d9762815940b29053ee"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Spring gala\",\"start\":{\"year\":2027,\"month\":4,\"day\":24,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"on Saturday, April 24, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"in the Trojan Grand Ballroom\"},\"venue_name\":\"Trojan Grand Ballroom\",\"headcount\":{\"value\":200,\"confidence\":\"high\",\"evidence\":\"for 200 guests\"},\"details\":[{\"name\":\"ticket_sales\",\"confidence\":\"high\",\"evidence\":\"Ticketed spring gala ($15 per ticket)\"},{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"spring gala\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"catered\"},{\"name\":\"usg_funding\",\"confidence\":\"high\",\"evidence\":\"we want USG to cover the catering\"}],\"contains_instructions\":false}"
+}

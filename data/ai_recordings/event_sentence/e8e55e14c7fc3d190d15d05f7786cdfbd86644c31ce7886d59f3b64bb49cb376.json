@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "e8e55e14c7fc3d190d15d05f7786cdfbd86644c31ce7886d59f3b64bb49cb376",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:49+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "7c388a197d33a6e2efaabfcb66c4341b77909079f9812761908977538dd20eb2"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Pop-up study break\",\"start\":{\"year\":2026,\"month\":11,\"day\":16,\"weekday\":\"Monday\",\"confidence\":\"high\",\"evidence\":\"tomorrow, Monday, November 16, 2026\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":50,\"confidence\":\"high\",\"evidence\":\"free coffee for 50 students\"},\"details\":[{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"free coffee\"}],\"contains_instructions\":false}"
+}

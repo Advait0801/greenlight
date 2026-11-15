@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "feba75ea90c57f648aa374406846fb3f52c40f00a575e944c57285ea517e746d",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:54+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "2475be760b6120ca59cbb2080fb29e8b663dcc4111a826406b81172e90703caf"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Lunar New Year celebration\",\"start\":{\"year\":2027,\"month\":2,\"day\":6,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"on Saturday, February 6, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"in the Trojan Grand Ballroom\"},\"venue_name\":\"Trojan Grand Ballroom\",\"headcount\":{\"value\":120,\"confidence\":\"high\",\"evidence\":\"for 120 people\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Lunar New Year celebration\"},{\"name\":\"co_hosts\",\"confidence\":\"high\",\"evidence\":\"co-hosted with the Chinese Students Association\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"catered\"},{\"name\":\"performers\",\"confidence\":\"medium\",\"evidence\":\"a lion dance team\"},{\"name\":\"amplified_sound\",\"confidence\":\"medium\",\"evidence\":\"drums\"}],\"contains_instructions\":false}"
+}

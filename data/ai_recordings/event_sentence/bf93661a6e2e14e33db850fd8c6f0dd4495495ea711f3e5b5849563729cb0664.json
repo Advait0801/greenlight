@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "bf93661a6e2e14e33db850fd8c6f0dd4495495ea711f3e5b5849563729cb0664",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:46+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "00f07e1d9ab85e0a4daa2a7c157cd330490b5ea170ab1a5727fac9aafb567767"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Weekly general meeting\",\"start\":{\"year\":2027,\"month\":2,\"day\":2,\"weekday\":\"Tuesday\",\"confidence\":\"high\",\"evidence\":\"Tuesday, February 2, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":30,\"confidence\":\"high\",\"evidence\":\"for 30 members\"},\"details\":[{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"with pizza\"}],\"contains_instructions\":false}"
+}
