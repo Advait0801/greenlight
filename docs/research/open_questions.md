@@ -4,7 +4,7 @@ Researched 2026-11-14 in Chrome (signed in with a USC Google account) and by pub
 
 | # | Question | Status |
 |---|---|---|
-| 1 | USG "Funding Application Deadlines" table; academic weeks across winter break | **Answered.** Table found and transcribed below |
+| 1 | USG "Funding Application Deadlines" table; academic weeks across winter break | **Transcribed, awaiting a human check.** Table found and transcribed below; some rows need comparing with the sheet (see `usg-academic-week-definition` params.rows_to_confirm) |
 | 2 | Spring 2027 academic calendar | **Answered.** Official USC calendar |
 | 3 | Approved vendor and caterer lists | **Mostly answered.** USG Vendor List found (two tabs). The Purchasing approved-caterer list is still not public |
 | 4 | Is the cap four funded events per semester? | **Answered, with a caveat.** Stated on the USG Funding page FAQ, not in the guidelines |
@@ -53,7 +53,7 @@ Researched 2026-11-14 in Chrome (signed in with a USC Google account) and by pub
 | Apr 19 – Apr 23, 2027 | Mar 3, 2027 | Feb 17, 2027 |
 | Apr 26 – Apr 30, 2027 | Mar 10, 2027 | Feb 24, 2027 |
 
-Rows with a single date (Oct 5 – Oct 23) are in the 6-week column. Each is 40 days before the event week, which is consistent with the rest of the column.
+Rows with a single date (Oct 5 – Oct 23) are in the 6-week column. Each is 40 days before the event week, which is consistent with the rest of the 6-week column. The 9-week column is not: for event weeks Mar 22 – Apr 26, 2027 it is only 2 weeks before the 6-week deadline (3 weeks elsewhere), and some January and February rows give fewer weeks than the guidelines. Those rows must be compared with the sheet.
 
 **What this means for the deadline calculator**
 
@@ -62,10 +62,10 @@ Rows with a single date (Oct 5 – Oct 23) are in the 6-week column. Each is 40 
    - But Jan 11 – Jan 29 events all map to Nov 11, and Feb 1 – Feb 19 events all map to Nov 18 for the 6-week deadline. Counting would give different dates.
 
    PROJECT_CONTEXT already says to treat the table as the source of truth. This confirms it.
-2. **No deadline means no USG funding that week.** The blank rows are study days, exams and winter recess (Dec 7 – Jan 10), and spring recess (Mar 15 – 19). The "N/A" rows are the first six weeks of fall. Events outside Oct 5, 2026 – Apr 30, 2027 are not in the table at all.
+2. **No deadline means no USG funding that week.** The blank rows are study days, exams and winter recess (Dec 7 – Jan 10), and spring recess (Mar 15 – 19). The "N/A" rows are the first six weeks of fall. Aug 24 – Oct 2, 2026 are in the table as N/A rows; events from May 2027 onward are not in the table at all.
 3. Thanksgiving week (Nov 23 – 27) has deadlines, but Wed–Sun Nov 25 – 29 is a university holiday, and the guidelines bar funding for events during holidays. Block at the level of days, not weeks.
-4. Nov 11, 2026 is both a deadline and the Veterans Day holiday. Show it as is.
-5. **Planning spring from today (Nov 14, 2026):**
+4. Nov 11, 2026 is both a deadline and the Veterans Day holiday, and the guidelines say USG does not process applications during university holidays. The sources disagree: show the earlier working day too and cite both.
+5. **Planning spring from today (Nov 14, 2026), per the unconfirmed table:**
    - Events Jan 11 – Jan 29 have already missed both deadlines.
    - Events Feb 1 – Feb 19 have already missed the travel deadline. Their 6-week deadline is **Wednesday Nov 18, 2026**.
    - Events Feb 22 – Mar 12 have a travel deadline of **Nov 18, 2026**.

@@ -1,7 +1,8 @@
 """The academic calendar (rules/calendar.json), used by the deadline calculator.
 
-The calendar is marked unverified until a human confirms it (PLAN.md Phase 0). Anything
-computed from it must therefore be shown with that caveat.
+A person confirmed the term dates on 2026-11-14 (verified 'read'). How business days and
+academic weeks are counted is not defined by any source, so dates counted in those units stay
+unverified and are shown yellow.
 """
 
 from __future__ import annotations
