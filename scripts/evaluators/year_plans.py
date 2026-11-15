@@ -6,6 +6,10 @@ Each of the 2 plans goes through the year planner (code only; no AI). Three thin
             over the yearly cap), exactly, in cents; and that every event's split adds up to its cost;
   problems  every expected problem (type, rule, severity and the set of events) must be found.
 
+The answer key's calendar has the event test set's scope (data/eval/README.md): USG rules of kind deadline,
+blocked_period or ineligible only. The case-by-case reviews the plan adds from the money check (USG decides) are
+outside that scope and are not compared.
+
 "caught" counts expected calendar entries and problems found; "missed" those absent or different; "wrongly_flagged"
 calendar entries and problems the plan shows that the key does not expect.
 """
@@ -39,9 +43,14 @@ def report_for(case: dict[str, Any], ruleset: RuleSet) -> YearPlanReport:
                      get_settings().rules_dir / "sources")
 
 
-def compare(report: YearPlanReport, expected: dict[str, Any]) -> dict[str, Any]:
+def _in_scope(rule_id: str, ruleset: RuleSet) -> bool:
+    rule = ruleset.get(rule_id)
+    return rule.domain != "funding" or rule.kind in ("deadline", "blocked_period", "ineligible")
+
+
+def compare(report: YearPlanReport, expected: dict[str, Any], ruleset: RuleSet) -> dict[str, Any]:
     got_calendar = {(e.key, o.rule_id): (o.status, o.due.isoformat() if o.due else None)
-                    for e in report.events for o in e.packet.obligations}
+                    for e in report.events for o in e.packet.obligations if _in_scope(o.rule_id, ruleset)}
     want_calendar = {(c["event"], c["rule_id"]): (c["status"], c["due"]) for c in expected["calendar"]}
     calendar_missing = sorted(k for k in want_calendar if got_calendar.get(k) != want_calendar[k])
     calendar_extra = sorted(set(got_calendar) - set(want_calendar))
@@ -75,7 +84,7 @@ def compare(report: YearPlanReport, expected: dict[str, Any]) -> dict[str, Any]:
 
 
 def evaluate(data: dict[str, Any], ruleset: RuleSet) -> dict[str, Any]:
-    rows = [{"id": case["id"], **compare(report_for(case, ruleset), case["expected"])} for case in data["cases"]]
+    rows = [{"id": case["id"], **compare(report_for(case, ruleset), case["expected"], ruleset)} for case in data["cases"]]
     caught = sum(r["calendar_found"] + r["problems_found"] for r in rows)
     missed = sum(len(r["calendar_missing"]) + len(r["problems_missing"]) + len(r["budget_diffs"]) for r in rows)
     wrongly = sum(len(r["calendar_extra"]) + len(r["problems_extra"]) for r in rows)
