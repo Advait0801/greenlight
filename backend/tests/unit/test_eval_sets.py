@@ -198,3 +198,14 @@ def test_event_statuses_follow_from_the_rules(sets, ruleset) -> None:  # type: i
                 want = "condition"
             if o["status"] != want:
                 assert o["status"] == "check_with_office" and o.get("note"), (case["id"], rule.id, o["status"], want)
+
+
+def test_after_deadline_conflict_applies_the_shorter_time(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """For deadlines counted after an anchor, the shorter time is the stricter one."""
+    data = copy.deepcopy(_load("events"))
+    case = next(c for c in data["cases"] if c["id"] == "ev-17")
+    for conflict in case["expected"]["source_conflicts"]:
+        if set(conflict["rules"]) == {"usg-incomplete-two-business-days", "usg-faq-incomplete-three-business-days"}:
+            conflict["applied"] = "usg-faq-incomplete-three-business-days"
+    problems = validate_set("events", data, ruleset=ruleset)
+    assert any("usg-incomplete-two-business-days is the stricter" in p for p in problems), problems

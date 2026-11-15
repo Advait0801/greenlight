@@ -167,8 +167,11 @@ def _check_conflicts(where: str, ruleset: RuleSet, obligations: list[dict[str, A
         stricter = None
         if due_a and due_b and due_a != due_b:
             stricter = first if due_a < due_b else second
-        elif rule_a.unit == rule_b.unit and rule_a.anchor == rule_b.anchor and rule_a.offset != rule_b.offset:
-            stricter = first if (rule_a.offset or 0) > (rule_b.offset or 0) else second
+        elif (rule_a.unit, rule_a.anchor, rule_a.direction) == (rule_b.unit, rule_b.anchor, rule_b.direction) and rule_a.offset != rule_b.offset:
+            # Before an anchor, more lead time is stricter; after it, less time is stricter.
+            longer = first if (rule_a.offset or 0) > (rule_b.offset or 0) else second
+            shorter = second if longer == first else first
+            stricter = longer if rule_a.direction == "before" else shorter
         if stricter is not None and applied != stricter:
             problems.append(f"{where}: {stricter} is the stricter of {first} / {second}, so it must be the one applied")
 
