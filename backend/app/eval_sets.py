@@ -88,18 +88,40 @@ def _expected_status(ruleset: RuleSet, rule_id: str, violated: bool | None) -> s
     return {"blocked"} if violated else {plain}
 
 
+def _forward(day: date, offset: int, unit: str) -> date | None:
+    """An 'after' deadline: the day plus the time allowed (business days count every weekday)."""
+    if unit == "days":
+        return day + timedelta(days=offset)
+    if unit == "weeks":
+        return day + timedelta(weeks=offset)
+    if unit == "business_days":
+        while offset > 0:
+            day += timedelta(days=1)
+            if day.weekday() < 5:
+                offset -= 1
+        return day
+    return None
+
+
 def _check_obligation(where: str, ruleset: RuleSet, entry: dict[str, Any], start: date | None, as_of: date | None,
-                      problems: list[str]) -> None:
+                      problems: list[str], *, end: date | None = None) -> None:
     rule = ruleset.get(entry["rule_id"])
     due = _iso(entry.get("due"))
-    if rule.kind == "deadline" and rule.direction == "before" and rule.anchor not in (None, "event_date"):
-        # Only deadlines counted from the event date are recomputed; any other dated one cannot be checked.
-        if entry.get("due") is not None:
-            problems.append(f"{where}: {rule.id} counts from {rule.anchor}, which the test set does not give; its due date must be null")
-    elif rule.kind == "deadline" and rule.direction == "before" and start and rule.unit in ("days", "weeks", "months", "business_days"):
-        want = _back(start, rule.offset or 0, rule.unit)
-        if due != want:
-            problems.append(f"{where}: {rule.id} is due {entry.get('due')}, but {rule.offset} {rule.unit} before {start} is {want}")
+    if rule.kind == "deadline":
+        # Every dated deadline is recomputed from its anchor. An anchor the test set does not give (the
+        # first payment, a notification, the travel date) or an event with no date means no due date.
+        anchor = rule.anchor or "event_date"
+        base = start if anchor == "event_date" else (end or start) if anchor == "event_end_date" else None
+        counted = rule.unit in ("days", "weeks", "months", "business_days")
+        if base is None or not counted:
+            if entry.get("due") is not None and rule.unit != "academic_weeks":
+                given = "the event has no date" if anchor in ("event_date", "event_end_date") else f"the test set does not give {anchor}"
+                problems.append(f"{where}: {rule.id} counts from {anchor} and {given}; its due date must be null")
+        else:
+            offset = rule.offset or 0
+            want = _back(base, offset, rule.unit or "") if rule.direction == "before" else _forward(base, offset, rule.unit or "")
+            if due != want:
+                problems.append(f"{where}: {rule.id} is due {entry.get('due')}, but {offset} {rule.unit} {rule.direction} {base} is {want}")
     if rule.unit == "academic_weeks" and entry.get("due") is not None:
         problems.append(f"{where}: {rule.id} counts academic weeks, which no source defines; its due date must be null")
     allowed = _expected_status(ruleset, rule.id, entry.get("violated"))
@@ -212,8 +234,13 @@ def _check_events(data: dict[str, Any], ruleset: RuleSet | None, problems: list[
                         f"{cid}: {o['rule_id']} is broken exactly when '{fact}' is among the attributes; violated must be {fact in expected['attributes']}"
                     )
             start, as_of = _iso(expected["event_date"]), _iso(case["as_of"])
+            end = _iso(expected.get("end_date"))
+            usg = "usg_funding" in expected["attributes"]
             for o in expected["obligations"]:
-                _check_obligation(cid, ruleset, o, start, as_of, problems)
+                decided = _decided_violation(ruleset, o["rule_id"], expected["attributes"], start, end, usg)
+                if decided is not None and o["violated"] != decided:
+                    problems.append(f"{cid}: {o['rule_id']} violated must be {decided}, from the case's own facts and dates")
+                _check_obligation(cid, ruleset, o, start, as_of, problems, end=end)
             _check_conflicts(cid, ruleset, expected["obligations"], expected["source_conflicts"], problems)
 
 
@@ -264,6 +291,54 @@ def _check_budgets(data: dict[str, Any], problems: list[str]) -> None:
             problems.append(f"{cid}: expected_fund must be one of acceptable_funds")
 
 
+def _check_budget_rules(data: dict[str, Any], ruleset: RuleSet, problems: list[str]) -> None:
+    """The budget keys against the rule table: a finding's colour must follow its rule, every line in an
+    ineligible category or over a cap must carry that rule's finding, food and hotel lines carry the
+    office's case-by-case review, and a ticketed event carries the ticketed-event finding."""
+    allowed = {"red": {"red"}, "office_decides": {"office_decides"}, "yellow": set(), "info": set()}
+    for case in data["cases"]:
+        cid, expected = case["id"], case["expected"]
+        entries = {entry["line"]: entry for entry in expected["lines"]}
+        for where, finding in [(f"line {e['line']}", f) for e in expected["lines"] for f in e["findings"]] + [
+            ("application", f) for f in expected["application"]
+        ]:
+            rule_id = finding.get("rule_id")
+            if not rule_id or rule_id not in ruleset:
+                continue
+            shown = ruleset.display_severity(rule_id)
+            if finding["verdict"] == "green":
+                problems.append(f"{cid} {where}: a finding is a problem to show; {rule_id} cannot be a green finding")
+            elif finding["verdict"] != "yellow" and finding["verdict"] not in allowed.get(shown, set()):
+                problems.append(f"{cid} {where}: {rule_id} is shown {shown}, so its finding cannot be {finding['verdict']}")
+        attendance = case["event"]["expected_attendance"]
+        food_total = sum(line["amount_cents"] for line in case["lines"] if line["category"] == "food")
+        for line in case["lines"]:
+            entry = entries.get(line["line"])
+            if entry is None:
+                continue
+            listed = {f.get("rule_id"): f["verdict"] for f in entry["findings"]}
+            need: list[tuple[str, set[str]]] = []
+            for rule in ruleset:
+                if line["category"] not in rule.triggers or rule.domain != "funding":
+                    continue
+                if rule.kind == "ineligible" and ruleset.display_severity(rule.id) == "red":
+                    need.append((rule.id, {"red"}))
+                elif rule.kind == "requirement" and ruleset.display_severity(rule.id) == "office_decides":
+                    need.append((rule.id, {"office_decides"}))
+                elif rule.kind == "cap" and "max_usd_per_night" in rule.params:
+                    if line["unit_price_cents"] > rule.params["max_usd_per_night"] * 100:
+                        need.append((rule.id, {"red", "yellow"}))
+                elif rule.kind == "cap" and "max_usd_per_person" in rule.params and attendance:
+                    if food_total > rule.params["max_usd_per_person"] * 100 * attendance:
+                        need.append((rule.id, {"red", "yellow"}))
+            for rule_id, verdicts in need:
+                if listed.get(rule_id) not in verdicts:
+                    problems.append(f"{cid} line {line['line']}: a {line['category']} line needs a {'/'.join(sorted(verdicts))} finding for {rule_id}")
+        if case["event"].get("ticketed"):
+            if not any(f.get("rule_id") == "usg-ineligible-ticketed-events" and f["verdict"] == "red" for f in expected["application"]):
+                problems.append(f"{cid}: a ticketed event needs the red finding usg-ineligible-ticketed-events")
+
+
 def _check_constitutions(data: dict[str, Any], eval_dir: Path, ruleset: RuleSet | None, problems: list[str]) -> None:
     clause_ids = {rule.id for rule in ruleset if rule.kind == "clause"} if ruleset else set()
     base = eval_dir / "constitutions"
@@ -300,6 +375,35 @@ def _check_constitutions(data: dict[str, Any], eval_dir: Path, ruleset: RuleSet 
             )
             if sorted(expected["not_applicable"]) != want:
                 problems.append(f"{cid}: not_applicable must be {want}, from the club's flags")
+
+
+def _decided_violation(ruleset: RuleSet, rule_id: str, attributes: list[str], start: date | None,
+                       end: date | None, usg_request: bool) -> bool | None:
+    """Whether a case's own facts and dates decide that a rule is broken (True), kept (False), or not
+    decided (None). Used to refuse an answer key that marks a broken rule as met."""
+    rule = ruleset.get(rule_id)
+    fact = rule.params.get("violated_when")
+    if fact:
+        return fact in attributes
+    if rule.kind == "ineligible" and rule.domain == "funding" and usg_request:
+        hit = all(t in attributes for t in rule.triggers) if rule.trigger_mode == "all" else any(t in attributes for t in rule.triggers)
+        return True if hit and rule.triggers else None
+    if start is None:
+        return None
+    days = [start + timedelta(days=i) for i in range(((end or start) - start).days + 1)]
+    if rule_id == "alcohol-thursday-saturday":
+        return start.weekday() not in (3, 4, 5)
+    if rule_id in ("usg-no-funding-breaks", "social-events-not-study-days-finals"):
+        from app.rules import CalendarLoadError, get_calendar
+
+        try:
+            calendar = get_calendar()
+        except CalendarLoadError:
+            return None
+        if rule_id == "social-events-not-study-days-finals":
+            return any(calendar.is_study_day_or_final_exam(day) for day in days)
+        return any(calendar.is_break(day) or calendar.is_university_holiday(day) or calendar.is_study_day_or_final_exam(day) for day in days)
+    return None
 
 
 def _check_year_plans(data: dict[str, Any], ruleset: RuleSet | None, problems: list[str]) -> None:
@@ -340,8 +444,11 @@ def _check_year_plans(data: dict[str, Any], ruleset: RuleSet | None, problems: l
         events = {event["key"]: event for event in case["events"]}
         for entry in case["expected"]["calendar"]:
             if entry["event"] in events and entry["rule_id"] in ruleset:
-                _check_obligation(f"{cid} {entry['event']}", ruleset, {**entry, "violated": None},
-                                  _iso(events[entry["event"]]["event_date"]), None, problems)
+                event = events[entry["event"]]
+                start, end = _iso(event["event_date"]), _iso(event.get("end_date"))
+                broken = _decided_violation(ruleset, entry["rule_id"], event["attributes"], start, end, event["usg_request_cents"] > 0)
+                _check_obligation(f"{cid} {entry['event']}", ruleset, {**entry, "violated": broken}, start, None, problems,
+                                  end=end)
 
 
 def validate_set(name: str, data: Any, *, eval_dir: Path = EVAL_DIR, ruleset: RuleSet | None = None) -> list[str]:
@@ -367,6 +474,8 @@ def validate_set(name: str, data: Any, *, eval_dir: Path = EVAL_DIR, ruleset: Ru
         _check_events(data, ruleset, problems)
     elif name == "budgets":
         _check_budgets(data, problems)
+        if ruleset is not None:
+            _check_budget_rules(data, ruleset, problems)
         categories = ruleset.vocabulary.get("line_item_categories", {}) if ruleset else {}
         if categories:
             for case in data["cases"]:

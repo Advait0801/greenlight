@@ -87,6 +87,10 @@
                 "rule_id": "usg-food-cap",
                 "verdict": "red",
                 "note": "$38.00 per person; the cap is $35.00 (over by $450.00 for 150 people)."
+              },
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
               }
             ]
           },
@@ -200,8 +204,13 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
@@ -279,6 +288,10 @@
                 "rule_id": "usg-food-cap",
                 "verdict": "red",
                 "note": "$35.01 per person; the cap is $35.00 (over by $0.60 for 60 people)."
+              },
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
               }
             ]
           },
@@ -358,8 +371,13 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
@@ -452,6 +470,10 @@
                 "rule_id": "usg-hotel-cap",
                 "verdict": "red",
                 "note": "$425.00 per night; the cap is $400.00."
+              },
+              {
+                "rule_id": "usg-lodging-case-by-case",
+                "verdict": "office_decides"
               }
             ]
           },
@@ -542,8 +564,13 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-lodging-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
@@ -832,8 +859,13 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
@@ -1209,8 +1241,13 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
@@ -1297,8 +1334,13 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
@@ -1379,13 +1421,17 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "yellow",
+            "verdict": "office_decides",
             "findings": [
               {
                 "rule_id": "usg-food-cap",
                 "verdict": "yellow",
                 "reason": "cannot_compute",
                 "note": "Expected attendance is 0, so food per person cannot be computed. Enter the expected attendance."
+              },
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
               }
             ]
           }
@@ -1485,8 +1531,13 @@
           },
           {
             "line": 3,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           }
         ],
         "application": [],
@@ -1626,18 +1677,27 @@
         "lines": [
           {
             "line": 1,
-            "verdict": "green",
-            "findings": []
+            "verdict": "office_decides",
+            "findings": [
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
+              }
+            ]
           },
           {
             "line": 2,
-            "verdict": "yellow",
+            "verdict": "office_decides",
             "findings": [
               {
                 "rule_id": "usg-quote-required",
                 "verdict": "yellow",
                 "reason": "duplicate_line",
                 "note": "Same vendor, item and amount as line 1, with one quote for $300.00: possibly entered twice."
+              },
+              {
+                "rule_id": "usg-food-case-by-case",
+                "verdict": "office_decides"
               }
             ]
           }
