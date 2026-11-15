@@ -182,7 +182,8 @@ export function App() {
         </main>
         <footer className="border-t border-stone-200 px-4 py-6 text-sm text-stone-600 sm:px-8 lg:px-12">
           Greenlight is not an official USC service. It uses public USC documents; each result shows the rule and the date of the
-          version it was checked against.
+          version it was checked against.{" "}
+          <NavLink to="/status" className="text-stone-600 underline underline-offset-2 hover:text-cardinal">System status: rules and calendar</NavLink>
         </footer>
       </div>
     </div>

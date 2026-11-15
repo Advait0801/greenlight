@@ -208,15 +208,6 @@ export function Dashboard() {
         </ul>
       </section>
 
-      {health ? (
-        <Link to="/status" className="flex flex-wrap items-center gap-3 text-sm hover:text-cardinal">
-          <span className="font-semibold">System status</span>
-          <StatusBadge state={health.rules.loaded ? "green" : "red"} label={health.rules.loaded ? `${health.rules.count} rules loaded` : "Rules did not load"} />
-          <StatusBadge state={health.calendar.verified === "read" ? "green" : "yellow"} label={health.calendar.verified === "read" ? "Calendar confirmed" : "Calendar not yet confirmed"} />
-          <StatusBadge state="yellow" label={`${health.rules.by_verification?.unverified ?? 0} rules not verified`} />
-          <span className="font-medium text-cardinal underline underline-offset-2">Details</span>
-        </Link>
-      ) : null}
     </div>
   );
 }

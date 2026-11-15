@@ -18,6 +18,8 @@ export interface AppRoute {
   label?: string;
   group?: string;
   icon?: string;
+  /** Reachable by its own link only, not listed in the sidebar. */
+  hidden?: boolean;
 }
 
 export const routes: AppRoute[] = [
@@ -29,7 +31,7 @@ export const routes: AppRoute[] = [
   { path: "/money/gap", element: <GapHelper />, label: "Gap helper", group: "Each event", icon: "gap" },
   { path: "/usg", element: <UsgScreen />, label: "USG screen", group: "For USG reviewers", icon: "flag" },
   { path: "/accuracy", element: <Accuracy />, label: "Accuracy", group: "Trust", icon: "accuracy" },
-  { path: "/status", element: <Home />, label: "System status", group: "Trust", icon: "status" },
+  { path: "/status", element: <Home />, label: "System status", group: "Trust", icon: "status", hidden: true },
   { path: "/handover", element: <Handover />, label: "Handover", group: "Your club", icon: "handover" },
 ];
 
@@ -39,5 +41,5 @@ export const NAV_GROUPS: { title: string; paths: string[] }[] = [
   { title: "Your club", paths: ["/recognition", "/plan", "/handover"] },
   { title: "Each event", paths: ["/events/packet", "/money/check", "/money/gap"] },
   { title: "For USG reviewers", paths: ["/usg"] },
-  { title: "Trust", paths: ["/accuracy", "/status"] },
+  { title: "Trust", paths: ["/accuracy"] },
 ];

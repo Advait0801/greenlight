@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { getJson } from "../api/client";
 import { PrecheckNotice } from "../components/PrecheckNotice";
@@ -99,6 +100,9 @@ export function Accuracy() {
           </section>
         </>
       ) : null}
+      <p className="text-sm text-stone-600">
+        <Link to="/status" className="underline underline-offset-2 hover:text-cardinal">System status: rules and calendar</Link>
+      </p>
     </div>
   );
 }
