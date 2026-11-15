@@ -20,6 +20,9 @@ from dataclasses import dataclass
 from typing import Any, Literal
 
 MAX_DOCUMENT_CHARS = 400_000  # roughly 100k tokens; larger inputs are refused, never silently cut
+MAX_DOCUMENT_BYTES = 20 * 1024 * 1024  # a request to the API may be at most 32 MB once base64-encoded
+BINARY_MEDIA_TYPES = {"application/pdf", "image/png", "image/jpeg", "image/gif", "image/webp"}
+REQUEST_LABEL = "Request from Greenlight (not from any document):"
 
 BASE_SYSTEM_PROMPT = """\
 You are the reading component of Greenlight, a pre-check tool for USC student organization officers.
@@ -63,6 +66,15 @@ class UntrustedDocument:
             raise DocumentTooLarge(
                 f"'{self.name}' has {len(self.text):,} characters; the limit is {MAX_DOCUMENT_CHARS:,}"
             )
+        if self.data is not None:
+            if self.media_type not in BINARY_MEDIA_TYPES:
+                raise ValueError(
+                    f"'{self.name}' is {self.media_type}; only PDF, PNG, JPEG, GIF and WebP files can be read"
+                )
+            if len(self.data) > MAX_DOCUMENT_BYTES:
+                raise DocumentTooLarge(
+                    f"'{self.name}' is {len(self.data):,} bytes; the limit is {MAX_DOCUMENT_BYTES:,}"
+                )
 
     @property
     def fingerprint(self) -> str:
@@ -79,7 +91,8 @@ def wrap_document(index: int, document: UntrustedDocument) -> list[dict[str, Any
     """Content blocks for one untrusted document."""
     opening = f'<document index="{index}" name="{_attr(document.name)}" media_type="{_attr(document.media_type)}">'
     if document.text is not None:
-        body = html.escape(document.text, quote=False)
+        # Only our own request may carry the request label; a copy inside a document is neutralised.
+        body = html.escape(document.text, quote=False).replace(REQUEST_LABEL, "[text copying Greenlight's request label]")
         return [{"type": "text", "text": f"{opening}\n{body}\n</document>"}]
 
     encoded = base64.standard_b64encode(document.data or b"").decode("ascii")
@@ -96,5 +109,5 @@ def build_user_content(task_request: str, documents: list[UntrustedDocument]) ->
     blocks: list[dict[str, Any]] = []
     for index, document in enumerate(documents, start=1):
         blocks.extend(wrap_document(index, document))
-    blocks.append({"type": "text", "text": f"Request from Greenlight (not from any document):\n{task_request}"})
+    blocks.append({"type": "text", "text": f"{REQUEST_LABEL}\n{task_request}"})
     return blocks

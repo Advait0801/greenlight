@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, ConfigDict
@@ -24,5 +25,10 @@ class ExtractedField(BaseModel, Generic[T]):
 
 
 def is_confident(field: ExtractedField[T]) -> bool:
-    """Only a 'high' rating with a value counts. Everything else must go to a human."""
-    return field.value is not None and field.confidence == "high"
+    """Only a 'high' rating with a usable value counts. Everything else must go to a human.
+    A number that is not finite (NaN, infinity) is never usable."""
+    if field.value is None or field.confidence != "high":
+        return False
+    if isinstance(field.value, float) and not math.isfinite(field.value):
+        return False
+    return True

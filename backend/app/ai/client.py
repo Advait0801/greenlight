@@ -24,6 +24,7 @@ from pydantic import BaseModel, ValidationError
 
 from app.ai.untrusted import BASE_SYSTEM_PROMPT, UntrustedDocument, build_user_content
 from app.config import AIMode, Settings, get_settings
+from app.jsonutil import StrictJSONError, loads_strict
 
 OutputT = TypeVar("OutputT", bound=BaseModel)
 ModelRole = Literal["extract", "classify"]
@@ -217,7 +218,7 @@ class ClaudeClient:
             )
         try:
             record = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise AIOutputInvalid(f"Recording {path.name} is not readable JSON: {exc}") from exc
         if not isinstance(record, dict) or record.get("format") != RECORDING_FORMAT:
             raise AIOutputInvalid(f"Recording {path.name} has an unknown format")
@@ -288,8 +289,14 @@ class ClaudeClient:
             raise AIRefused("The model declined to read this material.")
         if stop_reason == "max_tokens":
             raise AIOutputInvalid("The answer was cut off before it was complete.")
+        # Strict on two levels: the JSON itself (no duplicate keys, no NaN or Infinity) and the
+        # types (no booleans read as numbers, no numbers read as text).
         try:
-            return prepared.output_type.model_validate_json(raw_text)
+            loads_strict(raw_text)
+        except (json.JSONDecodeError, StrictJSONError) as exc:
+            raise AIOutputInvalid(f"The answer is not strict JSON: {exc}") from exc
+        try:
+            return prepared.output_type.model_validate_json(raw_text, strict=True)
         except ValidationError as exc:
             raise AIOutputInvalid(
                 f"The answer did not match {prepared.output_type.__name__}: {exc.error_count()} problem(s)"
