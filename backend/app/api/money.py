@@ -11,6 +11,7 @@ import io
 from datetime import date
 from typing import Any
 
+from starlette.concurrency import run_in_threadpool
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy.orm import Session
@@ -126,7 +127,7 @@ async def read_documents(files: list[UploadFile] = File(default=[]), text: str =
         index += 1
         try:
             if pasted is not None:
-                read = read_quote(index=index, name=name, text=pasted, ruleset=ruleset)
+                read = await run_in_threadpool(read_quote, index=index, name=name, text=pasted, ruleset=ruleset)
             else:
                 assert data is not None
                 kind = _sniff(data)
@@ -135,11 +136,11 @@ async def read_documents(files: list[UploadFile] = File(default=[]), text: str =
                         decoded = data.decode("utf-8")
                     except UnicodeDecodeError:
                         raise IntakeError("Greenlight can read PDF, PNG, JPEG, GIF, WebP, Word (.docx) and text files only.") from None
-                    read = read_quote(index=index, name=name, text=decoded, ruleset=ruleset)
+                    read = await run_in_threadpool(read_quote, index=index, name=name, text=decoded, ruleset=ruleset)
                 elif kind.endswith("document"):
-                    read = read_quote(index=index, name=name, text=_docx_text(data), ruleset=ruleset)
+                    read = await run_in_threadpool(read_quote, index=index, name=name, text=_docx_text(data), ruleset=ruleset)
                 else:
-                    read = read_quote(index=index, name=name, data=data, media_type=kind, ruleset=ruleset)
+                    read = await run_in_threadpool(read_quote, index=index, name=name, data=data, media_type=kind, ruleset=ruleset)
         except IntakeError as exc:
             problems.append({"name": name, "message": str(exc)})
             continue
