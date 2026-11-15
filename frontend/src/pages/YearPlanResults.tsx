@@ -58,10 +58,11 @@ function deadlineText(d: TableDeadline): string {
   return `${table}; counted back in calendar weeks it is ${formatDay(d.calendar_count)}. Apply by the earlier date, ${formatDay(d.apply_by)}.`;
 }
 
-export function PlanResults({ report, onOpenPacket, onOpenMoney }: {
+export function PlanResults({ report, onOpenPacket, onOpenMoney, onOpenGap }: {
   report: YearPlanReport;
   onOpenPacket: (key: string) => void;
   onOpenMoney: (key: string) => void;
+  onOpenGap: (key: string) => void;
 }) {
   const names = Object.fromEntries(report.events.map((e) => [e.key, e.name]));
   const busy = new Set(report.crowded_weeks.map((w) => w.week_start));
@@ -232,6 +233,9 @@ export function PlanResults({ report, onOpenPacket, onOpenMoney }: {
               <div className="mt-3 flex flex-wrap gap-2">
                 <button type="button" onClick={() => onOpenPacket(e.key)} className="rounded-md bg-cardinal px-3 py-2 text-sm font-medium text-white">Open event packet</button>
                 <button type="button" onClick={() => onOpenMoney(e.key)} className="rounded-md border border-stone-400 px-3 py-2 text-sm">Open money check</button>
+                {e.budget.shortfall_cents > 0 ? (
+                  <button type="button" onClick={() => onOpenGap(e.key)} className="rounded-md border border-stone-400 px-3 py-2 text-sm">Close the {dollars(e.budget.shortfall_cents)} gap</button>
+                ) : null}
               </div>
             </li>
           ))}

@@ -293,6 +293,16 @@ export function YearPlan() {
     navigate("/money/check", { state: { event: budgetEvent, received: edit.received } });
   }
 
+  function openGap(key: string) {
+    const e = report?.events.find((x) => x.key === key);
+    if (!e) return;
+    const facts = e.packet.event;
+    navigate("/money/gap", { state: { club: edit.club_name, gap: {
+      event_name: e.name, event_date: facts.event_date, venue: facts.venue, headcount: facts.headcount,
+      attributes: facts.attributes.filter((a) => !a.startsWith("venue_")), shortfall_cents: e.budget.shortfall_cents, asks_usg: e.asks_usg,
+    } } });
+  }
+
   async function ics() {
     const { body } = toRequest(edit);
     if (!body) return;
@@ -344,7 +354,7 @@ export function YearPlan() {
             </p>
             <button type="button" onClick={ics} className="rounded-md border border-stone-400 px-4 py-2">Download the calendar (.ics)</button>
           </div>
-          <PlanResults report={report} onOpenPacket={openPacket} onOpenMoney={openMoney} />
+          <PlanResults report={report} onOpenPacket={openPacket} onOpenMoney={openMoney} onOpenGap={openGap} />
         </>
       ) : null}
       <details open={edit.events.length === 0} className="space-y-6 rounded-md border border-stone-300 bg-stone-50 p-3">
