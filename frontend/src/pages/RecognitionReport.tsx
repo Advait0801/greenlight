@@ -87,7 +87,7 @@ export function RecognitionReport({ report }: { report: ConstitutionReport }) {
   if (!report.readable) {
     return (
       <section aria-labelledby="report-heading" className="rounded-lg border border-red-300 bg-white p-5" role="alert">
-        <h2 id="report-heading" className="flex flex-wrap items-center gap-3 text-xl font-semibold">
+        <h2 id="report-heading" className="flex flex-wrap items-center gap-3 text-xl font-semibold" tabIndex={-1}>
           Could not check this file <StatusBadge state="red" label="Not checked" />
         </h2>
         <p className="mt-2">{report.message}</p>
