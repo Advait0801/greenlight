@@ -234,7 +234,7 @@ def plan_year(request: YearPlanRequest, ruleset: RuleSet, calendar: AcademicCale
                          "undergraduate club? Graduate clubs apply to the Graduate Student Government instead.")
 
     strategy = _strategy(request, events, problems, ruleset, semester_cap, yearly_cap, as_of)
-    budget = _budget(request, events, strategy, ruleset, yearly_cap)
+    budget = _budget(request, events, strategy, ruleset, yearly_cap, as_of)
     by_key = {row.key: row for row in budget.rows}
 
     calendar_items = _calendar(events, ruleset)
@@ -477,29 +477,36 @@ def _strategy(request: YearPlanRequest, events: list[_Event], problems: _Problem
         chosen.append(e)
 
     this_year = _academic_year(as_of)
-    remaining: dict[str, int | None] = {}
+    remaining: dict[str, int] = {}
+    unknown_years: set[str] = set()
     steps: list[FundingStep] = []
     for e in chosen:
         year = _academic_year(e.plan.event_date or as_of)
         if year not in remaining:
             received = request.usg_received_this_year_cents if year == this_year else 0
-            remaining[year] = None if received is None else max(yearly_cap - received, 0)
+            if received is None:
+                # Not known: the club cannot have received less than nothing, so the cap still limits the plan.
+                unknown_years.add(year)
+                received = 0
+            remaining[year] = max(yearly_cap - received, 0)
         left = remaining[year]
         requested = e.plan.usg_request_cents
-        if left is None:
-            planned, note = requested, (f"The amount already received from USG in {year} is not known, so the "
-                                        f"{money(yearly_cap)} yearly cap could not be applied. Enter it to check.")
-        elif left <= 0:
+        if left <= 0:
+            used_by = ("by the larger requests above" if year in unknown_years or year != this_year
+                       or not request.usg_received_this_year_cents else
+                       "by the money already received and the larger requests above")
             not_planned.append(NotPlanned(
                 key=e.plan.key, name=e.plan.name, requested_cents=requested,
-                reason=f"The {money(yearly_cap)} yearly cap for {year} is used up by the larger requests above.",
+                reason=f"The {money(yearly_cap)} yearly cap for {year} is used up {used_by}.",
                 severity=Verdict.RED, citation=citation_for(ruleset, year_rule.id)))
             continue
-        else:
-            planned = min(requested, left)
-            remaining[year] = left - planned
-            note = ("Within the yearly cap." if planned == requested else
-                    f"Only {money(planned)} of the {money(requested)} fits under the {money(yearly_cap)} yearly cap for {year}.")
+        planned = min(requested, left)
+        remaining[year] = left - planned
+        note = ("Within the yearly cap." if planned == requested else
+                f"Only {money(planned)} of the {money(requested)} fits under the {money(yearly_cap)} yearly cap for {year}.")
+        if year in unknown_years:
+            note += (f" The amount already received from USG in {year} is not known, so Greenlight assumed none; "
+                     "enter it, because anything received lowers what fits.")
         steps.append(FundingStep(
             order=len(steps) + 1, key=e.plan.key, name=e.plan.name, term=e.term.id if e.term else None,
             requested_cents=requested, planned_cents=planned, status="apply" if planned == requested else "apply_partly",
@@ -521,7 +528,7 @@ def _strategy(request: YearPlanRequest, events: list[_Event], problems: _Problem
 
 
 def _budget(request: YearPlanRequest, events: list[_Event], strategy: FundingStrategy, ruleset: RuleSet,
-            yearly_cap: int) -> BudgetSummary:
+            yearly_cap: int, as_of: date) -> BudgetSummary:
     planned = {step.key: step.planned_cents for step in strategy.steps}
     available = request.money_on_hand_cents + request.expected_income_cents
     remaining = available
@@ -539,8 +546,19 @@ def _budget(request: YearPlanRequest, events: list[_Event], strategy: FundingStr
     ordered = [rows[e.plan.key] for e in events]
     total = sum(r.cost_cents for r in ordered)
     requested = sum(r.usg_requested_cents for r in ordered)
-    received = request.usg_received_this_year_cents
-    over = None if received is None else max(received + requested - yearly_cap, 0)
+    # Over the yearly cap, academic year by year (money received is known only for the current year).
+    this_year = _academic_year(as_of)
+    by_year: dict[str, int] = defaultdict(int)
+    for e in events:
+        if e.asks_usg:
+            by_year[_academic_year(e.plan.event_date or as_of)] += e.plan.usg_request_cents
+    over: int | None = 0
+    for year, amount in by_year.items():
+        received = request.usg_received_this_year_cents if year == this_year else 0
+        if received is None:
+            over = None
+            break
+        over = (over or 0) + max(received + amount - yearly_cap, 0)
     usg_planned = sum(r.usg_planned_cents for r in ordered)
     club_money = sum(r.club_money_cents for r in ordered)
     shortfall = sum(r.shortfall_cents for r in ordered)

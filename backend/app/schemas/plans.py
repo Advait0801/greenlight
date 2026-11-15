@@ -159,7 +159,8 @@ class BudgetSummary(BaseModel):
     funds_available_cents: int
     gap_before_usg_cents: int
     usg_requested_cents: int
-    # Requests plus money already received this year, over the yearly cap (None when the received amount is unknown).
+    # Requests plus money already received, over the yearly cap, added up academic year by academic year (None when
+    # the amount received this year is unknown and the plan asks USG for money this year).
     usg_requested_over_yearly_cap_cents: int | None
     yearly_cap_cents: int
     usg_planned_cents: int

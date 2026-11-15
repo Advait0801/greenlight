@@ -223,3 +223,25 @@ def test_planner_reuses_the_phase_2_and_3_engines() -> None:
     # No rule caps or lead times written into the planner: they are read from the rule table.
     assert "8000" not in source and "800000" not in source and "= 4\n" not in source
 
+
+
+# ---- regressions from iteration 1 (verify)
+
+
+def test_unknown_received_amount_still_caps_the_funding_plan() -> None:
+    """H1: with the amount received left empty, five $3,000 requests were all planned ($12,000 for one year)."""
+    events = [_event(f"e{i}", f"2027-04-{5 + i:02d}", estimated_cost_cents=300000, usg_request_cents=300000) for i in range(5)]
+    report = _plan(events, usg_received_this_year_cents=None)
+    planned = sum(step.planned_cents for step in report.strategy.steps)
+    assert planned <= 800000
+    assert any("not known" in step.note for step in report.strategy.steps)
+    assert report.budget.usg_planned_cents == planned
+
+
+def test_over_yearly_cap_figure_is_counted_per_academic_year() -> None:
+    """M: $5,000 in spring 2027 and $5,000 in fall 2027 is not over either year's cap."""
+    events = [_event("spring", "2027-04-07", estimated_cost_cents=500000, usg_request_cents=500000),
+              _event("fall", "2027-10-06", estimated_cost_cents=500000, usg_request_cents=500000)]
+    report = _plan(events)
+    assert report.budget.usg_requested_over_yearly_cap_cents == 0
+    assert all(p.type != "over_yearly_cap" for p in report.problems)
