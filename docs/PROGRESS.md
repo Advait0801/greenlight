@@ -9,7 +9,7 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 0, 1, 2, 3, 4:** closed 2026-11-15. Phase 3 (money check) closed after three iterations and was pushed straight to `main` (new workflow, see Decisions).
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
 - **Phase 5 (supporting features and the USG screen):** built on `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut). Review iterations under way.
-- **Next action:** Phase 5 iteration 1 (verify).
+- **Next action:** Phase 5 iteration 2 (break).
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -21,7 +21,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 2 | Event packet | done (branch `phase-2/event-packet`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pull request into main) |
 | 3 | Money check | done (branch `phase-3/money-check`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
-| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 0 | — | open |
+| 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 1 | yes (iteration 1: 0 blockers, 0 high) | open |
 | 6 | Ship | — | 0 | — | open |
 | 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
 
@@ -102,6 +102,16 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 5, iteration 1 — verify
+Date/time: 2026-11-15
+Agent and model: verifier (fresh), Opus 5.5, medium effort, on commit 32c7b69
+Report: docs/reviews/phase-5-iter-1-verify.md
+Findings: 0/0/1/3 (all 4 exit criteria pass: the 20 prompts never produce a banned option; the queue is closed without the passcode and shows only sent applications; a denial reason reaches the club only after approval; every email, packet and reason is edited and approved in headless Chrome at 375 px)
+Fixed: M the officer's "What we would like" line could carry a cash ask ("1000 USD", "five hundred bucks"), brand reps or a product table into the email word for word; the ask is now dropped when it has any figure or banned idea, and the note scan flags these (regression tests in tests/unit/test_gap_helper.py). Also L: a note proposing required dues is flagged (dues-required-banned added to "not allowed"); L: replacing the saved plan with next year's now asks first.
+Left open: L no recorded AI answer for the denial opening, so recorded mode uses the plain opening (record the demo in Phase 6); note: one shared passcode, so the reviewer name is what the reviewer types; the demo plan's culture night gap is $1,170, not the story's $900.
+Full test suite: pass (777, adversarial included)
+Gate: iteration 2 (break) next
 
 ### Phase 4, iteration 3 — audit; phase closed
 Date/time: 2026-11-15
