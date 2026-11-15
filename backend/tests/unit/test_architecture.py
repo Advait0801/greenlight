@@ -9,7 +9,7 @@ APP = Path(__file__).resolve().parents[2] / "app"
 # The only modules outside app/ai that may use the AI client: intake (reading uploads into typed JSON)
 # and drafting. Add a module here only if it reads or drafts, never if it checks. Everything else under
 # app/ (rules, services, deadlines, planner, API routes) is checked, whatever its file name.
-AI_ALLOWED: set[Path] = set()
+AI_ALLOWED: set[Path] = {APP / "services" / "event_intake.py"}
 
 
 def _imports(path: Path) -> set[str]:
