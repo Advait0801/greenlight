@@ -23,6 +23,7 @@ import {
   type PurchaseChannel,
   type QuoteDocument,
 } from "../api/money";
+import { sendToUsg, type SendResult } from "../api/usg";
 import { PrecheckNotice } from "../components/PrecheckNotice";
 import { SourceLink } from "../components/SourceLink";
 import { StatusBadge, type BadgeState } from "../components/StatusBadge";
@@ -154,6 +155,9 @@ export function MoneyCheck() {
   const [approved, setApproved] = useState("");
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+  const [clubName, setClubName] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [sent, setSent] = useState<SendResult | null>(null);
 
   // Opened from the year plan: start from that event. Ticket sales and openness stay unknown unless the plan said so.
   const location = useLocation();
@@ -283,6 +287,24 @@ export function MoneyCheck() {
     setDraft(result.data.text);
     setDraftNotes(result.data.notes);
     setApproved("");
+  }
+
+  async function send() {
+    const { body, problems } = request();
+    if (!body) {
+      setError(problems.join(" "));
+      return;
+    }
+    setBusy("sending");
+    setError("");
+    const result = await sendToUsg(clubName, body);
+    setBusy("");
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+    setSent(result.data);
+    setConsent(false);
   }
 
   async function approve() {
@@ -566,6 +588,31 @@ export function MoneyCheck() {
                   I have read and approve this text
                 </button>
                 {approved ? <p role="status" className="mt-2 font-medium">{approved}</p> : null}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="rounded-md border border-stone-300 bg-white p-4">
+            <h4 className="text-lg font-semibold">Send to the USG screen (optional)</h4>
+            <p className="text-sm">
+              Your club's data stays private unless you send it. Sending puts this checked budget, with Greenlight's findings, in the
+              queue that USG (Undergraduate Student Government) reviewers see in Greenlight. It is not an EngageSC submission. You can
+              withdraw it later.
+            </p>
+            {report.verdict === "red" ? <p className="mt-1 text-sm text-amber-950">! This budget still has red items; a reviewer will see them.</p> : null}
+            <label className="mt-2 block">Your club's name<input className={input} value={clubName} maxLength={200} onChange={(e) => setClubName(e.target.value)} /></label>
+            <label className="mt-2 flex items-start gap-2">
+              <input type="checkbox" className="mt-1 h-5 w-5" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+              <span>Our club chooses to send this application to the USG screen.</span>
+            </label>
+            <button type="button" onClick={send} disabled={busy !== "" || !consent || !clubName.trim()} className="mt-2 rounded border border-cardinal px-4 py-2 font-medium text-cardinal disabled:opacity-50">
+              {busy === "sending" ? "Sending…" : "Send to the USG screen"}
+            </button>
+            {sent ? (
+              <div role="status" className="mt-2 space-y-1 text-sm">
+                <p className="font-medium">{sent.message}</p>
+                <p>Reference: <code>{sent.reference}</code></p>
+                <p>Token (shown once, keep it): <code className="break-all">{sent.club_token}</code></p>
               </div>
             ) : null}
           </div>
