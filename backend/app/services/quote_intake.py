@@ -121,7 +121,9 @@ def parse_cents(text: str | None) -> int | None:
     if FOREIGN.search(text):
         return None
     cleaned = re.sub(r"(?i)\b(usd|us\$|per night|/night|/ea|each|ea\.?|total|subtotal|amount)\b|[$\s]|/\w+$", "", text)
-    cleaned = cleaned.strip(":=@.")
+    cleaned = cleaned.strip(":=@").rstrip(".")
+    if cleaned.startswith("."):
+        cleaned = "0" + cleaned  # "$.50" is fifty cents
     if not cleaned or cleaned.startswith("-") or cleaned.startswith("("):
         return None
     if not re.fullmatch(r"\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?", cleaned):
