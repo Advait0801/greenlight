@@ -210,3 +210,16 @@ def test_after_deadline_conflict_applies_the_shorter_time(ruleset) -> None:  # t
             conflict["applied"] = "usg-faq-incomplete-three-business-days"
     problems = validate_set("events", data, ruleset=ruleset)
     assert any("usg-incomplete-two-business-days is the stricter" in p for p in problems), problems
+
+
+def test_business_days_count_every_weekday_so_deadlines_are_never_late() -> None:
+    """Regression (phase 0 iteration 3, outside-money and calendar audit M): no source defines business days,
+    so holidays and recess days are counted and the date is the earliest the office could mean."""
+    from app.eval_sets import _back as back
+    from app.rules import load_calendar
+
+    assert "holidays and recess days are counted" in load_calendar(RULES_DIR).business_days.definition
+    # Five business days before Tuesday 2027-01-19 (Monday 2027-01-18 is a university holiday):
+    assert back(date(2027, 1, 19), 5, "business_days") == date(2027, 1, 12)
+    # Ten business days before Monday 2027-03-22 runs through spring recess (March 14 to 21) as weekdays:
+    assert back(date(2027, 3, 22), 10, "business_days") == date(2027, 3, 8)

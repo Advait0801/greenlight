@@ -64,6 +64,14 @@ def _back(day: date, offset: int, unit: str) -> date | None:
                 return date(year, month, candidate)
             except ValueError:
                 continue
+    if unit == "business_days":
+        # Every Monday to Friday counts, holidays and recess days included (rules/calendar.json business_days):
+        # the earliest date the office could mean, so a deadline is never shown late.
+        while offset > 0:
+            day -= timedelta(days=1)
+            if day.weekday() < 5:
+                offset -= 1
+        return day
     return None
 
 
@@ -84,7 +92,7 @@ def _check_obligation(where: str, ruleset: RuleSet, entry: dict[str, Any], start
                       problems: list[str]) -> None:
     rule = ruleset.get(entry["rule_id"])
     due = _iso(entry.get("due"))
-    if rule.kind == "deadline" and rule.direction == "before" and start and rule.unit in ("days", "weeks", "months"):
+    if rule.kind == "deadline" and rule.direction == "before" and start and rule.unit in ("days", "weeks", "months", "business_days"):
         want = _back(start, rule.offset or 0, rule.unit)
         if due != want:
             problems.append(f"{where}: {rule.id} is due {entry.get('due')}, but {rule.offset} {rule.unit} before {start} is {want}")

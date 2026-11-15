@@ -124,9 +124,9 @@
     }
   ],
   "business_days": {
-    "definition": "Monday to Friday, excluding the university holidays listed in this file",
+    "definition": "Monday to Friday; university holidays and recess days are counted too, which gives the earliest (stricter) date for deadlines counted forward",
     "verified": "unverified",
-    "note": "No source defines 'business days' for USG or Campus Activities deadlines. Greenlight assumes Monday to Friday minus the university holidays listed here, and counts recess days (winter and spring recess) as business days because offices stay open. Both assumptions need confirming; dates counted in business days are shown yellow until then."
+    "note": "No source defines 'business days' for USG or Campus Activities deadlines, and staff holidays are listed outside the academic calendar. Until someone confirms which days the offices count, Greenlight counts every weekday, so a business-day deadline is never later than the office's; it may be earlier. Dates counted in business days are shown yellow."
   },
   "academic_weeks": {
     "definition": null,
