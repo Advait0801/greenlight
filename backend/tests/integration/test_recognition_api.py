@@ -65,3 +65,16 @@ def test_readiness_blank_and_ticked(client: Any) -> None:
 
 def test_readiness_refuses_unknown_fields(client: Any) -> None:
     assert client.post("/recognition/readiness", json={"approve_everything": True}).status_code == 422
+
+
+def test_sample_constitution_runs_offline_and_finds_its_two_planted_problems(client: Any, monkeypatch: Any) -> None:
+    """A fresh visitor can try the check without a file; the sample's AI reading is recorded, so it works offline."""
+    from app.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "ai_recordings_dir", REPO_ROOT / "data" / "ai_recordings")
+    sample = client.get("/constitution/demo").json()
+    response = client.post("/constitution/check", data={"text": sample["text"], **sample["answers"]})
+    assert response.status_code == 200
+    states = {c["rule_id"]: c["state"] for c in response.json()["clauses"]}
+    assert states["clause-ii-a-1"] == "contradicts"
+    assert states["clause-iii-g-1"] == "missing"

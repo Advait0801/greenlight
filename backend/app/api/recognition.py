@@ -14,7 +14,9 @@ from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
 from app.api.deps import require_ruleset
+from app.config import REPO_ROOT
 from app.db import get_session
+from app.jsonutil import loads_strict
 from app.models import AuditLog
 from app.rules import RuleSet
 from app.services.recognition import check_upload
@@ -23,6 +25,7 @@ from app.services.recognition_document import MAX_TEXT_CHARS, MAX_UPLOAD_BYTES
 from app.services.recognition_readiness import ReadinessInput, ReadinessReport, readiness
 
 router = APIRouter(tags=["recognition"])
+EVAL_DIR = REPO_ROOT / "data" / "eval" / "constitutions"
 log = logging.getLogger(__name__)
 
 _YES_NO = {"yes": True, "true": True, "no": False, "false": False}
@@ -83,6 +86,25 @@ async def constitution_check(
         report, results = await run_in_threadpool(check_upload, ruleset, club, text=text or "")
     _audit(session, results)
     return report
+
+
+DEMO_CONSTITUTION = "co-05"  # data/eval/constitutions: a GPA limit on members, and no officer transition procedure
+
+
+@router.get("/constitution/demo")
+def constitution_demo() -> dict[str, Any]:
+    """A sample constitution with two planted problems, so a visitor can try the check without a file of their own.
+    It is a test-set case: made up, and its answer is known."""
+    try:
+        cases = loads_strict((EVAL_DIR / "cases.json").read_text(encoding="utf-8"))["cases"]
+        case = next(c for c in cases if c["id"] == DEMO_CONSTITUTION)
+        text = (EVAL_DIR / case["file"]).read_text(encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001 - any problem with the sample is the same answer to the browser
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                            detail={"message": "The sample constitution could not be loaded."}) from exc
+    answers = {name: ("yes" if case["club"][name] else "no") for name in CLUB_FLAGS}
+    return {"club_name": case["club"]["name"], "text": text, "answers": answers,
+            "note": "A made-up constitution with two planted problems. Nothing about a real club."}
 
 
 @router.get("/recognition/readiness", response_model=ReadinessReport)

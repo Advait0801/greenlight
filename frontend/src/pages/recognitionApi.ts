@@ -143,3 +143,22 @@ export function checkReadiness(input: ReadinessInput): Promise<Outcome<Readiness
     headers: { "Content-Type": "application/json" },
   });
 }
+
+export interface SampleConstitution {
+  club_name: string;
+  text: string;
+  answers: Record<string, string>;
+  note: string;
+}
+
+export async function getSampleConstitution(): Promise<
+  { ok: true; data: SampleConstitution } | { ok: false; error: string }
+> {
+  try {
+    const response = await fetch(`${BASE}/constitution/demo`, { headers: { Accept: "application/json" } });
+    if (!response.ok) return { ok: false, error: "The sample constitution could not be loaded." };
+    return { ok: true, data: (await response.json()) as SampleConstitution };
+  } catch {
+    return { ok: false, error: "Could not reach the Greenlight server." };
+  }
+}

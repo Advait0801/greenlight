@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { PrecheckNotice } from "../components/PrecheckNotice";
-import { checkConstitution, type ConstitutionReport } from "./recognitionApi";
+import { checkConstitution, getSampleConstitution, type ConstitutionReport } from "./recognitionApi";
 import { RecognitionReadiness } from "./RecognitionReadiness";
 import { RecognitionReport } from "./RecognitionReport";
 
@@ -26,6 +26,18 @@ export function Recognition() {
   useEffect(() => {
     if (report) resultRef.current?.querySelector<HTMLElement>("h2")?.focus();
   }, [report]);
+
+  const [sampleNote, setSampleNote] = useState<string | null>(null);
+
+  async function loadSample() {
+    setError(null);
+    const outcome = await getSampleConstitution();
+    if (!outcome.ok) return setError(outcome.error);
+    setMode("text");
+    setText(outcome.data.text);
+    setAnswers(outcome.data.answers as Record<string, Answer>);
+    setSampleNote(`${outcome.data.club_name}: ${outcome.data.note}`);
+  }
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -63,6 +75,12 @@ export function Recognition() {
       </section>
 
       <form onSubmit={submit} className="space-y-5 rounded-lg border border-stone-200 bg-white p-5 shadow-sm" aria-busy={busy}>
+        <div className="space-y-1">
+          <button type="button" onClick={loadSample} className="text-sm text-cardinal underline underline-offset-2">
+            No file to hand? Try a sample constitution
+          </button>
+          {sampleNote ? <p className="text-sm text-stone-600" role="status">{sampleNote}</p> : null}
+        </div>
         <fieldset className="flex flex-wrap gap-4">
           <legend className="mb-2 font-semibold">Your constitution</legend>
           <label className="flex items-center gap-2">
