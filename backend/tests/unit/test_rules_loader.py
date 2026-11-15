@@ -347,6 +347,17 @@ def test_every_figure_in_a_message_is_in_the_quoted_source(ruleset) -> None:  # 
     for rule in ruleset:
         for phone in re.findall(r"\d{3}-\d{3}-\d{4}", rule.message):
             assert phone in rule.source_text, (rule.id, phone)
+        # Regression (phase 0 iteration 3, code audit L): the "(213) 740-6951" form and dollar amounts too.
+        # A figure may also come from a rule this one names (a conflict or a referenced rule).
+        named = list(rule.conflicts_with or []) + [
+            rid for key, value in rule.params.items() if key.endswith("_rules") and isinstance(value, list) for rid in value
+        ]
+        quoted = normalize(" ".join([rule.source_text] + [ruleset.get(rid).source_text for rid in named if rid in ruleset]))
+        digits = re.sub(r"\D", "", quoted)
+        for phone in re.findall(r"\(\d{3}\)\s?\d{3}-\d{4}", rule.message):
+            assert re.sub(r"\D", "", phone) in digits, (rule.id, phone)
+        for amount in re.findall(r"\$\d+(?:,\d{3})*(?:\.\d\d)?", rule.message):
+            assert amount.removesuffix(".00") in quoted, (rule.id, amount)
 
 
 def test_verification_notes_are_plain_language(ruleset) -> None:  # type: ignore[no-untyped-def]
