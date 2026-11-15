@@ -10,7 +10,8 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 4 (year plan):** closed 2026-11-15 after three iterations, pushed to `main`.
 - **Phase 5 (supporting features and the USG screen):** closed 2026-11-15 after three iterations, pushed to `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut).
 - **Phase 6 (ship):** closed 2026-11-15 after three iterations, pushed to `main`. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres; `/api/health` shows `database_kind: postgresql`).
-- **Next action:** a person adds `USG_REVIEWER_KEY` (12+ characters, not a value in the repository) to Replit secrets and clicks Republish; until then the USG screen answers 503 and the demo's 2:25 step cannot run. Then Phase 7.
+- **Phase 7 (final review and freeze):** closed 2026-11-15. Code frozen at the tag `submission`; after it only `docs/submission/` changes. If something breaks, roll back to the tag; do not patch forward. Known issues: `docs/reviews/known-issues.md`.
+- **Next action (humans):** record the video on the live link, write `docs/submission/`, submit on Devpost by 11:00 AM PT.
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
 ## Phase status
@@ -24,7 +25,7 @@ Final reviewers in Phase 7 must **not** read this file.
 | 4 | Year plan | done (on `main`) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 5 | Supporting features and USG screen | done (on `main`; items 4 and 5 cut) | 3 | no (iteration 3: 0 blockers, 1 high, fixed) | yes, 2026-11-15 (pushed to main) |
 | 6 | Ship | done (on `main`, deployed) | 3 | no (iteration 3: 0 blockers, 2 high: one fixed by redeploy, one needs the secret) | yes, 2026-11-15 (pushed to main) |
-| 7 | Final review (F1, F2, F3) and freeze | — | 0 | — | open |
+| 7 | Final review (F1, F2, F3) and freeze | done (on `main`, deployed) | 3 | no (F1: 2 wrong greens; F2: 1 high + passcode check; F3: 1 wrong green + README; all fixed) | yes, 2026-11-15, tagged `submission` |
 
 ## Phase 0 build (2026-11-14)
 
@@ -113,6 +114,18 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### Phase 7, F3 — the whole product (Fable 5.2); code frozen
+
+Report: `docs/reviews/final-F3-product.md`. One wrong green: the USG screen showed "Meets the rule" for lines whose vendor is not on USG's list, and listed only one place per rule. Fixed: the screen shows such lines as needing a look; reasons are kept per rule and place (two commits, each with a test). README step 4 stalled when followed literally; it now gives the exact edits and says to send the red budget first. Mediums and lows in `docs/reviews/known-issues.md`. Freeze: full suite (827 + 201 adversarial), `validate_rules.py`, `run_eval.py` (0 missed, 0 wrongly flagged) and the demo journey on the live link, each run twice, all passing.
+
+### Phase 7, F2 — security, privacy and robustness (Opus 5.5)
+
+Report: `docs/reviews/final-F2-security.md`. High: a small .docx could unzip to gigabytes before any check (constitution and quote readers); fixed with an unzipped-size limit and a test. The review reports quote local test passcodes; the user replaced `USG_REVIEWER_KEY` in Replit secrets with a fresh random value. No wrong green, date or number.
+
+### Phase 7, F1 — correctness (Opus 5.5), including the Phase 0 foundation
+
+Report: `docs/reviews/final-F1-correctness.md`. Every rule checked against its snapshot, the deadline table, the calendar and the loader guards: sound. Two wrong greens in the money check, both fixed with tests: a food or venue-and-personnel cap passed when an unsure line could push it over (now yellow); a vendor not on USG's list was hidden in a closed panel (now opened and named).
 
 ### Phase 6, iteration 3 — audit; phase closed
 
