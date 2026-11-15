@@ -5,6 +5,7 @@ email; Greenlight never sends it."""
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, Literal
@@ -18,6 +19,7 @@ from app.rules import RuleSet
 from app.services.gap_helper import MAX_NOTE_CHARS, email_is_clean, figures_ok, ideas_in_note
 
 EmailKind = Literal["in_kind_sponsor", "co_host"]
+_ASK_FIGURES = re.compile(r"\d|\b(hundreds?|thousands?|grand|bucks|usd|k)\b", re.IGNORECASE)
 EMAIL_TASK = "gap_outreach_email"
 EMAIL_INSTRUCTIONS = """\
 You help a USC student club officer write one paragraph of an outreach email for a club event. You write only from
@@ -94,7 +96,8 @@ def draft_email(request: EmailRequest, ruleset: RuleSet, *, client: ClaudeClient
     recipient = request.recipient.strip() or ("the team" if request.kind == "in_kind_sponsor" else "fellow officers")
     notes: list[str] = []
     ask = request.ask.strip()
-    if ask and (not email_is_clean(ask) or ideas_in_note(ask)):
+    # The ask goes into the email word for word, so it carries no figure at all and nothing the email filter refuses.
+    if ask and (not email_is_clean(ask) or ideas_in_note(ask) or _ASK_FIGURES.search(ask)):
         notes.append("Your 'what we would like' line mentions money or a topic Greenlight keeps out of outreach emails, so it left it "
                      "out. Ask for goods or services instead.")
         ask = ""

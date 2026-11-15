@@ -56,7 +56,7 @@ OPTIONS: tuple[_Option, ...] = (
 )
 
 # The ways a generic assistant suggests that USC does not allow (PROJECT_CONTEXT section 7, "Not allowed").
-BANNED_RULES: tuple[str, ...] = ("sponsorship-cash-banned", "raffle-purchase-banned", "brand-ambassadors-banned",
+BANNED_RULES: tuple[str, ...] = ("sponsorship-cash-banned", "raffle-purchase-banned", "brand-ambassadors-banned", "dues-required-banned",
                                  "sponsorship-activation-banned", "own-tax-exempt-banned")
 
 # Words in the officer's own note that point at a banned idea; the matching rule is shown first, as "not allowed".
@@ -67,13 +67,18 @@ _IDEA_PATTERNS: dict[str, re.Pattern[str]] = {
         r"\b(company|companies|corporat\w*|brand|business\w*|firm)\b.*(\$\s?\d|\b(cash|money|dollars?|cheque|check)\b)|"
         r"(\$\s?\d|\b(cash|money|dollars?|cheque|check)\b).*\b(company|companies|corporat\w*|brand|business\w*|firm)\b|"
         r"\b(give|gives|giving|pay|pays|paying|write|send|wire|transfer)\b.{0,40}(\$\s?\d|\b(cash|money|cheque|check)\b)|"
-        r"\b(would|will|could|to) pay (?:us|the club)\b|"
+        r"\b(would|will|could|to) pay (?:us|the club)\b|\b\d[\d,.]*\s?(?:usd|bucks|k)\b|\b(?:usd|bucks)\b|"
         r"\b(offer\w*|donat\w*)\b.{0,40}(\$\s?\d|\b(cash|money|cheque|check)\b)|\b(cash|monetary|money) (donations?|gifts?|sponsorships?)\b",
         re.IGNORECASE),
     "raffle-purchase-banned": re.compile(r"\b(raffles?|lottery|lotteries|sweepstakes?)\b", re.IGNORECASE),
-    "brand-ambassadors-banned": re.compile(r"\b(brand ambassadors?|ambassador program|promoters?|influencers?)\b", re.IGNORECASE),
+    "brand-ambassadors-banned": re.compile(
+        r"\b(brand ambassadors?|ambassador program|promoters?|influencers?|brand reps?|brand representatives?|campus reps?)\b|"
+        r"\bsign (?:them|members|students|people) up\b", re.IGNORECASE),
+    "dues-required-banned": re.compile(
+        r"\b(required|mandatory|compulsory) (?:fees?|dues|payments?)\b|\b(fees?|dues) (?:are|is|will be) (?:required|mandatory)\b|"
+        r"\bmust pay (?:fees?|dues)\b", re.IGNORECASE),
     "sponsorship-activation-banned": re.compile(
-        r"\b(activations?|pop[- ]?ups?|product sampling|sampling (?:booth|table)|brand booth|samples?|(?:run|set up|have|host) (?:a|their|its) (?:booth|table|tent)|promo(?:tional)? (?:booth|table|tent))\b",
+        r"\b(activations?|pop[- ]?ups?|product sampling|sampling (?:booth|table)|brand booth|samples?|(?:run|set up|have|host) (?:a|their|its) (?:booth|table|tent)|show(?:case)? (?:their|its|his|her|our) products?|promo(?:tional)? (?:booth|table|tent))\b",
         re.IGNORECASE),
     "own-tax-exempt-banned": re.compile(r"\b(501\s?\(?c\)?\s?\(?3\)?|tax[- ]exempt|nonprofit status|non-profit status)\b", re.IGNORECASE),
 }

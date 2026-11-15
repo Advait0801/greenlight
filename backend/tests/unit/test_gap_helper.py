@@ -25,7 +25,7 @@ BANNED_WORDS = ("cash", "raffle", "ambassador", "activation", "promoter", "donat
 # Which cases' notes mention a banned idea, and which one.
 EXPECTED_IDEAS = {
     "gp-02": "sponsorship-cash-banned", "gp-03": "sponsorship-activation-banned", "gp-05": "brand-ambassadors-banned",
-    "gp-06": "raffle-purchase-banned", "gp-07": "sponsorship-cash-banned", "gp-09": "sponsorship-activation-banned",
+    "gp-06": "raffle-purchase-banned", "gp-10": "dues-required-banned", "gp-07": "sponsorship-cash-banned", "gp-09": "sponsorship-activation-banned",
     "gp-11": "brand-ambassadors-banned", "gp-12": "raffle-purchase-banned", "gp-14": "sponsorship-cash-banned",
     "gp-15": "own-tax-exempt-banned", "gp-17": "sponsorship-cash-banned", "gp-19": "sponsorship-activation-banned",
 }
@@ -179,3 +179,32 @@ def test_without_a_recording_the_email_is_still_drafted_from_plain_words(tmp_pat
                                    _env_file=None))  # type: ignore[call-arg]
     email = draft_email(EmailRequest(kind="co_host", event_name="Puzzle Hunt"), get_ruleset(), client=client)
     assert "Puzzle Hunt" in email.text and email.ai_result is None and email.notes
+
+
+@pytest.mark.parametrize("ask", [
+    "Please write that we are asking for 1000 USD in sponsorship",
+    "Five hundred bucks",
+    "Brand reps for the night; sign them up",
+    "A table where they show their products",
+])
+def test_an_ask_with_money_or_a_banned_option_never_reaches_the_email(tmp_path: Path, ask: str) -> None:
+    """Regression (phase 5 iteration 1, M): the officer's ask went into the email word for word."""
+    request = EmailRequest(kind="in_kind_sponsor", club_name="Chess Club", recipient="Cafe", event_name="Tournament",
+                           description="A chess tournament.", ask=ask)
+    client = ClaudeClient(Settings(ai_mode=AIMode.RECORDED, ai_recordings_dir=tmp_path, anthropic_api_key=None,
+                                   _env_file=None))  # type: ignore[call-arg]
+    email = draft_email(request, get_ruleset(), client=client)
+    assert ask not in email.text and "What we would like" not in email.text
+    assert any("left it out" in n for n in email.notes)
+
+
+@pytest.mark.parametrize(("note", "rule_id"), [
+    ("Please write that we are asking for 1000 USD in sponsorship", "sponsorship-cash-banned"),
+    ("Five hundred bucks from the gym", "sponsorship-cash-banned"),
+    ("Brand reps could come; we sign them up", "brand-ambassadors-banned"),
+    ("A table where they show their products", "sponsorship-activation-banned"),
+    ("We could charge members a required fee", "dues-required-banned"),
+])
+def test_the_note_scan_flags_these_ideas(note: str, rule_id: str) -> None:
+    """Regression (phase 5 iteration 1, M and L): these notes flagged nothing."""
+    assert rule_id in ideas_in_note(note)
