@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
 import type { BadgeState } from "./StatusBadge";
 
@@ -6,12 +6,12 @@ import type { BadgeState } from "./StatusBadge";
 
 export function PageHeader({ eyebrow, title, children, actions }: { eyebrow?: string; title: string; children?: ReactNode; actions?: ReactNode }) {
   return (
-    <header className="relative overflow-hidden rounded-2xl bg-white px-5 py-6 shadow-[var(--shadow-card)] ring-1 ring-stone-200 sm:px-8 sm:py-8">
+    <header className="relative overflow-hidden rounded-2xl bg-white px-5 py-6 shadow-[var(--shadow-card)] ring-1 ring-stone-200 sm:px-7 sm:py-6">
       <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-cardinal to-gold" />
       {eyebrow ? <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cardinal">{eyebrow}</p> : null}
-      <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">{title}</h1>
-      {children ? <div className="mt-3 max-w-3xl space-y-2 text-stone-700">{children}</div> : null}
-      {actions ? <div className="mt-5 flex flex-wrap gap-2">{actions}</div> : null}
+      <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight text-stone-950 sm:text-3xl">{title}</h1>
+      {children ? <div className="mt-2 max-w-4xl space-y-2 text-sm text-stone-700 sm:text-base">{children}</div> : null}
+      {actions ? <div className="mt-4 flex flex-wrap gap-2">{actions}</div> : null}
     </header>
   );
 }
@@ -33,9 +33,11 @@ export interface Stat {
 }
 
 // The verdict and counts at the top of a result. Each tile carries an icon and words, never colour alone.
+const COLS: Record<number, string> = { 3: "lg:grid-cols-3", 4: "lg:grid-cols-4", 5: "lg:grid-cols-5", 6: "lg:grid-cols-3 2xl:grid-cols-6" };
+
 export function SummaryStats({ stats }: { stats: Stat[] }) {
   return (
-    <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+    <dl className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${COLS[stats.length] ?? "lg:grid-cols-4"}`}>
       {stats.map((s) => {
         const tone = s.tone ?? "info";
         return (
@@ -197,6 +199,13 @@ export interface WizardStep {
 // A step-by-step flow: a clickable step indicator, one step on screen at a time, Back and Next at the foot.
 export function Wizard({ steps, step, onStep, label }: { steps: WizardStep[]; step: number; onStep: (i: number) => void; label: string }) {
   const current = steps[step] ?? steps[0]!;
+  const bar = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    // Keep the current step visible when the step bar scrolls sideways (phones).
+    const el = bar.current?.querySelector<HTMLElement>('[aria-current="step"]');
+    const list = bar.current;
+    if (el && list) list.scrollLeft = el.offsetLeft - list.clientWidth / 2 + el.clientWidth / 2;
+  }, [step]);
   const go = (i: number) => {
     onStep(i);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -206,7 +215,7 @@ export function Wizard({ steps, step, onStep, label }: { steps: WizardStep[]; st
   return (
     <div className="space-y-5">
       <nav aria-label={label} className="rounded-2xl bg-white p-2 shadow-[var(--shadow-card)] ring-1 ring-stone-200">
-        <ol className="flex gap-1 overflow-x-auto">
+        <ol ref={bar} className="flex gap-1 overflow-x-auto">
           {steps.map((s, i) => {
             const state = i === step ? "current" : i < step ? "done" : "todo";
             return (
