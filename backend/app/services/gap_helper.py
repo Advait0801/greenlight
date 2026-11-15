@@ -43,7 +43,7 @@ OPTIONS: tuple[_Option, ...] = (
     _Option("co_host", "Co-host with another recognized club", "cohost-recognized-club", "co_hosts",
             ("cohost-unrecognized-banned", "cosponsors-named-in-uepa")),
     _Option("fundraiser", "A fundraiser or sales", "fundraising-allowed", "fundraising",
-            ("fundraising-approval-discretionary", "no-individual-benefit")),
+            ("fundraising-approval-discretionary", "no-individual-benefit", "item-sales-bookstore", "cash-collection-approval")),
     _Option("donations", "Donations through a University gift account", "donations-through-university", "fundraising",
             ("own-tax-exempt-banned",)),
     _Option("ticket_sales", "Ticket sales to cover this event's costs", "ticket-sales-cover-costs", "ticket_sales",
@@ -62,6 +62,7 @@ BANNED_RULES: tuple[str, ...] = ("sponsorship-cash-banned", "raffle-purchase-ban
 # Words in the officer's own note that point at a banned idea; the matching rule is shown first, as "not allowed".
 _IDEA_PATTERNS: dict[str, re.Pattern[str]] = {
     "sponsorship-cash-banned": re.compile(
+        r"\b(efectivo|dinero|argent|espèces|bargeld|honorarium|honoraria|bitcoin|crypto\w*|bank transfer)\b|现金|現金|钱|錢|"
         r"\b(cash|money|monetary|cheque|check|dollars?|wire|venmo|zelle|paypal|financial (?:support|contribution))\b.*\bsponsor|"
         r"\bsponsor\w*\b.*\b(cash|money|monetary|cheque|check|dollars?|pay(?:s|ing)? us|financial)\b|\$\s?\d.*\bsponsor|\bsponsor\w*\b.*\$\s?\d|"
         r"\b(company|companies|corporat\w*|brand|business\w*|firm)\b.*(\$\s?\d|\b(cash|money|dollars?|cheque|check)\b)|"
@@ -70,15 +71,17 @@ _IDEA_PATTERNS: dict[str, re.Pattern[str]] = {
         r"\b(would|will|could|to) pay (?:us|the club)\b|\b\d[\d,.]*\s?(?:usd|bucks|k)\b|\b(?:usd|bucks)\b|"
         r"\b(offer\w*|donat\w*)\b.{0,40}(\$\s?\d|\b(cash|money|cheque|check)\b)|\b(cash|monetary|money) (donations?|gifts?|sponsorships?)\b",
         re.IGNORECASE),
-    "raffle-purchase-banned": re.compile(r"\b(raffles?|lottery|lotteries|sweepstakes?)\b", re.IGNORECASE),
+    "raffle-purchase-banned": re.compile(
+        r"\b(raffles?|lottery|lotteries|sweepstakes?|rifas?|sorteos?|loter[ií]a|tombola)\b|抽奖|抽獎|彩票|"
+        r"\b(?:buy\w*|purchas\w*|pay\w*|donat\w*)\b.{0,40}\b(?:enter\w*|entry|entries|chance|win\w*)\b", re.IGNORECASE),
     "brand-ambassadors-banned": re.compile(
-        r"\b(brand ambassadors?|ambassador program|promoters?|influencers?|brand reps?|brand representatives?|campus reps?)\b|"
+        r"\b(brand ambassadors?|ambassador program|promoters?|influencers?|brand reps?|brand representatives?|campus reps?|campus representatives?|representatives? for (?:your|their|its) brand)\b|"
         r"\bsign (?:them|members|students|people) up\b", re.IGNORECASE),
     "dues-required-banned": re.compile(
         r"\b(required|mandatory|compulsory) (?:fees?|dues|payments?)\b|\b(fees?|dues) (?:are|is|will be) (?:required|mandatory)\b|"
         r"\bmust pay (?:fees?|dues)\b", re.IGNORECASE),
     "sponsorship-activation-banned": re.compile(
-        r"\b(activations?|pop[- ]?ups?|product sampling|sampling (?:booth|table)|brand booth|samples?|(?:run|set up|have|host) (?:a|their|its) (?:booth|table|tent)|show(?:case)? (?:their|its|his|her|our) products?|promo(?:tional)? (?:booth|table|tent))\b",
+        r"\b(activations?|pop[- ]?ups?|product sampling|sampling (?:booth|table)|brand booth|samples?|(?:run|set up|have|host) (?:a|their|its) (?:booth|table|tent)|show(?:case)? (?:their|its|his|her|our) products?|demo\w* (?:its|their|your|the) products?|promo(?:tional)? (?:booth|table|tent))\b",
         re.IGNORECASE),
     "own-tax-exempt-banned": re.compile(r"\b(501\s?\(?c\)?\s?\(?3\)?|tax[- ]exempt|nonprofit status|non-profit status)\b", re.IGNORECASE),
 }
@@ -90,7 +93,8 @@ _EMAIL_BANNED = re.compile(
     r"paypal|financial\w*|dollars?|pay(?:s|ing|ment)?|grant|budget|sponsorship (?:fee|package|tier|level)s?|tiers?|"
     r"raffles?|lotter\w*|sweepstakes?|prizes?|drawings?|tickets?|ambassadors?|promoters?|influencers?|activations?|"
     r"booths?|pop[- ]?ups?|sampl\w*|promot\w*|market\w*|advertis\w*|brand awareness|exposure|visibility|logo|"
-    r"recruit\w*|sell\w*|sales?|vendor\w*)\b",
+    r"recruit\w*|sell\w*|sales?|vendor\w*|transfer\w*|bitcoin|crypto\w*|honorari\w*|representatives?|reps?|"
+    r"giveaways?|win|wins|winners?|winning|entr(?:y|ies)|demo\w*|sign(?:s|ing)? up)\b",
     re.IGNORECASE)
 
 MAX_NOTE_CHARS = 2000
@@ -227,9 +231,17 @@ def funding_gap(request: GapRequest, ruleset: RuleSet, calendar: AcademicCalenda
                                   "This event asks USG for money, and a ticketed event cannot get USG funding. Selling "
                                   "tickets would end the USG request.",
                                   "Choose another option, or drop the USG request and sell tickets only to cover costs.")
+        late = next((step for step in steps if step.past_due), None)
+        if late is not None and finding is None:
+            status = "check_first"
+            finding = finding_for(ruleset, late.rule_id, Verdict.YELLOW,
+                                  f"The lead time has passed: '{late.title}' was due {late.due.isoformat() if late.due else 'already'}.",
+                                  "Ask the office whether it can still be done in time, or choose another option.")
         options.append(GapOption(
             id=opt.id, title=opt.title, status=status,
-            status_label="Allowed, with the conditions below" if status == "allowed" else "Needs a human look: check first",
+            status_label=("Allowed, with the conditions below" if status == "allowed"
+                          else "Needs a human look: a step is already late" if late is not None and opt.id not in ("other_usc_funds", "ticket_sales")
+                          else "Needs a human look: check first"),
             message=rule.message, citation=citation_for(ruleset, opt.rule_id), conditions=conditions, steps=steps,
             lead_time=_lead_time(steps, request.event_date), finding=finding,
             can_draft_email=opt.id in ("in_kind_sponsor", "co_host")))
@@ -262,5 +274,24 @@ def figures_ok(paragraph: str, source: str) -> bool:
     return _FIGURE_WORDS.search(paragraph) is None
 
 
+# Typographic marks a person may type in plain English; any other character outside ASCII (another script, a look-alike
+# letter such as a Cyrillic 'с') makes the text one Greenlight cannot check, so it is left out of the email.
+_PLAIN_EXTRA = set("‘’“”–—…é")
+
+
+def is_plain(text: str) -> bool:
+    return all(ord(ch) < 128 or ch in _PLAIN_EXTRA for ch in text)
+
+
 def email_is_clean(text: str) -> bool:
-    return _EMAIL_BANNED.search(text) is None
+    return is_plain(text) and _EMAIL_BANNED.search(text) is None
+
+
+# For names the officer types (event, recipient, club): only money and the banned options, so "Fresh Market" stays.
+_NAME_BANNED = re.compile(
+    r"\$|\b(cash|money|monetary|dollars?|usd|bucks|raffles?|lotter\w*|sweepstakes?|ambassadors?|promoters?|influencers?|"
+    r"activations?|donat\w*|sponsorship)\b", re.IGNORECASE)
+
+
+def name_is_clean(text: str) -> bool:
+    return is_plain(text) and _NAME_BANNED.search(text) is None and not ideas_in_note(text)

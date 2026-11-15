@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from app.ai import AIError, AIResult, ClaudeClient, UntrustedDocument
 from app.ai.audit import log_ai_output
 from app.rules import RuleSet
-from app.services.gap_helper import MAX_NOTE_CHARS, email_is_clean, figures_ok, ideas_in_note
+from app.services.gap_helper import MAX_NOTE_CHARS, email_is_clean, figures_ok, ideas_in_note, name_is_clean
 
 EmailKind = Literal["in_kind_sponsor", "co_host"]
 _ASK_FIGURES = re.compile(r"\d|\b(hundreds?|thousands?|grand|bucks|usd|k)\b", re.IGNORECASE)
@@ -91,10 +91,20 @@ def _terms(kind: EmailKind, club: str, ruleset: RuleSet) -> list[str]:
 
 
 def draft_email(request: EmailRequest, ruleset: RuleSet, *, client: ClaudeClient | None = None) -> OutreachEmail:
-    club = request.club_name.strip() or "our club"
-    event = request.event_name.strip() or "our event"
-    recipient = request.recipient.strip() or ("the team" if request.kind == "in_kind_sponsor" else "fellow officers")
     notes: list[str] = []
+    # Names are written into the subject and greeting word for word, so they go through a filter too (phase 5
+    # iteration 2): a name that asks for money or a banned option is replaced by a placeholder to fill in.
+    names: dict[str, str] = {}
+    for label, value, placeholder in (("club name", request.club_name, "our club"), ("event name", request.event_name, "our event"),
+                                      ("recipient", request.recipient, "")):
+        value = value.strip()
+        if value and not name_is_clean(value):
+            notes.append(f"The {label} mentions money, a banned option or characters Greenlight cannot check, so it was "
+                         f"left out of the email. Fill it in yourself.")
+            value = f"[{label}]"
+        names[label] = value or placeholder
+    club, event = names["club name"], names["event name"]
+    recipient = names["recipient"] or ("the team" if request.kind == "in_kind_sponsor" else "fellow officers")
     ask = request.ask.strip()
     # The ask goes into the email word for word, so it carries no figure at all and nothing the email filter refuses.
     if ask and (not email_is_clean(ask) or ideas_in_note(ask) or _ASK_FIGURES.search(ask)):
@@ -120,7 +130,7 @@ def draft_email(request: EmailRequest, ruleset: RuleSet, *, client: ClaudeClient
             notes.append("Your details contain words that read like instructions; Greenlight did not follow them.")
         if not drafted:
             pass
-        elif not email_is_clean(drafted):
+        elif not email_is_clean(drafted) or ideas_in_note(drafted):
             notes.append("The drafted paragraph mentioned money or something USC does not allow, so Greenlight replaced "
                          "it with a plain one.")
         elif not figures_ok(drafted, details):
