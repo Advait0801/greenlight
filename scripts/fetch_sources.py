@@ -31,7 +31,7 @@ from _common import SOURCES_DIR, use_backend
 
 use_backend()
 
-from app.rules.snapshots import HEADER_END  # noqa: E402
+from app.rules.snapshots import HEADER_END, snapshot_body_sha256  # noqa: E402
 
 MANIFEST = SOURCES_DIR / "manifest.json"
 RAW_DIR = SOURCES_DIR / "raw"
@@ -102,7 +102,9 @@ def fetch_one(source: dict[str, Any]) -> None:
         ]
     )
     text = to_text(data, source["format"])
-    (SOURCES_DIR / f"{source_id}.txt").write_text(f"{header}\n{text}\n", encoding="utf-8")
+    snapshot = f"{header}\n{text}\n"
+    (SOURCES_DIR / f"{source_id}.txt").write_text(snapshot, encoding="utf-8")
+    source["text_sha256"] = snapshot_body_sha256(snapshot)
 
     source["snapshot"] = f"{source_id}.txt"
     source["raw"] = f"raw/{raw_path.name}"

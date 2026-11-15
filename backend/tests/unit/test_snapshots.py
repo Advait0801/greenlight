@@ -21,6 +21,10 @@ SNAPSHOT = normalize("Food may not exceed $35.50 per person, and 1,200 guests is
         ("50 per person", False),
         ("200 guests", False),
         ("1,200 guests", True),
+        # Regression (phase 0 iteration 4, code audit H): keeping the punctuation does not get round it.
+        ("Food may not exceed $35.", False),
+        ("and 1,", False),
+        (".50 per person", False),
     ],
 )
 def test_quote_boundaries(quote: str, found: bool) -> None:

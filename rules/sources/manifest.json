@@ -15,7 +15,8 @@
       "sha256": "eb16778a07e3a85cfafc2d083374cc4348ef6049351d1579a9a1bdc7bbd6900b",
       "bytes": 13436,
       "version_date": "2026-10-21",
-      "version_date_basis": "Document header: 'Current as of October 21, 2026'."
+      "version_date_basis": "Document header: 'Current as of October 21, 2026'.",
+      "text_sha256": "8cacb9258e2262310b6c298dda4f65a932fc0d6110e6a29ac457168e0259f9f8"
     },
     {
       "id": "usg-funding-page",
@@ -31,7 +32,8 @@
       "sha256": "381e0e0f540fc594f4ba1ffc828555581d29bd3ddf019869810dec0b60362120",
       "bytes": 239510,
       "version_date": "2026-10-30",
-      "version_date_basis": "Page modified time (article:modified_time)."
+      "version_date_basis": "Page modified time (article:modified_time).",
+      "text_sha256": "7434c0061995290b5be09ee2217747392f7eabb7b69fce41abe0518257a5a961"
     },
     {
       "id": "usg-funding-faq",
@@ -47,7 +49,8 @@
       "raw": "raw/usg-funding-faq.txt",
       "fetched_at": "2026-11-15T06:10:19Z",
       "sha256": "b3e68f95f6508d78b57dfd5cd409da9d4cf92f63325b539678bef2fa8285c74a",
-      "bytes": 7969
+      "bytes": 7969,
+      "text_sha256": "d8d53ed9cc1e25e80eb4dde9dc1847cae1ca7f215be28201b46113ce996dab1c"
     },
     {
       "id": "usg-vendor-list",
@@ -63,7 +66,8 @@
       "sha256": "5d025be7c1eb9ae7126d47f7951c3715d3c93199aca2e9cbea10d04a4818f62b",
       "bytes": 14289,
       "version_date": "2026-11-14",
-      "version_date_basis": "No version date in the sheet; date it was read."
+      "version_date_basis": "No version date in the sheet; date it was read.",
+      "text_sha256": "8e858b5d7f79ef7a5917fbc05d4404c644e8a88e7622af278cefa73476405543"
     },
     {
       "id": "usg-vendor-list-other",
@@ -79,7 +83,8 @@
       "raw": "raw/usg-vendor-list-other.csv",
       "fetched_at": "2026-11-15T06:05:16Z",
       "sha256": "ca51f38625f479411989073070f25c1765125eb521c313f7367e68c40831a17d",
-      "bytes": 8689
+      "bytes": 8689,
+      "text_sha256": "a76e7e0041f84c6fe052116eb86f230294c9c9030f9f89f6d1fa5b6e8c8e45e2"
     },
     {
       "id": "usg-funding-deadlines",
@@ -96,7 +101,8 @@
       "snapshot": "usg-funding-deadlines.txt",
       "fetched_at": "2026-11-14",
       "sha256": "f294535282b377faf52e822125d76976237e50b7f2aaa41c8d642635ec4330b9",
-      "manual": true
+      "manual": true,
+      "text_sha256": "9122c7e248aeb6db8e0ef35a05d0fd13efa271baac69ff1ab6e592bb8475c214"
     },
     {
       "id": "constitution-template",
@@ -112,7 +118,8 @@
       "sha256": "c2cc4c2944e44551ec5ac11a7a07accbd3402fab847c79dd9e68c326f066211b",
       "bytes": 344801,
       "version_date": "2026-11-12",
-      "version_date_basis": "PDF modification date."
+      "version_date_basis": "PDF modification date.",
+      "text_sha256": "bb38233c0696ec8c8c42e78d401de96bb51746c3d41eb83e00128ff4e0149686"
     },
     {
       "id": "recognition-process",
@@ -128,7 +135,8 @@
       "sha256": "d8c43d46e327c00f39afa90199f28020177e88eac5ceef11dae5e610702efe81",
       "bytes": 170759,
       "version_date": "2026-11-12",
-      "version_date_basis": "Page 'Last Updated' date."
+      "version_date_basis": "Page 'Last Updated' date.",
+      "text_sha256": "18552494cba90f1b9cff70721ad2ad1f00247323ea002145a1fabe3eed824b6a"
     },
     {
       "id": "recognition-faq",
@@ -144,7 +152,8 @@
       "sha256": "4482756c65292c906ba0b2d97b57fac2361e3cd1794f69c607c3c2a8c786de99",
       "bytes": 145675,
       "version_date": "2026-07-24",
-      "version_date_basis": "Page modified time (article:modified_time)."
+      "version_date_basis": "Page modified time (article:modified_time).",
+      "text_sha256": "a9577ace7bff9427df73a7d042dd5bee7b991690717ef29c8569583402179f50"
     },
     {
       "id": "rso-accountability",
@@ -160,7 +169,8 @@
       "sha256": "de4d7d3964141deb1ab873a641ea6df80de4513878d1ab13a765091cc1abba19",
       "bytes": 106547,
       "version_date": "2025-09-19",
-      "version_date_basis": "Page 'Last Updated' date."
+      "version_date_basis": "Page 'Last Updated' date.",
+      "text_sha256": "5898032d7c43e16170fa10d66afcb8726b2bbcf7352c83328e48f4f93f2b6b49"
     },
     {
       "id": "rso-resources",
@@ -176,7 +186,8 @@
       "sha256": "a478882942a0bd0e124d4dbb1725391b109c48fc5fb8d713a6aed4c023b08893",
       "bytes": 108136,
       "version_date": "2026-07-10",
-      "version_date_basis": "Page 'Last Updated' date."
+      "version_date_basis": "Page 'Last Updated' date.",
+      "text_sha256": "7c93238233940d3e4b5020d318909886b3c223f26da96f23d7cba5f62a21841f"
     },
     {
       "id": "tes-terms",
@@ -192,7 +203,8 @@
       "sha256": "0f229afa6898211a0956147177a8c718a39f2c67fa75abc97ff252aefabda53c",
       "bytes": 285098,
       "version_date": "2026-06-24",
-      "version_date_basis": "Footer '06/26'; PDF creation date 2026-06-24."
+      "version_date_basis": "Footer '06/26'; PDF creation date 2026-06-24.",
+      "text_sha256": "eafc668097cb159d3419fcc335db321d6d176bdd22eb93b9c84fd251f4557695"
     },
     {
       "id": "tes-faq",
@@ -208,7 +220,8 @@
       "sha256": "7cc44ff8d427a15b086b6efc8fd68cc400520608c88e51d9a5ba33df6d93eb45",
       "bytes": 129322,
       "version_date": "2026-09-17",
-      "version_date_basis": "Page modified time (article:modified_time)."
+      "version_date_basis": "Page modified time (article:modified_time).",
+      "text_sha256": "481594368900fc540b5713fa3c0403a5d9142d0c89bc29bc0cc19f785bc4007e"
     },
     {
       "id": "tes-forms",
@@ -224,7 +237,8 @@
       "sha256": "b16324e4532afbcf48b304a0bf6898938d207476841ac8d17b1ecf1572a5b596",
       "bytes": 90223,
       "version_date": "2025-09-29",
-      "version_date_basis": "Page modified time (article:modified_time)."
+      "version_date_basis": "Page modified time (article:modified_time).",
+      "text_sha256": "46b1c65eb71884f9277f51b6fde70614a14dae77c64f449421cc1872683f1203"
     },
     {
       "id": "tes-tabling",
@@ -240,7 +254,8 @@
       "sha256": "d9e2ea521fa3b402c75dbd0de941560c405aeab64e70aa186f14a141eaa1e686",
       "bytes": 104648,
       "version_date": "2026-10-08",
-      "version_date_basis": "Page modified time (article:modified_time)."
+      "version_date_basis": "Page modified time (article:modified_time).",
+      "text_sha256": "bb2a13e440d9ded5202bcdd5cfd030e096b8e326d1814cfd1e81ca6b31739aa4"
     },
     {
       "id": "social-dance",
@@ -256,7 +271,8 @@
       "sha256": "fa11af4c3b9926b6a5771a0cd63f89cf84bc3d44ff1c980bab6c6d0c527c1094",
       "bytes": 114514,
       "version_date": "2023-09-22",
-      "version_date_basis": "Header 'As of 9/2023'; PDF creation date 2023-09-22."
+      "version_date_basis": "Header 'As of 9/2023'; PDF creation date 2023-09-22.",
+      "text_sha256": "ddfc11ad7f87440147cd571a2a5ae0880fafc78271f6ef3ca5743a5c12c6635d"
     },
     {
       "id": "student-handbook",
@@ -272,7 +288,8 @@
       "sha256": "61f7d27e9e8748ea5f856039d962eeb49635db327e0d5a49919ae94238ae73ce",
       "bytes": 6760325,
       "version_date": "2026-08-25",
-      "version_date_basis": "Title 'Student Handbook 2026 August 25'; PDF creation date."
+      "version_date_basis": "Title 'Student Handbook 2026 August 25'; PDF creation date.",
+      "text_sha256": "acc4eba327d69bab388cc76427ead8a7fb34481c0a6aa7abcdbecc361427d05e"
     },
     {
       "id": "usc-academic-calendar",
@@ -288,7 +305,8 @@
       "sha256": "9aaa0f6bd185c64646597873e27d74c73e13ffc078acef3007935783148ddda0",
       "bytes": 282652,
       "version_date": "2026-11-05",
-      "version_date_basis": "Page modified time (article:modified_time)."
+      "version_date_basis": "Page modified time (article:modified_time).",
+      "text_sha256": "b397ca9287e28b3aae3af8b0fe4e9ddd3cf30bab5536a61cf610d0c083f2435b"
     }
   ]
 }

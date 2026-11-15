@@ -16,6 +16,7 @@ full-width digit or a curly quote must match exactly.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import unicodedata
@@ -58,6 +59,8 @@ class Source:
     fetchable: bool
     note: str | None
     version_date: str | None = None
+    # SHA-256 of the snapshot text after the header, so an edited snapshot is refused.
+    text_sha256: str | None = None
 
 
 class ManifestError(ValueError):
@@ -86,7 +89,7 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
         for key in ("id", "title", "owner", "url", "version_date"):
             if not isinstance(entry.get(key), str) or not entry[key].strip():
                 raise ManifestError(f"{where}: '{key}' is required (a non-empty string)")
-        for key in ("snapshot", "fetched_at", "sha256", "note"):
+        for key in ("snapshot", "fetched_at", "sha256", "note", "text_sha256"):
             if entry.get(key) is not None and not isinstance(entry[key], str):
                 raise ManifestError(f"{where}: '{key}' must be a string")
         if not isinstance(entry.get("fetchable", True), bool):
@@ -106,7 +109,10 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
             fetchable=entry.get("fetchable", True) is not False,
             note=entry.get("note"),
             version_date=entry.get("version_date"),
+            text_sha256=entry.get("text_sha256"),
         )
+        if source.snapshot and not source.text_sha256:
+            raise ManifestError(f"{where}: '{source.id}' has a snapshot but no text_sha256 to check it against")
         key = canonical_url(source.url)
         if key in sources:
             raise ManifestError(f"{where}: url {source.url} is listed twice")
@@ -114,8 +120,13 @@ def load_manifest(sources_dir: Path) -> dict[str, Source]:
     return sources
 
 
+def snapshot_body_sha256(text: str) -> str:
+    """The hash recorded as text_sha256: the snapshot file's text after its header line."""
+    return hashlib.sha256(text.partition(HEADER_END)[2].encode("utf-8")).hexdigest()
+
+
 @lru_cache(maxsize=64)
-def _read_body(path: str, mtime_ns: int) -> str:
+def _read_body(path: str, mtime_ns: int, expected_sha256: str | None = None) -> str:
     try:
         text = Path(path).read_text(encoding="utf-8")
     except UnicodeDecodeError as exc:
@@ -123,6 +134,11 @@ def _read_body(path: str, mtime_ns: int) -> str:
     head, sep, body = text.partition(HEADER_END)
     if not sep:
         raise ManifestError(f"{path}: snapshot header end marker not found")
+    if expected_sha256 is not None and snapshot_body_sha256(text) != expected_sha256:
+        raise ManifestError(
+            f"{Path(path).name}: the snapshot text differs from the text_sha256 recorded in the manifest; "
+            "a snapshot is only changed by scripts/fetch_sources.py"
+        )
     return normalize(body)
 
 
@@ -135,7 +151,10 @@ def snapshot_text(sources_dir: Path, source: Source) -> str:
         raise ManifestError(f"source '{source.id}': snapshot path escapes {sources_dir}")
     if not path.is_file():
         raise ManifestError(f"source '{source.id}': snapshot file {path.name} is missing")
-    return _read_body(str(path), path.stat().st_mtime_ns)
+    try:
+        return _read_body(str(path), path.stat().st_mtime_ns, source.text_sha256)
+    except ManifestError as exc:
+        raise ManifestError(f"source '{source.id}': {exc}") from exc
 
 
 def text_in_snapshot(quote: str, snapshot: str) -> bool:
@@ -150,9 +169,14 @@ def text_in_snapshot(quote: str, snapshot: str) -> bool:
         end = start + len(needle)
         clean_start = start == 0 or not (snapshot[start - 1].isalnum() and needle[0].isalnum())
         clean_end = end == len(snapshot) or not (snapshot[end].isalnum() and needle[-1].isalnum())
-        # A number continues through a decimal point or thousands comma: "$35" is not a quote of "$35.50".
+        # A number continues through a decimal point or thousands comma: "$35" or "$35." is not a quote
+        # of "$35.50", and "$8," is not a quote of "$8,000".
         if needle[-1].isdigit() and snapshot[end : end + 1] in (".", ",") and snapshot[end + 1 : end + 2].isdigit():
             clean_end = False
+        if needle[-1] in ".," and len(needle) > 1 and needle[-2].isdigit() and snapshot[end : end + 1].isdigit():
+            clean_end = False
+        if needle[0] in ".," and start > 0 and snapshot[start - 1].isdigit() and needle[1:2].isdigit():
+            clean_start = False
         if needle[0].isdigit() and start >= 2 and snapshot[start - 1] in (".", ",") and snapshot[start - 2].isdigit():
             clean_start = False
         if clean_start and clean_end:
