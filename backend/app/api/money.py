@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import zipfile
 from datetime import date
 from typing import Any
 
@@ -32,6 +33,8 @@ from app.services.vendor_list import listed_vendors
 router = APIRouter(prefix="/money", tags=["money"])
 MAX_FILES = 10
 MAX_FILE_BYTES = 20 * 1024 * 1024
+# A Word file is a zip: its unzipped size is checked before parsing, so a small upload cannot expand to gigabytes.
+MAX_DOCX_UNZIPPED_BYTES = 50 * 1024 * 1024
 
 
 def _unprocessable(message: str) -> HTTPException:
@@ -58,6 +61,12 @@ def _sniff(data: bytes) -> str | None:
 def _docx_text(data: bytes) -> str:
     import docx
 
+    try:
+        unzipped = sum(info.file_size for info in zipfile.ZipFile(io.BytesIO(data)).infolist())
+    except Exception as exc:
+        raise IntakeError("The Word file could not be opened.") from exc
+    if unzipped > MAX_DOCX_UNZIPPED_BYTES:
+        raise IntakeError("The Word file is too large once unzipped. Paste the text instead.")
     try:
         document = docx.Document(io.BytesIO(data))
     except Exception as exc:  # python-docx raises several types for a damaged file

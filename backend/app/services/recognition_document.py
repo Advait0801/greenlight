@@ -15,6 +15,8 @@ from typing import Any, Literal
 
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
 MAX_TEXT_CHARS = 400_000
+# A Word file is a zip: its unzipped size is checked before parsing, so a small upload cannot expand to gigabytes.
+MAX_DOCX_UNZIPPED_BYTES = 50 * 1024 * 1024
 # Fewer letters and digits than this is not a constitution; the check refuses instead of guessing.
 MIN_READABLE_CHARS = 40
 IMAGE_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".webp": "image/webp"}
@@ -69,6 +71,8 @@ def _docx_text(data: bytes) -> str:
         from docx.table import Table
         from docx.text.paragraph import Paragraph
 
+        if sum(info.file_size for info in zipfile.ZipFile(io.BytesIO(data)).infolist()) > MAX_DOCX_UNZIPPED_BYTES:
+            raise UnreadableDocument("This Word document is too large once unzipped. Paste the text instead.")
         document = docx.Document(io.BytesIO(data))
         lines: list[str] = []
         for block in document.iter_inner_content():
