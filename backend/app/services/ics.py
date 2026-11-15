@@ -10,6 +10,7 @@ import hashlib
 from datetime import UTC, date, datetime, timedelta
 
 from app.schemas.events import EventPacket
+from app.schemas.plans import YearPlanReport
 
 PRODID = "-//Greenlight//Event packet//EN"
 
@@ -60,13 +61,32 @@ def _vevent(uid: str, start: date, end: date, summary: str, description: str, ur
     return lines
 
 
-def packet_to_ics(packet: EventPacket, *, now: datetime | None = None) -> str:
-    stamp = (now or datetime.now(UTC)).astimezone(UTC).strftime("%Y%m%dT%H%M%SZ")
+def _header(calendar_name: str) -> list[str]:
+    return ["BEGIN:VCALENDAR", "VERSION:2.0", f"PRODID:{PRODID}", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+            f"X-WR-CALNAME:{_escape(calendar_name)}"]
+
+
+def _finish(lines: list[str]) -> str:
+    lines.append("END:VCALENDAR")
+    folded = [part for line in lines for part in _fold(line)]
+    return "\r\n".join(folded) + "\r\n"
+
+
+def _stamp(now: datetime | None) -> str:
+    return (now or datetime.now(UTC)).astimezone(UTC).strftime("%Y%m%dT%H%M%SZ")
+
+
+def _packet_key(packet: EventPacket) -> str:
     name = packet.event.name or "Club event"
     seed = f"{name}|{packet.event.event_date}|{packet.event.end_date}"
-    key = hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
-    lines = ["BEGIN:VCALENDAR", "VERSION:2.0", f"PRODID:{PRODID}", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
-             f"X-WR-CALNAME:{_escape('Greenlight: ' + name)}"]
+    return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
+
+
+def packet_events(packet: EventPacket, stamp: str, *, key: str | None = None) -> list[str]:
+    """The VEVENT lines for one packet: the event itself, every dated item and every contact-by date."""
+    name = packet.event.name or "Club event"
+    key = key or _packet_key(packet)
+    lines: list[str] = []
     if packet.event.event_date is not None:
         last = packet.event.end_date or packet.event.event_date
         lines += _vevent(f"{key}-event@greenlight", packet.event.event_date, last + timedelta(days=1), name,
@@ -86,6 +106,30 @@ def packet_to_ics(packet: EventPacket, *, now: datetime | None = None) -> str:
         description = (f"{o.message}\n\n{o.note or ''}\nOwner: {o.owner_office}\nSource: {o.citation.source}\n{o.link}\n\n{packet.notice}")
         lines += _vevent(f"{key}-{o.rule_id}-contact@greenlight", o.contact_by, o.contact_by + timedelta(days=1),
                          f"Contact by: {o.title}", description, o.link, stamp)
-    lines.append("END:VCALENDAR")
-    folded = [part for line in lines for part in _fold(line)]
-    return "\r\n".join(folded) + "\r\n"
+    return lines
+
+
+def packet_to_ics(packet: EventPacket, *, now: datetime | None = None) -> str:
+    name = packet.event.name or "Club event"
+    lines = _header("Greenlight: " + name)
+    lines += packet_events(packet, _stamp(now))
+    return _finish(lines)
+
+
+def plan_to_ics(report: YearPlanReport, *, now: datetime | None = None) -> str:
+    """Every event of a year plan, with its packet's dated items, and the dates read from the unconfirmed copy of
+    USG's deadline table (each marked 'check with USG')."""
+    stamp = _stamp(now)
+    lines = _header("Greenlight year plan" + (f": {report.club_name}" if report.club_name else ""))
+    for event in report.events:
+        key = hashlib.sha256(f"{event.key}|{event.event_date}|{event.end_date}".encode()).hexdigest()[:16]
+        lines += packet_events(event.packet, stamp, key=key)
+        for d in event.usg_deadlines:
+            if d.table_date is None:
+                continue
+            description = (f"{event.name}: {d.title}. This date comes from Greenlight's hand-transcribed copy of USG's "
+                           f"Funding Application Deadlines table, which nobody has confirmed yet. Check it with USG "
+                           f"(usgfunds@usc.edu).\n\nSource: {d.citation.source}\n{d.citation.source_url}\n\n{report.notice}")
+            lines += _vevent(f"{key}-{d.rule_id}-table@greenlight", d.table_date, d.table_date + timedelta(days=1),
+                             f"Check with USG: apply for {event.name}", description, d.table_citation.source_url, stamp)
+    return _finish(lines)

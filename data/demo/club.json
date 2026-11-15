@@ -22,6 +22,7 @@
     "period": "spring-2027",
     "money_on_hand_cents": 120000,
     "expected_income_cents": 30000,
+    "usg_received_this_year_cents": 0,
     "unavailable_dates": [
       "2027-03-12"
     ]
