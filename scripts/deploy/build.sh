@@ -4,6 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
+# Replit sets PIP_USER, which a virtual environment refuses.
+export PIP_USER=0
 python3 -m venv .venv-deploy
 .venv-deploy/bin/python -m pip install --quiet --upgrade pip
 .venv-deploy/bin/python -m pip install --quiet -r backend/requirements.txt
