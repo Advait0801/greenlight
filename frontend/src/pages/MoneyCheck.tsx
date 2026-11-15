@@ -169,6 +169,14 @@ export function MoneyCheck() {
     }
   }, [location.state]);
 
+  // Any change to what was checked makes the old result wrong: clear it and its draft (phase 6 iteration 2).
+  useEffect(() => {
+    setReport(null);
+    setDraft("");
+    setDraftNotes([]);
+    setApproved("");
+  }, [event, club, attachments, lines, fund]);
+
   useEffect(() => {
     getVocabulary().then((r) => (r.ok ? setVocab(r.data) : setError(r.error))).catch(() => undefined);
   }, []);

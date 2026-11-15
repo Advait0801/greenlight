@@ -126,6 +126,11 @@ export function EventPacket() {
     setNotes(result.data.notes);
   }
 
+  // A packet built from other details is wrong once a detail changes: clear it (phase 6 iteration 2).
+  useEffect(() => {
+    setPacket(null);
+  }, [facts, details]);
+
   async function check(event: FormEvent) {
     event.preventDefault();
     if (!facts) return;
