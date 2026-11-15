@@ -11,6 +11,7 @@ Final reviewers in Phase 7 must **not** read this file.
 - **Phase 5 (supporting features and the USG screen):** closed 2026-11-15 after three iterations, pushed to `main` (gap helper, USG screen, handover packet; post-event helper and rule-change alert cut).
 - **Phase 6 (ship):** closed 2026-11-15 after three iterations, pushed to `main`. Live at https://greenlight--manasman1.replit.app (Replit autoscale, Postgres; `/api/health` shows `database_kind: postgresql`).
 - **Phase 7 (final review and freeze):** closed 2026-11-15. Code frozen at the tag `submission`; after it only `docs/submission/` changes. If something breaks, roll back to the tag; do not patch forward. Known issues: `docs/reviews/known-issues.md`.
+- **UI rework after the freeze (2026-11-15, the user's request):** frontend only, see `docs/reviews/ui-pass.md`. `submission` stays at 3c23303 as the fallback; the reworked UI is tagged `submission-v2`.
 - **Next action (humans):** record the video on the live link, write `docs/submission/`, submit on Devpost by 11:00 AM PT.
 - **Blocked on humans:** a person must confirm the four open questions (answers researched, see below) and review the rule table by hand (PLAN.md section 3); a person must compare the hand-transcribed USG deadline table with the sheet.
 
@@ -114,6 +115,10 @@ What exists now:
 ## Iteration log
 
 Add the newest entry at the top.
+
+### After Phase 7 — UI rework (frontend only), tagged `submission-v2`
+
+At the user's request: a portal layout, step-by-step wizards, summary-first results, less text on screen and fewer boxes (`docs/reviews/ui-pass.md`). No backend, API, rule, verdict or citation wording changed; nothing removed, only collapsed. One fresh reviewer (`docs/reviews/ui-pass-review.md`): 0 blockers, 4 highs (all fixed), 3 mediums and 6 lows (most fixed). Suite 827 passing; demo journey run twice on the live link before tagging.
 
 ### Phase 7, F3 — the whole product (Fable 5.2); code frozen
 

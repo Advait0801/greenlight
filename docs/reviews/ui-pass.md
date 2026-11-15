@@ -20,4 +20,13 @@ Walked every page locally on the demo data (desktop 1280 px and phone 390 px). B
 
 ## Fixes (what changed)
 
-Recorded in the commits after this file; summary at the end of the pass.
+- **Portal shell:** a cardinal sidebar grouped by task (Your club, Each event, For USG reviewers, Trust) with line icons; a white top bar with the section and the club; a phone menu that takes focus, closes on Escape and makes the page behind inert.
+- **Home dashboard** at `/`: summary tiles, a "Coming up" list, "Fix first", the events table and links into each tool. The year plan moved to `/plan`.
+- **Wizards with a step bar and Back/Next:** year plan (club and money → events → overview → calendar → budget and funding → each event), recognition (upload → findings → report → readiness), event packet (describe → check the details → the packet), money check (quotes → event and budget → findings → draft and send).
+- **Summary first:** tiles with the counts open each result; long lists go into tabs (calendar months, report sections, gap options) or master–detail panes (clauses, budget lines, events, the USG queue).
+- **Less text:** one-line page intros, with the rest under "About this page"; explanations, notes and rule text behind "Why?" or "Rule text and source", which opens in a tinted card; rule quotes that list items inline are shown as bullets (same words); the apply-by reasoning as three bullets.
+- **Fewer boxes:** plain sections on hairlines, underlined tabs, real tables; cards kept for the summary tiles and the funding steps.
+- **Readability:** Fraunces for page titles, Inter for text, 16 px body, 1.5 line height, prose capped near 70 characters.
+- **Review (`ui-pass-review.md`):** H1 focus ring visible on the sidebar, H2 phone menu focus, H3 rule text on the two new deadline lists, H4 no sideways scroll at 390 px, M1 money tiles labelled as lines, M2 focus moves to the new step, L2 USG "Open" buttons named, L4 club shown on phones, L6 the selected detail scrolls into view on phones. L3 (heading levels) and L5 (current step also marked by underline and weight, not colour only) left as they are.
+
+After-screenshots: `docs/submission/screenshots/after-*.png` (desktop 1440×900 and phone 390×844).
