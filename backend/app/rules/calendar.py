@@ -289,6 +289,21 @@ def load_calendar(rules_dir: Path) -> AcademicCalendar:
     except ManifestError as exc:
         problems.append(str(exc))
     problems.extend(check_against_text(calendar))
+    problems.extend(_missing_terms(calendar))
+    if calendar.academic_weeks.verified != "unverified" and not calendar.academic_weeks.definition:
+        problems.append("academic_weeks is marked verified but has no definition; no source defines an academic week")
     if problems:
         raise CalendarLoadError(problems)
     return calendar
+
+
+def _missing_terms(calendar: AcademicCalendar) -> list[str]:
+    """The calendar for academic year YYYY-YY must hold that year's fall, spring and summer terms; a
+    missing term would make its finals, breaks and holidays look like ordinary days."""
+    match = re.search(r"(\d{4})-(\d{2})$", calendar.id)
+    if not match:
+        return [f"calendar id '{calendar.id}' does not end with its academic year (for example 2026-27)"]
+    first = int(match.group(1))
+    required = [f"fall-{first}", f"spring-{first + 1}", f"summer-{first + 1}"]
+    present = {term.id for term in calendar.terms}
+    return [f"term {term_id} is missing; the {match.group(0)} calendar needs fall, spring and summer" for term_id in required if term_id not in present]

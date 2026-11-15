@@ -32,6 +32,7 @@ def calendar_rule_problems(ruleset: RuleSet, calendar: AcademicCalendar) -> list
     pairs = (
         (calendar.id, calendar.verified, "rules/calendar.json"),
         ("usc-business-days-definition", calendar.business_days.verified, "rules/calendar.json business_days"),
+        ("usg-academic-week-definition", calendar.academic_weeks.verified, "rules/calendar.json academic_weeks"),
     )
     for rule_id, verified, where in pairs:
         rule = ruleset.rules.get(rule_id)
