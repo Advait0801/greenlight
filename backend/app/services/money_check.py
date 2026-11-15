@@ -271,12 +271,19 @@ def _check_hotel(b: _Builder, ruleset: RuleSet, entry: _Line) -> None:
         ))
         return
     per_night = line.unit_price_cents
+    rooms_times_nights = line.quantity % line.nights == 0 and line.quantity > 0
+    if not rooms_times_nights:
+        entry.findings.append(b.item(
+            rule.id, Verdict.YELLOW,
+            f"The quantity ({line.quantity}) is not rooms x nights for {line.nights} nights, so the unit price may not be "
+            "one room for one night.",
+            "Enter the quantity as rooms x nights and the unit price as one room for one night.", reason="cannot_compute"))
     if per_night > cap:
         entry.findings.append(b.item(
             rule.id, Verdict.RED, f"{money(per_night)} per night; the cap is {money(cap)}.",
             _fill(rule.fix_template, per_night=money(per_night)[1:]) or f"Choose a room at or under {money(cap)} per night.",
         ))
-    else:
+    elif rooms_times_nights:
         ok = b.passed(rule.id, f"{money(per_night)} per night is within the {money(cap)} cap.")
         if ok:
             entry.passed.append(ok)
@@ -340,7 +347,8 @@ def match_fund(ruleset: RuleSet, chosen: FundId | None, reading: FundReading | N
     if chosen is not None:
         return FundResult(fund=chosen, fund_name=_fund_name(ruleset, chosen), status="officer_chose", verdict=None,
                           candidates=[chosen], explanation="You chose this fund.", citations=[citation_for(ruleset, chosen)])
-    if reading is not None and reading.fund is not None and reading.confidence == "high" and not reading.also_fits:
+    if (reading is not None and reading.fund is not None and reading.confidence == "high" and not reading.also_fits
+            and not reading.contains_instructions):
         fund = reading.fund
         why = f"The event description fits this fund ({reading.evidence})." if reading.evidence else "The event description fits this fund."
         return FundResult(fund=fund, fund_name=_fund_name(ruleset, fund), status="matched", verdict=None, candidates=[fund],
@@ -355,6 +363,9 @@ def match_fund(ruleset: RuleSet, chosen: FundId | None, reading: FundReading | N
         candidates = list(FUND_IDS)
     if reading is None:
         why = "Greenlight could not read which fund fits; choose the fund yourself."
+    elif reading.contains_instructions:
+        why = ("The event description contains words that read like instructions, so Greenlight does not trust its own "
+               "reading of the fund; needs a human look. Choose the fund yourself.")
     else:
         why = "Greenlight is not sure which fund fits this event; needs a human look. Choose the fund yourself."
     return FundResult(fund=None, fund_name=None, status="unsure", verdict=Verdict.YELLOW, candidates=candidates,
@@ -485,6 +496,15 @@ def check_budget(request: MoneyCheckRequest, ruleset: RuleSet, calendar: Academi
                 ok = b.passed(vp_rule.id, f"Venue and personnel total {money(vp_total)}, within the {money(vp_cap)} USG covers.")
                 if ok:
                     entry.passed.append(ok)
+
+    if event.venue == "venue_off_campus":
+        for entry in entries:
+            if entry.line.category in ("venue_rental", "personnel"):
+                entry.findings.append(b.item(
+                    vp_rule.id, Verdict.YELLOW,
+                    f"{_what(entry.line)} is on-campus {'venue rental' if entry.line.category == 'venue_rental' else 'staffing'}, "
+                    "but the event is marked off campus; needs a human look.",
+                    "Correct the venue or the line's category, then run the check again."))
 
     # ---- vendor checks (separate from eligibility)
     vendor_checks = {e.line.line: _vendor_check(b, e.line, vendors) for e in entries}
@@ -641,6 +661,11 @@ def check_budget(request: MoneyCheckRequest, ruleset: RuleSet, calendar: Academi
                     rule_id, Verdict.YELLOW,
                     f"{where} from {name} totals {money(document_total)} but the budget lists {money(budget)}{extra}.",
                     "Make the budget lines match the quote, including every fee.", reason="totals_mismatch"))
+        if not linked:
+            application.append(b.item(rule_id, Verdict.YELLOW,
+                                      f"No budget line is linked to '{doc.name}' ({name}), so Greenlight could not compare it "
+                                      "with the budget; needs a human look.",
+                                      "Link the document to its budget lines, or check its total and fees by hand."))
         if doc.contains_instructions:
             questions.append(f"'{doc.name}' contains words that read like instructions. Greenlight treated them as text and did not follow them.")
 
