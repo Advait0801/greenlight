@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "a715206b7c33db2e3bee8302c82cf6b4be1a39bbbc46dfc23f06522eab293504",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:56+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "f564e7e3991a69758a669f80c78a8721762e667fd197b2c04100e9f72dba0d3b"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Macbeth\",\"start\":{\"year\":2027,\"month\":4,\"day\":22,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"from Thursday, April 22 to Saturday, April 24, 2027\"},\"end\":{\"year\":2027,\"month\":4,\"day\":24,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"to Saturday, April 24, 2027\"},\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"in Bovard Auditorium\"},\"venue_name\":\"Bovard Auditorium\",\"headcount\":{\"value\":400,\"confidence\":\"high\",\"evidence\":\"about 400 people each night\"},\"details\":[{\"name\":\"multi_day\",\"confidence\":\"high\",\"evidence\":\"from Thursday, April 22 to Saturday, April 24, 2027\"},{\"name\":\"props\",\"confidence\":\"high\",\"evidence\":\"prop swords\"},{\"name\":\"decorations\",\"confidence\":\"high\",\"evidence\":\"a fog machine\"},{\"name\":\"prohibited_decoration\",\"confidence\":\"high\",\"evidence\":\"a fog machine\"}],\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "d35b2de3691b2bfee06b52e2c46fcb842680af78b1082db7402d8fd5ef869ca6",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:53+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "eee5b1b311cf7e72ea7afd2f8dbdb43f0d7ea0f43e6d4985c22a1e8cd7ada475"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Service trip to Tijuana, Mexico\",\"start\":{\"year\":2027,\"month\":4,\"day\":10,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"Saturday, April 10, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_off_campus\",\"confidence\":\"high\",\"evidence\":\"Service trip to Tijuana, Mexico\"},\"venue_name\":\"Tijuana, Mexico\",\"headcount\":{\"value\":15,\"confidence\":\"high\",\"evidence\":\"15 members\"},\"details\":[{\"name\":\"travel\",\"confidence\":\"high\",\"evidence\":\"charter bus\"},{\"name\":\"international_travel\",\"confidence\":\"high\",\"evidence\":\"Tijuana, Mexico\"},{\"name\":\"usg_funding\",\"confidence\":\"high\",\"evidence\":\"asking USG to pay for the charter bus\"}],\"contains_instructions\":false}"
+}

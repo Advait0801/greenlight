@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "c4946ed33543e290b18ef3bd0dbe5a3002956b8f810d3ac94fcf91600fb5f40b",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:54+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "a52cbb42527dd2f74846f0141d302a4ddc238b02ba0b0ac9dcf19f1a27c068ba"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":null,\"start\":{\"year\":2027,\"month\":3,\"day\":4,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"from Thursday, March 4 to Saturday, March 6, 2027\"},\"end\":{\"year\":2027,\"month\":3,\"day\":6,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"to Saturday, March 6, 2027\"},\"venue\":{\"value\":\"venue_off_campus\",\"confidence\":\"high\",\"evidence\":\"a conference in San Francisco\"},\"venue_name\":\"San Francisco\",\"headcount\":{\"value\":8,\"confidence\":\"high\",\"evidence\":\"Taking 8 members\"},\"details\":[{\"name\":\"travel\",\"confidence\":\"high\",\"evidence\":\"flying and staying two nights in a hotel\"},{\"name\":\"lodging\",\"confidence\":\"high\",\"evidence\":\"staying two nights in a hotel\"},{\"name\":\"multi_day\",\"confidence\":\"high\",\"evidence\":\"from Thursday, March 4 to Saturday, March 6, 2027\"},{\"name\":\"usg_funding\",\"confidence\":\"high\",\"evidence\":\"asking USG's Professional/Academic Fund to pay\"},{\"name\":\"professional_academic_fund\",\"confidence\":\"high\",\"evidence\":\"asking USG's Professional/Academic Fund to pay for the flights and hotel\"}],\"contains_instructions\":false}"
+}

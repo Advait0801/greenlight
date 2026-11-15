@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "4a5791eab2e13e5851b7f0ed7c9947356a3e4c22185070e4f68beff8804a80f5",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:47+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "a1683a372454a6b55b24cefae6869d186fae4f2a2af780e6024dd9449e09efcb"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Spring formal\",\"start\":{\"year\":2027,\"month\":4,\"day\":17,\"weekday\":\"Saturday\",\"confidence\":\"high\",\"evidence\":\"Saturday, April 17, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"in the Trojan Grand Ballroom\"},\"venue_name\":\"Trojan Grand Ballroom\",\"headcount\":{\"value\":300,\"confidence\":\"high\",\"evidence\":\"for 300 students\"},\"details\":[{\"name\":\"social_dance\",\"confidence\":\"high\",\"evidence\":\"Spring formal social dance\"},{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Spring formal social dance\"},{\"name\":\"amplified_sound\",\"confidence\":\"high\",\"evidence\":\"with a hired DJ\"},{\"name\":\"performers\",\"confidence\":\"high\",\"evidence\":\"with a hired DJ\"}],\"contains_instructions\":false}"
+}

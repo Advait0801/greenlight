@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "57d1976dd6ba439ca8237d7cb9001f333d27371f8c35295f4f7c0d554a9410c4",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:46+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "99577592b5c02e43c070879b54e874825555cfa116b24af1e58c39c7bc681300"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Wine and cheese social\",\"start\":{\"year\":2027,\"month\":3,\"day\":2,\"weekday\":\"Tuesday\",\"confidence\":\"high\",\"evidence\":\"Tuesday, March 2, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":40,\"confidence\":\"high\",\"evidence\":\"40 members\"},\"details\":[{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"Wine and cheese\"},{\"name\":\"alcohol\",\"confidence\":\"high\",\"evidence\":\"Wine and cheese\"},{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"social\"}],\"contains_instructions\":false}"
+}

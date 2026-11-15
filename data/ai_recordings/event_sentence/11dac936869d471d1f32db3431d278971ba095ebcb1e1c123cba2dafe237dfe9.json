@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "11dac936869d471d1f32db3431d278971ba095ebcb1e1c123cba2dafe237dfe9",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "d5d990833c133a820716d3cba7281bbbf58dc0a0530add1a111d34da2156d3a3"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Officer planning meeting\",\"start\":{\"year\":2027,\"month\":1,\"day\":28,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"Thursday, January 28, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":10,\"confidence\":\"high\",\"evidence\":\"for 10 people\"},\"details\":[],\"contains_instructions\":false}"
+}

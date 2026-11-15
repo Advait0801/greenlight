@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "7f31fe3f93963bca0aec0151bdc41ac25de7ce06be984ae664a7ae0d6691a568",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "9de3b6702db0814544e3452b4ce549fe3ed961d273e7964f7a29071f9d2465aa"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Game night\",\"start\":{\"year\":2027,\"month\":3,\"day\":16,\"weekday\":\"Tuesday\",\"confidence\":\"high\",\"evidence\":\"Tuesday, March 16, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":40,\"confidence\":\"high\",\"evidence\":\"Game night for 40 people\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Game night\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"$300 for snacks\"},{\"name\":\"usg_funding\",\"confidence\":\"high\",\"evidence\":\"we are asking USG for $300\"}],\"contains_instructions\":false}"
+}

@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "b091bee84e270f961b5882ec0ccdb7fddecf3c428718ae4cab73867673ea2507",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:54+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "8823aae6e43a156fad10daf253e5b264e9dcfc92f178239c590d02fda523c658"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Joint study social\",\"start\":{\"year\":2027,\"month\":2,\"day\":18,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"Thursday, February 18, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_meeting_room\",\"confidence\":\"high\",\"evidence\":\"in a Tutor Campus Center meeting room\"},\"venue_name\":\"Tutor Campus Center meeting room\",\"headcount\":{\"value\":30,\"confidence\":\"high\",\"evidence\":\"for 30 people\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Joint study social\"},{\"name\":\"co_hosts\",\"confidence\":\"high\",\"evidence\":\"Joint study social with an unrecognized student group\"},{\"name\":\"co_host_not_recognized\",\"confidence\":\"high\",\"evidence\":\"an unrecognized student group (not a registered club)\"}],\"contains_instructions\":false}"
+}

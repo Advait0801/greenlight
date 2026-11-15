@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "1557cc3a6d259b0cea69f7834c467650ef1320457af6c5eab41119235320e37c",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "86677942d04045248f6c324c0f7e1deffbafa4a6914930c60b48ae9edd1b1231"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"End-of-year party\",\"start\":{\"year\":2027,\"month\":5,\"day\":6,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"Thursday, May 6, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_tes_large\",\"confidence\":\"high\",\"evidence\":\"at Traditions\"},\"venue_name\":\"Traditions\",\"headcount\":{\"value\":100,\"confidence\":\"high\",\"evidence\":\"100 members\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"End-of-year party\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"catered food\"},{\"name\":\"amplified_sound\",\"confidence\":\"high\",\"evidence\":\"a DJ\"},{\"name\":\"performers\",\"confidence\":\"high\",\"evidence\":\"a DJ\"}],\"contains_instructions\":false}"
+}

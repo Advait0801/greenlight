@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "2d1a0340cf214ff52b1057d3c02403f69de7a03f87d57c5fa65baea5471883bc",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:56+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "96c84f1b889926469e09944af6e96c68a6898d111875c2790d466675020fc738"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Culture night\",\"start\":{\"year\":null,\"month\":4,\"day\":null,\"weekday\":null,\"confidence\":\"low\",\"evidence\":\"sometime in early April\"},\"end\":null,\"venue\":{\"value\":\"venue_outdoor\",\"confidence\":\"high\",\"evidence\":\"on McCarthy Quad\"},\"venue_name\":\"McCarthy Quad\",\"headcount\":{\"value\":150,\"confidence\":\"medium\",\"evidence\":\"around 150 people\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Culture night\"},{\"name\":\"amplified_sound\",\"confidence\":\"high\",\"evidence\":\"with a DJ\"},{\"name\":\"performers\",\"confidence\":\"high\",\"evidence\":\"with a DJ\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"catering\"}],\"contains_instructions\":false}"
+}

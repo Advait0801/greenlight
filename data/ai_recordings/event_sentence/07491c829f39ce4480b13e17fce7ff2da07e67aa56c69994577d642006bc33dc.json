@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "07491c829f39ce4480b13e17fce7ff2da07e67aa56c69994577d642006bc33dc",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:49+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "724334fea7cf12789bd412196eb8bf9960c2b4003c468628ad2b107ac3afc509"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Bake sale\",\"start\":{\"year\":2027,\"month\":2,\"day\":10,\"weekday\":\"Wednesday\",\"confidence\":\"high\",\"evidence\":\"Wednesday, February 10, 2027\"},\"end\":null,\"venue\":{\"value\":null,\"confidence\":\"high\",\"evidence\":\"a table on Trousdale Parkway\"},\"venue_name\":\"Trousdale Parkway\",\"headcount\":{\"value\":null,\"confidence\":\"high\",\"evidence\":null},\"details\":[{\"name\":\"tabling\",\"confidence\":\"high\",\"evidence\":\"a table on Trousdale Parkway\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"selling homemade cookies\"},{\"name\":\"item_sales\",\"confidence\":\"high\",\"evidence\":\"Bake sale ... selling homemade cookies\"},{\"name\":\"fundraising\",\"confidence\":\"high\",\"evidence\":\"to raise money for our club\"}],\"contains_instructions\":false}"
+}

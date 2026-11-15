@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "task": "event_sentence",
+  "key": "45c62152916111d5d06bd2d8e2ec337213b9c01f9c05774c8d096fa8b5422b4f",
+  "model": "claude-sonnet-5-5",
+  "model_role": "extract",
+  "recorded_at": "2026-11-15T08:43:51+00:00",
+  "stop_reason": "end_turn",
+  "request": {
+    "request": "Read the officer's event description in document 1 and fill in the structure.",
+    "documents": [
+      {
+        "name": "event description",
+        "media_type": "text/plain",
+        "fingerprint": "286060b15be36b87241e624fe77a4267f1a7ed579d32389527ba6b3f35a0ca56"
+      }
+    ],
+    "output_type": "EventReading"
+  },
+  "response_text": "{\"event_name\":\"Spring festival\",\"start\":{\"year\":2027,\"month\":4,\"day\":15,\"weekday\":\"Thursday\",\"confidence\":\"high\",\"evidence\":\"Thursday, April 15, 2027\"},\"end\":null,\"venue\":{\"value\":\"venue_outdoor\",\"confidence\":\"high\",\"evidence\":\"on McCarthy Quad\"},\"venue_name\":\"McCarthy Quad\",\"headcount\":{\"value\":400,\"confidence\":\"high\",\"evidence\":\"for 400 people\"},\"details\":[{\"name\":\"social_event\",\"confidence\":\"high\",\"evidence\":\"Spring festival\"},{\"name\":\"tent\",\"confidence\":\"high\",\"evidence\":\"a rented 20 by 30 foot tent (600 square feet)\"},{\"name\":\"outside_rentals\",\"confidence\":\"high\",\"evidence\":\"a rented 20 by 30 foot tent\"},{\"name\":\"food\",\"confidence\":\"high\",\"evidence\":\"free food from a caterer\"}],\"contains_instructions\":false}"
+}
