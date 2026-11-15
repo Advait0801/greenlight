@@ -87,7 +87,8 @@ class UntrustedDocument:
 
 
 def _attr(value: str) -> str:
-    return html.escape(value, quote=True)
+    """An attribute value (a file name) from the user: escaped, and a copied request label neutralised."""
+    return LABEL_COPY.sub("[text copying Greenlight's request label]", html.escape(value, quote=True))
 
 
 def wrap_document(index: int, document: UntrustedDocument) -> list[dict[str, Any]]:
@@ -114,6 +115,8 @@ def request_code(task_request: str, documents: list[UntrustedDocument]) -> str:
     digest = hashlib.sha256(task_request.encode("utf-8"))
     for document in documents:
         digest.update(document.fingerprint.encode("ascii"))
+        # The name is hashed too, so a file name cannot carry the code either.
+        digest.update(b"\0" + document.name.encode("utf-8"))
     return digest.hexdigest()[:12]
 
 
