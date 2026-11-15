@@ -9,6 +9,7 @@ to start the checks.
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -219,6 +220,41 @@ def _check_params(rule: Rule, where: str, problems: list[str]) -> None:
                 problems.append(f"{where}: params.{key} must be a list of rule ids")
 
 
+CLAUSE_TYPES = ("fixed", "fill_in", "fixed_and_fill")
+BLANK = "{blank}"
+
+
+def _unmarked(text: str) -> str:
+    """Template wording without its blank markers (or the underscores that stand for a blank in the
+    snapshot) and without whitespace, for comparison with a quote."""
+    return "".join(re.sub(r"_{3,}", " ", normalize(text.replace(BLANK, " "))).split())
+
+
+def _check_clause(rule: Rule, where: str, problems: list[str]) -> None:
+    """A constitution clause says which template clause it is, how it is checked, and the template wording
+    with each blank marked, so code can compare the fixed words around every blank."""
+    params = rule.params
+    for key in ("clause", "article", "part", "clause_type", "template_text"):
+        if key not in params:
+            problems.append(f"{where}: a clause needs params.{key}")
+    clause_type, template = params.get("clause_type"), params.get("template_text")
+    if clause_type is not None and clause_type not in CLAUSE_TYPES:
+        problems.append(f"{where}: params.clause_type '{clause_type}' is not one of {', '.join(CLAUSE_TYPES)}")
+    if not isinstance(template, str):
+        return
+    if _unmarked(template) != _unmarked(rule.source_text):
+        problems.append(f"{where}: params.template_text without its {BLANK} markers is not the source_text")
+    blanks = template.count(BLANK)
+    if clause_type == "fixed" and blanks:
+        problems.append(f"{where}: a fixed clause has no blank, but template_text marks {blanks}")
+    if clause_type in ("fill_in", "fixed_and_fill") and not blanks:
+        problems.append(f"{where}: a {clause_type} clause must mark its blank in template_text")
+    if clause_type == "fill_in" and not (blanks == 1 and template.endswith(BLANK)):
+        problems.append(
+            f"{where}: a fill_in clause is a lead-in followed by one blank; fixed words around the blank make it fixed_and_fill"
+        )
+
+
 def _check_source(rule: Rule, where: str, sources: dict[str, Source], sources_dir: Path, problems: list[str]) -> None:
     source = sources.get(canonical_url(rule.source_url))
     if source is None:
@@ -236,6 +272,13 @@ def _check_source(rule: Rule, where: str, sources: dict[str, Source], sources_di
     except ManifestError as exc:
         problems.append(f"{where}: marked '{rule.verified}' but {exc}")
         return
+    if rule.kind == "clause" and rule.verified == "read":
+        body = normalize(snapshot)
+        if body.count(normalize(rule.source_text)) > 1:
+            problems.append(f"{where}: source_text occurs more than once in {source.snapshot}; quote enough to pin the clause")
+        continued = rule.params.get("template_text_continued")
+        if isinstance(continued, str) and _unmarked(continued) not in "".join(body.split()):
+            problems.append(f"{where}: params.template_text_continued is not in the snapshot {source.snapshot}")
     if rule.verified == "read" and not text_in_snapshot(rule.source_text, snapshot):
         excerpt = rule.source_text[:90] + ("…" if len(rule.source_text) > 90 else "")
         problems.append(
@@ -337,6 +380,8 @@ def load_rules(rules_dir: Path) -> RuleSet:
             if rule.trigger_mode == "all" and len(rule.triggers) < 2:
                 problems.append(f"{where}: trigger_mode 'all' needs at least two triggers")
             _check_params(rule, where, problems)
+            if rule.kind == "clause":
+                _check_clause(rule, where, problems)
             _check_numbers(rule, where, problems)
             fact = rule.params.get("violated_when")
             if rule.kind == "banned" and rule.domain in ("events", "outside_money") and not fact:

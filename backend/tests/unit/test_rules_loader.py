@@ -509,3 +509,43 @@ def test_every_event_and_outside_money_rule_can_be_reached(ruleset) -> None:  # 
     for rule in ruleset:
         if rule.domain in ("events", "outside_money") and not rule.triggers:
             assert every.count(f'"{rule.id}"') > 1, rule.id
+
+
+def test_clauses_with_fixed_words_around_the_blank_are_checked_as_fixed(ruleset) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, recognition audit H1): 'Members may be asked to pay dues', 'including
+    self nominations' and 'of the entire membership at a regular meeting' are fixed words, so their clauses
+    are fixed_and_fill and the words around the blank are compared, not only the blank."""
+    for clause_id in ("clause-ii-c-5", "clause-iii-d-4", "clause-viii-a-1", "clause-viii-b-1", "clause-iv-a-3", "clause-ii-c-4"):
+        assert ruleset.get(clause_id).params["clause_type"] == "fixed_and_fill", clause_id
+    for rule in ruleset:
+        if rule.kind == "clause" and rule.params["clause_type"] == "fill_in":
+            template = rule.params["template_text"]
+            assert template.count("{blank}") == 1 and template.endswith("{blank}"), rule.id
+    assert ruleset.get("clause-iii-a-1").params["template_text"].endswith("Programming Chair is an {blank} position.")
+    assert ruleset.get("clause-viii-b-1").params["template_text_continued"] == "membership at a regular meeting of {blank}."
+
+
+@pytest.mark.parametrize(
+    ("clause_id", "change", "fragment"),
+    [
+        ("clause-ii-c-5", lambda p: p.update(clause_type="fill_in"), "fixed words around the blank"),
+        ("clause-ii-c-5", lambda p: p.update(clause_type="fixed_and_fil"), "is not one of"),
+        ("clause-ii-c-5", lambda p: p.update(template_text=p["template_text"].replace("may be asked", "must")), "is not the source_text"),
+        ("clause-ii-b-2", lambda p: p.update(template_text=p["template_text"] + " {blank}"), "fixed clause has no blank"),
+        ("clause-ii-c-5", lambda p: p.pop("template_text"), "needs params.template_text"),
+        ("clause-viii-b-1", lambda p: p.update(template_text_continued="membership at any meeting of {blank}."), "template_text_continued"),
+    ],
+)
+def test_malformed_clause_is_rejected(rules_copy: Path, clause_id: str, change, fragment: str) -> None:  # type: ignore[no-untyped-def]
+    """Regression (phase 0 iteration 3, recognition audit M and L): clause params are validated."""
+    _edit(rules_copy, "recognition.json", lambda d: change(_rule(d, clause_id)["params"]))
+    _expect_problem(rules_copy, clause_id, fragment)
+
+
+def test_clause_quote_must_pin_one_passage(rules_copy: Path) -> None:
+    """Regression (phase 0 iteration 3, recognition audit L): II.E.4's old quote also matched III.E.4."""
+    _edit(rules_copy, "recognition.json", lambda d: _rule(d, "clause-ii-e-4").update(
+        source_text="at a regular or special meeting shall be sufficient to withdraw membership.",
+        params={**_rule(d, "clause-ii-e-4")["params"], "template_text": "{blank} at a regular or special meeting shall be sufficient to withdraw membership."},
+    ))
+    _expect_problem(rules_copy, "clause-ii-e-4", "occurs more than once")
